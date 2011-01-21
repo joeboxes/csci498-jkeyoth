@@ -5,6 +5,7 @@
 
 /**
  *  Exclusive-or gate.  out = a xor b.
+ *  or and not and
  */
 
 CHIP Xor {
@@ -13,5 +14,7 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    // Implementation missing.
+    Or(a=a, b=b, out=ored);
+    Nand(a=a, b=b, out=nanded);
+    And(a=ored, b=nanded, out=out);
 }
