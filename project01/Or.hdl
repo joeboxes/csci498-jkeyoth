@@ -13,5 +13,9 @@ CHIP Or {
     OUT out;
 
     PARTS:
-    // Implementation missing.
+    //not the and of the nots
+    Not(in=a, out=ta);
+    Not(in=b, out=tb);
+    And(a=ta, b=tb, out=to);
+    Not(in=to, out=out);
 }
