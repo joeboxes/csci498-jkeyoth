@@ -5,6 +5,7 @@
 
 /** 
  * Multiplexor.  If sel=0 then out = a else out = b.
+ * (a * ((b xor s)' + (b*s'))) + (a' * b * s)
  */
 
 CHIP Mux {
@@ -13,5 +14,16 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-    // Implementation missing.
+    Xor(a=b, b=sel, out=bXORs);	//b xor s
+    Not(in=bXORs, out=bXORsN);	//(b xor s)'
+    Not(in=sel, out=sn);			//s'
+    And(a=b, b=sn, out=bANDsn);	//b and s'
+    Or(a=bXORsN, b=bANDsn, out=innerGroup);	//inner or
+    And(a=a, b=innerGroup, out=leftGroup); //left side of outer or
+    
+    Not(in=a, out=an);			//a'
+    And(a=an, b=b, out=anANDb);	//a' and b
+    And(a=anANDb, b=sel, out=rightGroup);	//a' and b and s
+    
+    Or(a=leftGroup, b=rightGroup, out=out); //yay all done
 }
