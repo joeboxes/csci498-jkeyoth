@@ -13,6 +13,9 @@ CHIP DMux {
     OUT a, b;
 
     PARTS:
-    // Implementation missing.
+    And(a=in, b=sel, out=b); //if in=1 and sel=1 then b=1, else b=0
+    Not(in=sel, out=seln);
+    And(a=in, b=seln, out=a); //if in=1 and sel=0 then a=1, else a=0
+    
 }
 
