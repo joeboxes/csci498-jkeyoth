@@ -9,6 +9,15 @@
  *       b -- if sel=001
  *       ...
  *       h -- if sel=111
+ 
+ a = 000
+ b = 001
+ c = 010
+ d = 011
+ e = 100
+ f = 101
+ g = 110
+ h = 111
  */
  
 CHIP Mux8Way16 {
@@ -19,6 +28,9 @@ CHIP Mux8Way16 {
 
     OUT out[16];
 
-    PARTS: 
-   // Implementation missing.
+    PARTS:
+    Mux4Way16(a=a, b=b, c=c, d=d, sel=sel[0..1], out=g1);
+    Mux4Way16(a=e, b=f, c=g, d=h, sel=sel[0..1], out=g2);
+    Mux16(a=g1, b=g2, sel=sel[2], out=out);
+    
 }
