@@ -15,6 +15,11 @@ CHIP DMux4Way {
     OUT a, b, c, d;
 
     PARTS:
-    // Implementation missing.
+    DMux(in=in, sel=sel[0], a=ta, b=tb);
+    DMux(in=in, sel=sel[1], a=t1, b=t2);
+    And(a=ta, b=t1, out=a);
+    And(a=tb, b=t1, out=b);
+    And(a=ta, b=t2, out=c);
+    And(a=tb, b=t2, out=d);
 }
 
