@@ -15,7 +15,8 @@ CHIP FullAdder {
         carry;   // MSB of a + b + c
 
     PARTS:
-    HalfAdder(a=a, b=b, sum=t1, carry=t2);
-    HalfAdder(a=c, b=t1, sum=sum, carry=carry);
+    HalfAdder(a=a, b=b, sum=s1, carry=c1);
+    HalfAdder(a=s1, b=c, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
 }
 
