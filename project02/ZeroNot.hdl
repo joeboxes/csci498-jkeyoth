@@ -1,0 +1,17 @@
+
+
+CHIP ZeroNot {
+	IN	a[16],
+		za, na;
+	
+	OUT out[16];
+	
+	PARTS:
+	And16(a=a, b=false, out=zero);
+	Mux16(a=a, b=zero, sel=za, out=zaout);
+
+
+	Not16(in=zaout, out=zaoutnot);
+	Mux16(a=zaout, b=zaoutnot, sel=na, out=out);
+
+}
