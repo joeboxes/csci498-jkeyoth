@@ -7,16 +7,41 @@
  * 16-bit counter with load and reset controls.
  *
  * If reset(t-1) then out(t) = 0
- *    else if load(t-1) then out(t) = in(t-1)
- *         else if inc(t-1) then out(t) = out(t-1) + 1 (integer addition)
- *              else out(t) = out(t-1)
+ * else if load(t-1) then out(t) = in(t-1)
+ * else if inc(t-1) then out(t) = out(t-1) + 1 (integer addition)
+ * else out(t) = out(t-1)
  */
 
 CHIP PC {
 
-    IN  in[16], load, inc, reset;
-    OUT out[16];
+	IN  in[16], load, inc, reset;
+	OUT out[16];
 
-    PARTS:
-    // Implementation missing.
+	PARTS:
+	And16(a=false, b=true, out=zero);
+	ALU(x=in, y=outR, zx=true, nx=true, zy=false, ny=true, f=true, no=true, out=inced);
+
+	//inc is the op
+	Or(a=reset, b=load, out=maybeDontInc);
+	Not(in=maybeDontInc, out=maybeDoInc);
+	And(a=maybeDoInc, b=inc, out=doInc);
+	//load is the op
+	Not(in=reset, out=maybeDoLoad);
+	And(a=maybeDoLoad, b=load, out=doLoad);
+	
+	//if reset
+	Mux16(a=outR, b=zero, sel=reset, out=in1);
+	//else if load
+	Mux16(a=in1, b=in, sel=doLoad, out=in2);
+	//else if inc
+	Mux16(a=in2, b=inced, sel=doInc, out=inR);
+	
+	Or(a=doLoad, b=doInc, out=save1);
+	Or(a=save1, b=reset, out=save);
+
+
+	Register(in=inR, load=save, out=outR, out=out);
+    
+    
+    
 }
