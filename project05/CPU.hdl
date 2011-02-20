@@ -39,20 +39,55 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Implementation missing.
+    //need jmp
+    PC(in=A, load=jmp, inc=true, reset=reset, out[0..14]=pc);
     
-    //PC
-    //in:reset directectly to PC:reset
-    //PC:inc = true
-    //PC:load = 1 when jumping (do jump logic last)
+    //left mux
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=lMuxOut);
     
-    //pay attention to what is wired to each mux input (instruction = a!)
-    //first Mux sel = instruction[15]
-    //wire instruction[15] to not gate to OR(!inst[15], d1) to load on aReg. Because a is only loaded if it is an A inst or if (is a C inst and d1 = 1)
+    //load A?
+    Not(in=instruction[15], out=not15);
+    Or(a=instruction[5], b=not15, out=loadA);
     
-    //second mux
-    //in:inM to second mux:b
-    //a bit of C(inst[12] inst goes to second mux:sel
+    //A Reg
+    ARegister(in=lMuxOut, load=loadA, out=A, out[0..14]=addressM);
+    
+    //right mux
+    Mux16(a=A, b=inM, sel=instruction[12], out=AM);
+    
+    //load D?
+    And(a=instruction[4], b=instruction[15], out=loadD);
+    
+    //D Reg
+    DRegister(in=aluOut, load=loadD, out=D);
+    
+    //ALU
+    ALU(x=D, y=AM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, zr=zr, ng=ng);
+    
+    //Why cant I just do aluOut=outM?!?!?!?!
+    And16(a=true, b=aluOut, out=outM);
+    
+    //decide on a jump
+    Not(in=zr, out=nzr);
+    Not(in=ng, out=pos);
+    
+    //j1
+    And(a=instruction[0], b=pos, out=maybej1);
+    And(a=maybej1, b=nzr, out=j1); 
+    
+    //j1
+    And(a=instruction[1], b=zr, out=j2);
+    
+    //j2
+    And(a=instruction[2], b=ng, out=j3);
+    
+    //jmp
+    Or(a=j1, b=j2, out=maybejmp);
+    Or(a=j3, b=maybejmp, out=jmpifc);
+    And(a=jmpifc, b=instruction[15], out=jmp);
+    
+    //writeM
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    
     
 }
-
