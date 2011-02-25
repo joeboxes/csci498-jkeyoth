@@ -1,0 +1,9 @@
+﻿assembler.py
+
+This program assembles a hack machine code file from assembly. The program expects an assembly file with the extension .asm, and outputs a file with the same file name with a .hack extension. The program is located in the src directory.
+
+Usage:
+assembler.py input.asm
+
+or if assembler.py is not executable:
+python assembler.py input.asm
