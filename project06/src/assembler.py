@@ -2,6 +2,7 @@
 
 import sys
 import os.path as path
+import Parser
 
 #determine input and output files.
 
@@ -28,6 +29,10 @@ try:
 	inFile = open(inPath)
 except:
 	print inPath + ": file not found"
+
+inFile.close()
+
+parser = Parser(inPath)
 
 outFile = open(outPath, "w")
 
