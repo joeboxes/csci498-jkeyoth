@@ -11,7 +11,9 @@ class Parser:
 		self.commands = []
 		self.curCommand = -1
 		for line in asmFile:
-			self.commands.append(line.strip())
+			noComment = line.split("//")[0].strip()
+			if len(noComment) > 0:
+				self.commands.append(noComment)
 		asmFile.close()
 			
 	
@@ -54,7 +56,8 @@ class Parser:
 			return self.commands[self.curCommand][1:]
 		
 		#return everything inside of the ()
-		return self.commands[self.curCommand][1:-1]
+		cmd = self.commands[self.curCommand]
+		return cmd[cmd.index("(")+1:cmd.index(")")]
 	
 	def dest(self):
 		"""Returns the string representation of the dest portion of the C command, such as D or AD"""
@@ -81,5 +84,11 @@ class Parser:
 		if cmd.count(";") > 0:
 			return cmd[cmd.index(";")+1:]
 		return None
+	
+	def reset(self):
+		self.curCommand = -1
 		
+	def printInst(self):
+		for c in self.commands:
+			print c
 		

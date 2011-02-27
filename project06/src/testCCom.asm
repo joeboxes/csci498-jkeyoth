@@ -1,10 +1,10 @@
 	D=1
 D
 A+1
-M&A
+D&M
 A=D+A
 AD=D+A
-D=M-D;JEQ
+	D=M-D;JEQ
 A=M;JLT
 D;JGE
 0;JMP

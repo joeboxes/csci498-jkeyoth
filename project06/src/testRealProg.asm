@@ -1,8 +1,8 @@
 @i
 M=1
-@sum
-M=0
-(LOOP)
+@sum		//c comment!
+M=0		//abcdefghijklmnop
+(LOOP)	//b comment()!
 @i
 D=M
 @100
