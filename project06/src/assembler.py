@@ -37,6 +37,7 @@ try:
 	inFile = open(inPath)
 except:
 	print inPath + ": file not found"
+	exit(1)
 
 inFile.close()
 
@@ -44,6 +45,7 @@ try:
 	outFile = open(outPath, "w")
 except:
 	print outPath + ": file could not be opened"
+	exit(1)
 
 
 #init parser and symbolTable
