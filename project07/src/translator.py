@@ -53,6 +53,9 @@ for f in vmNames:
 #open output file, fail nicely if it fails
 try:
 	outFile = open(outPath, "w")
+	
 except:
 	print outPath + ": file could not be opened"
 	exit(1)
+finally:
+	outFile.close()
