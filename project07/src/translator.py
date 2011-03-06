@@ -4,6 +4,8 @@
 import sys
 import os.path as path
 from os import listdir as lsdir
+from Parser import Parser
+from CodeWriter import CodeWriter
 
 #get path to input file from command line arguments
 if len(sys.argv) < 2:
@@ -59,3 +61,20 @@ except:
 	exit(1)
 finally:
 	outFile.close()
+
+writer = CodeWriter(outPath)
+
+for f in vmNames:
+	writer.setFileName(f)
+	parser = Parser(f)
+	while parser.hasMoreCommands():
+		parser.advance()
+		if parser.commandType() == "C_ARITHMETIC":
+			writer.writeArithmetic(parser.arg1())
+		if parser.commandType() == "C_PUSH":
+			writer.writePushPop("PUSH", parser.arg1(), parser.arg2())
+		if parser.commandType() == "C_POP":
+			writer.writePushPop("POP", parser.arg1(), parser.arg2())
+			
+			
+			
