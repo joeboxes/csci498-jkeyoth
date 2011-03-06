@@ -1,0 +1,198 @@
+//PUSH CONSTANT 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 17
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//EQ
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@EQ_EQUALS
+D;JEQ
+@EQ_NOTEQUALS
+D;JNE
+(EQ_EQUALS)
+@SP
+A=M-1
+M=-1
+@EQ_END
+0;JMP
+(EQ_NOTEQUALS)
+@SP
+A=M-1
+M=0
+@EQ_END
+0;JMP
+(EQ_END)//End EQ
+//PUSH CONSTANT 892
+@892
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 891
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//LT
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@LT_LESS
+D;JLT
+@LT_NOTLESS
+D;JGE
+(LT_LESS)
+@SP
+A=M-1
+M=-1
+@LT_END
+0;JMP
+(LT_NOTLESS)
+@SP
+A=M-1
+M=0
+@LT_END
+0;JMP
+(LT_END)//End LT
+//PUSH CONSTANT 32767
+@32767
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 32766
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//GT
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@GT_GREATER
+D;JGT
+@GT_NOTGREATER
+D;JLE
+(GT_GREATER)
+@SP
+A=M-1
+M=-1
+@GT_END
+0;JMP
+(GT_NOTGREATER)
+@SP
+A=M-1
+M=0
+@GT_END
+0;JMP
+(GT_END)//End GT
+//PUSH CONSTANT 56
+@56
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 31
+@31
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 53
+@53
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+//PUSH CONSTANT 112
+@112
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D//End SUB
+//NEG
+@SP
+A=M-1
+M=-M//End NEG
+//AND
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D&M
+
+//End AND
+//PUSH CONSTANT 82
+@82
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//OR
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D|M//End OR
