@@ -1,4 +1,4 @@
-@${segment}		//POP ${segment} ${index}
+@${segment}
 A=M
 D=A
 @${index}
@@ -10,4 +10,4 @@ AM=M-1
 D=M
 @5
 A=M
-M=D				//End POP ${segment} ${index}
+M=D

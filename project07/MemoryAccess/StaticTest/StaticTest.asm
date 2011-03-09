@@ -1,0 +1,94 @@
+//PUSH CONSTANT 111
+@111
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 333
+@333
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 888
+@888
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP STATIC 8
+@SP
+AM=M-1
+D=M
+@StaticTest.8
+M=D
+//End POP
+//POP STATIC 3
+@SP
+AM=M-1
+D=M
+@StaticTest.3
+M=D
+//End POP
+//POP STATIC 1
+@SP
+AM=M-1
+D=M
+@StaticTest.1
+M=D
+//End POP
+//PUSH STATIC 3
+@StaticTest.3
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATIC 1
+@StaticTest.1
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//PUSH STATIC 8
+@StaticTest.8
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+
+//End ADD
+(WEAREDONE)
+@WEAREDONE
+0;JMP

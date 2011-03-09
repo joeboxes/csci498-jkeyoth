@@ -56,7 +56,7 @@ class CodeWriter:
 	def writePushPop(self, cmd, segment, index):
 		"""Write a push or pop command to the file as assembly. cmd tells whether to push or pop, segment
 		tells which segment of memory to operate on, index is a non negative int that tells the offset to use"""
-		#self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
+		self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
 		
 		#local, argument, this, that = common
 		if self.commonSegments.count(segment) > 0:
@@ -69,6 +69,10 @@ class CodeWriter:
 				template.index = str(5 + index)
 			else:
 				template.index = str(3 + index)
+		elif segment == "STATIC":
+			template = Template(self.pushPopTemplates[cmd + "_STATIC"])
+			template.varName = self.curVmFile + "." + str(index)
+		
 		#constant
 		else:# segment == "CONSTANT":
 			template = Template(self.pushPopTemplates[cmd + "_CONSTANT"])
@@ -78,7 +82,7 @@ class CodeWriter:
 		
 		#print template
 		self.outFile.write(str(template))
-		#self.outFile.write("//End " + cmd + "\n")
+		self.outFile.write("//End " + cmd + "\n")
 		
 	
 	def close(self):
