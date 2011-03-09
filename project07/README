@@ -1,0 +1,9 @@
+VM Translator
+translator.py
+The script lives in the src directory. It is called with a mandatory first argument telling
+it what to translate, and an optional second argument telling it where to put the output.
+Ex:
+	./translator.py ../SomeDir/Main.vm		translate the Main.vm file and put the output into SomeDir/Main.asm
+or, if translator is not executable:
+	python translator /home/name/Woot ../Woot.asm	translate all .vm files in Woot/ and put the output in ../Woot.asm
+
