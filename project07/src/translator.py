@@ -67,7 +67,7 @@ writer = CodeWriter(outPath)
 
 for f in vmNames:
 	fn = path.basename(f)
-	print fn
+	print "Working on:",fn
 	writer.setFileName(fn)
 	parser = Parser(f)
 	while parser.hasMoreCommands():
