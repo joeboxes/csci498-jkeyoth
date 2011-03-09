@@ -43,7 +43,6 @@ else:
 
 #open the input file. fail nicely if open fails
 for f in vmNames:
-	print f
 	try:
 		inFile = open(f)
 	except:
@@ -62,6 +61,8 @@ except:
 finally:
 	outFile.close()
 
+
+
 writer = CodeWriter(outPath)
 
 for f in vmNames:
@@ -76,5 +77,6 @@ for f in vmNames:
 		if parser.commandType() == "C_POP":
 			writer.writePushPop("POP", parser.arg1(), parser.arg2())
 			
-			
+writer.close()
+print inPath,"=>",outPath
 			

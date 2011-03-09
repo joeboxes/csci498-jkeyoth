@@ -1,0 +1,119 @@
+@3030
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+AM=M-1
+D=M
+@3
+M=D
+@3040
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+AM=M-1
+D=M
+@4
+M=D
+@32
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS		//POP THIS 2
+A=M
+D=A
+@2
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP THIS 2
+@46
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT		//POP THAT 6
+A=M
+D=A
+@6
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP THAT 6
+@3
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@4
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+@THIS		//PUSH THIS 2
+D=M
+@2
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH THIS 2
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D//End SUB
+@THAT		//PUSH THAT 6
+D=M
+@6
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH THAT 6
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+(WEAREDONE)
+@WEAREDONE
+0;JMP

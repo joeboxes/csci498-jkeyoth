@@ -1,0 +1,222 @@
+@10
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@LCL		//POP LCL 0
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP LCL 0
+@21
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@22
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@ARG		//POP ARG 2
+A=M
+D=A
+@2
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP ARG 2
+@ARG		//POP ARG 1
+A=M
+D=A
+@1
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP ARG 1
+@36
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS		//POP THIS 6
+A=M
+D=A
+@6
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP THIS 6
+@42
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@45
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT		//POP THAT 5
+A=M
+D=A
+@5
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP THAT 5
+@THAT		//POP THAT 2
+A=M
+D=A
+@2
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D				//End POP THAT 2
+@510
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+AM=M-1
+D=M
+@11
+M=D
+@LCL		//PUSH LCL 0
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH LCL 0
+@THAT		//PUSH THAT 5
+D=M
+@5
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH THAT 5
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+@ARG		//PUSH ARG 1
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH ARG 1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D//End SUB
+@THIS		//PUSH THIS 6
+D=M
+@6
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH THIS 6
+@THIS		//PUSH THIS 6
+D=M
+@6
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1			//End PUSH THIS 6
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D//End SUB
+@11
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M//End ADD
+(WEAREDONE)
+@WEAREDONE
+0;JMP

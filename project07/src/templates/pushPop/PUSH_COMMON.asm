@@ -1,12 +1,10 @@
-@${segment}
+@${segment}		//PUSH ${segment} ${index}
 D=M
 @${index}
-D=D+A
-A=D
+A=D+A
 D=M
 @SP
 A=M
 M=D
 @SP
-M=M+1
-
+M=M+1			//End PUSH ${segment} ${index}

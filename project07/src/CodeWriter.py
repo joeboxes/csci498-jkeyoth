@@ -7,15 +7,19 @@ class CodeWriter:
 	
 	arithmeticTempNames = ["ADD", "SUB", "NEG", "EQ", "GT", "LT", "AND", "OR", "NOT"]
 	
-	pushPopTempNames = ["POP_COMMON", "POP_CONSTANT", "POP_STATIC", "POP_POINTER", "PUSH_COMMON", \
-					"PUSH_CONSTANT", "PUSH_STATIC", "PUSH_POINTER"]
+	pushPopTempNames = ["POP_COMMON", "POP_CONSTANT", "POP_STATIC", "POP_DIRECT", "PUSH_COMMON", \
+					"PUSH_CONSTANT", "PUSH_STATIC", "PUSH_DIRECT"]
 	
-	pushPopCommonSegs = ["LOCAL", "ARGUMENT", "THIS", "THAT"]
+	commonSegments = ["LOCAL", "ARGUMENT", "THIS", "THAT"]
+	
+	segmentTranslation = {"LOCAL" : "LCL", "ARGUMENT" : "ARG", "THIS" : "THIS", "THAT" : "THAT"}
 	
 	def __init__(self, outName):
 		self.outFile = open(outName, "w")
 		self.loadArithTemplates()
 		self.loadPushPopTemplates()
+		
+		self.labelCounter = 0
 	
 	def loadArithTemplates(self):
 		"""load the template file for each arithmetic command"""
@@ -43,28 +47,41 @@ class CodeWriter:
 	def writeArithmetic(self, cmd):
 		"""Write cmd out to the file as assembly. cmd should be a string containing a arithetic vm command"""
 		self.outFile.write("//" + cmd + "\n")
-		self.outFile.write(self.arithmeticTemplates[cmd])
+		template = Template(self.arithmeticTemplates[cmd])
+		template.num = str(self.labelCounter)
+		self.outFile.write(str(template))
 		self.outFile.write("//End " + cmd + "\n")
+		self.labelCounter += 1
 	
 	def writePushPop(self, cmd, segment, index):
 		"""Write a push or pop command to the file as assembly. cmd tells whether to push or pop, segment
 		tells which segment of memory to operate on, index is a non negative int that tells the offset to use"""
-		self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
+		#self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
 		
-		#local, argument, this, that
-		#TODO: these
-		
+		#local, argument, this, that = common
+		if self.commonSegments.count(segment) > 0:
+			template = Template(self.pushPopTemplates[cmd + "_COMMON"])
+			template.index = str(index)
+			template.segment = self.segmentTranslation[segment]
+		elif segment == "TEMP" or segment == "POINTER":
+			template = Template(self.pushPopTemplates[cmd + "_DIRECT"])
+			if segment == "TEMP":
+				template.index = str(5 + index)
+			else:
+				template.index = str(3 + index)
 		#constant
-		if segment == "CONSTANT":
-			if cmd == "PUSH":
-				template = Template(self.pushPopTemplates["PUSH_CONSTANT"])
+		else:# segment == "CONSTANT":
+			template = Template(self.pushPopTemplates[cmd + "_CONSTANT"])
 			template.const = str(index)
 		
 		
+		
+		#print template
 		self.outFile.write(str(template))
-		self.outFile.write("//End " + cmd + "\n")
+		#self.outFile.write("//End " + cmd + "\n")
 		
 	
 	def close(self):
 		"""Close the output file"""
+		self.outFile.write("(WEAREDONE)\n@WEAREDONE\n0;JMP\n")
 		self.outFile.close()

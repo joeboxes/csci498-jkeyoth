@@ -1,13 +1,13 @@
+@${segment}		//POP ${segment} ${index}
+A=M
+D=A
+@${index}
+D=D+A
+@5
+M=D
 @SP
 AM=M-1
 D=M
 @5
-M=D
-@${segment}
-D=M
-@${index}
-D=D+A
-@5
 A=M
-M=D
-
+M=D				//End POP ${segment} ${index}
