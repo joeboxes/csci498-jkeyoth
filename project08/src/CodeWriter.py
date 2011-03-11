@@ -18,6 +18,7 @@ class CodeWriter:
 		self.outFile = open(outName, "w")
 		self.loadArithTemplates()
 		self.loadPushPopTemplates()
+		self.loadFlowTemplates()
 		self.functName = "main"
 		self.labelCounter = 0
 	
@@ -53,7 +54,7 @@ class CodeWriter:
 		for c in tmpFile:
 			self.gotoTemplate += c
 		tmpFile.close()
-		tmpFile = open("templates/IFGOTO.asm")
+		tmpFile = open("templates/IF-GOTO.asm")
 		self.ifgotoTemplate = ""
 		for c in tmpFile:
 			self.ifgotoTemplate += c
@@ -103,7 +104,7 @@ class CodeWriter:
 		
 	def writeLabel(self, labelName):
 		"""write a label"""
-		self.outFile.write("(" + self.functName + "." + labelName + ")\n")
+		self.outFile.write("(" + self.functName + "$" + labelName + ")\n")
 	
 	def writeGoto(self, cmd, labelName):
 		"""write a goto statement that jumps to labelName"""
