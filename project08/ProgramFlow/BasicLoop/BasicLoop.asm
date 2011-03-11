@@ -128,7 +128,7 @@ M=M+1
 //End PUSH
 //IF-GOTO LOOP_START
 @SP
-A=M-1
+AM=M-1
 D=M
 @main$LOOP_START
 D;JNE

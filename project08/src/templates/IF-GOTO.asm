@@ -1,5 +1,5 @@
 @SP
-A=M-1
+AM=M-1
 D=M
 @${labelName}
 D;JNE
