@@ -64,7 +64,9 @@ class CodeWriter:
 		"""Set the name of the current vm file being read from. Used for static variable names"""
 		self.curVmFile = path.splitext(fName)[0]
 	
-		
+	def writeBootStrap(self, ):
+		"""Write the startup code"""
+	
 	
 	def writeArithmetic(self, cmd):
 		"""Write cmd out to the file as assembly. cmd should be a string containing a arithetic vm command"""
@@ -118,7 +120,12 @@ class CodeWriter:
 		self.outFile.write(str(template))
 		self.outFile.write("//End GOTO\n")
 	
-	
+	def writeFunct(self, fName, numArgs):
+		"""write a function"""
+		self.functName = fName
+		
+		
+		self.functName = "main"
 
 	
 	def close(self):

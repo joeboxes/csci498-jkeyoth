@@ -82,6 +82,8 @@ for f in vmNames:
 			writer.writeLabel(parser.arg1())
 		elif parser.commandType() == "C_GOTO" or parser.commandType() == "C_IF-GOTO":
 			writer.writeGoto(parser.commandType()[2:], parser.arg1())
+		elif parser.commandType() == "C_FUNCTION":
+			writer.writeFunct(parser.arg1(), parser.arg2())
 		else:
 			print "Command not supported:",parser.commandType()
 			
