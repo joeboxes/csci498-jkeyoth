@@ -1,4 +1,4 @@
-@SP
+@SP//EQ
 AM=M-1
 D=M
 A=A-1
@@ -20,4 +20,3 @@ M=0
 @EQ_END${num}
 0;JMP
 (EQ_END${num})
-

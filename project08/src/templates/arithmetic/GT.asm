@@ -1,4 +1,4 @@
-@SP
+@SP//GT
 AM=M-1
 D=M
 A=A-1
@@ -20,4 +20,3 @@ M=0
 @GT_END${num}
 0;JMP
 (GT_END${num})
-

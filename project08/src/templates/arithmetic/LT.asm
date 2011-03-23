@@ -1,4 +1,4 @@
-@SP
+@SP//LT
 AM=M-1
 D=M
 A=A-1
@@ -20,4 +20,3 @@ M=0
 @LT_END${num}
 0;JMP
 (LT_END${num})
-

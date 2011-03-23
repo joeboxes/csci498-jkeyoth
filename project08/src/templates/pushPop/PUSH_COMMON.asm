@@ -1,4 +1,4 @@
-@${segment}
+@${segment}//PUSH_COMMON
 D=M
 @${index}
 A=D+A

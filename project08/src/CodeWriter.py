@@ -72,29 +72,31 @@ class CodeWriter:
 	
 	def writeArithmetic(self, cmd):
 		"""Write cmd out to the file as assembly. cmd should be a string containing a arithetic vm command"""
-		self.outFile.write("//" + cmd + "\n")
+		#self.outFile.write("//" + cmd + "\n")
 		template = Template(self.arithmeticTemplates[cmd])
 		template.num = str(self.labelCounter)
 		self.outFile.write(str(template))
-		self.outFile.write("//End " + cmd + "\n")
+		#self.outFile.write("//End " + cmd + "\n")
 		self.labelCounter += 1
 	
 	def writePushPop(self, cmd, segment, index):
 		"""Write a push or pop command to the file as assembly. cmd tells whether to push or pop, segment
 		tells which segment of memory to operate on, index is a non negative int that tells the offset to use"""
-		self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
+		#self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
 		
 		#local, argument, this, that = common
 		if self.commonSegments.count(segment) > 0:
 			template = Template(self.pushPopTemplates[cmd + "_COMMON"])
 			template.index = str(index)
 			template.segment = self.segmentTranslation[segment]
-		elif segment == "TEMP" or segment == "POINTER":
+		elif segment == "TEMP" or segment == "POINTER" or segment == "STATE":
 			template = Template(self.pushPopTemplates[cmd + "_DIRECT"])
 			if segment == "TEMP":
 				template.index = str(5 + index)
-			else:
+			elif segment == "POINTER":
 				template.index = str(3 + index)
+			else:
+				template.index = str(index)
 		elif segment == "STATIC":
 			template = Template(self.pushPopTemplates[cmd + "_STATIC"])
 			template.varName = self.curVmFile + "." + str(index)
@@ -104,7 +106,7 @@ class CodeWriter:
 			template.const = str(index)
 		#print template
 		self.outFile.write(str(template))
-		self.outFile.write("//End " + cmd + "\n")
+		#self.outFile.write("//End " + cmd + "\n")
 		
 	def writeLabel(self, labelName):
 		"""write a label"""
@@ -118,51 +120,90 @@ class CodeWriter:
 		else:
 			template = Template(self.ifgotoTemplate)
 		template.labelName = self.functName + "$" + labelName
-		self.outFile.write("//" + cmd + " " + labelName + "\n")
+		#self.outFile.write("//" + cmd + " " + labelName + "\n")
 		self.outFile.write(str(template))
-		self.outFile.write("//End GOTO\n")
+		#self.outFile.write("//End GOTO\n")
 	
 	def writeFunct(self, fName, numVars):
 		"""write a function"""
 		self.functName = fName
-		self.outFile.write("//Function " + fName + "\n")
+		#self.outFile.write("//Function " + fName + "\n")
 		self.outFile.write("(" + fName + ")\n")
 		for i in xrange(numVars):
 			self.writePushPop("PUSH", "CONSTANT", 0)
-		
-		
-	def restoreState(self, reg, off):
-		self.writePushPop("PUSH", "CONSTANT", 6)
-		self.writePushPop("PUSH", "CONSTANT", 1)
-		
 	
 	def writeReturn(self):
 		"""write the return from function code."""
 		
+		a=1
+		b=2
+		c=3
+		self.outFile.write("//RETURNING\n")
 		#frame = temp 0 = LCL
-		self.writePushPop("PUSH", "CONSTANT", "LCL")
-		self.writePushPop("POP", "TEMP", 0)
+		self.writePushPop("PUSH", "STATE", "LCL")
+		self.writePushPop("POP", "TEMP", a)
 		#ret = FRAME-5
-		self.writePushPop("PUSH", "TEMP", 0)
+		self.writePushPop("PUSH", "TEMP", a)
 		self.writePushPop("PUSH", "CONSTANT", 5)
 		self.writeArithmetic("SUB")
-		getRetAddr = """
-			@SP\n
-			AM=M-1\n
-			D=M\n
-			@6\n
-			M=D\n
-			"""
-		self.outFile.write(getRetAddr)
+		self.writePushPop("POP", "TEMP", b)
 		#put return value into arg
 		self.writePushPop("POP", "ARGUMENT", 0)
-		#retore state
-		self.writePushPop("PUSH", "CONSTANT", "ARG")
+		#restore state
+		#SP=ARG+1
+		self.writePushPop("PUSH", "STATE", "ARG")
 		self.writePushPop("PUSH", "CONSTANT", 1)
 		self.writeArithmetic("ADD")
-		self.writePushPop("POP", "CONSTANT", "SP")
+		self.writePushPop("POP", "STATE", "SP")
+		#THAT
+		self.writePushPop("PUSH", "TEMP", a)
+		self.writePushPop("PUSH", "CONSTANT", 1)
+		self.writeArithmetic("SUB")
+		self.writePushPop("POP", "TEMP", c)
+		self.outFile.write("""@"""+str(c+5)+"""
+D=M
+@4
+M=D
+""")
 		
+		#THIS
+		self.writePushPop("PUSH", "TEMP", a)
+		self.writePushPop("PUSH", "CONSTANT", 2)
+		self.writeArithmetic("SUB")
+		self.writePushPop("POP", "TEMP", c)
+		self.outFile.write("""@"""+str(c+5)+"""
+D=M
+@3
+M=D
+""")
 		
+		#ARG
+		self.writePushPop("PUSH", "TEMP", a)
+		self.writePushPop("PUSH", "CONSTANT", 3)
+		self.writeArithmetic("SUB")
+		self.writePushPop("POP", "TEMP", c)
+		self.outFile.write("""@"""+str(c+5)+"""
+D=M
+@2
+M=D
+""")
+		
+		#LCL
+		self.writePushPop("PUSH", "TEMP", a)
+		self.writePushPop("PUSH", "CONSTANT", 4)
+		self.writeArithmetic("SUB")
+		self.writePushPop("POP", "TEMP", c)
+		self.outFile.write("""@"""+str(c+5)+"""
+D=M
+@1
+M=D
+""")
+		
+		#goto RET
+		self.outFile.write("""@"""+str(b+5)+"""
+A=M
+0;JMP
+""")
 		
 	
 	def writeCall(self, fName, numArgs):
@@ -171,26 +212,26 @@ class CodeWriter:
 		retAddr = self.functName + "RetAddr" + str(self.labelCounter)
 		self.labelCounter += 1
 		
-		self.outFile.write("//Call " + fName + " " + str(numArgs))
+		#self.outFile.write("//Call " + fName + " " + str(numArgs))
 		
 		#save state
-		self.writePushPop("PUSH", "CONSTANT", retAddr)
-		self.writePushPop("PUSH", "CONSTANT", "LCL")#yay weak typing
-		self.writePushPop("PUSH", "CONSTANT", "ARG")
-		self.writePushPop("PUSH", "CONSTANT", "THIS")
-		self.writePushPop("PUSH", "CONSTANT", "THAT")
+		self.writePushPop("PUSH", "STATE", retAddr)
+		self.writePushPop("PUSH", "STATE", "LCL")#yay weak typing
+		self.writePushPop("PUSH", "STATE", "ARG")
+		self.writePushPop("PUSH", "STATE", "THIS")
+		self.writePushPop("PUSH", "STATE", "THAT")
 		#set ARG
-		self.writePushPop("PUSH", "CONSTANT", "SP")
+		self.writePushPop("PUSH", "STATE", "SP")
 		self.writePushPop("PUSH", "CONSTANT", numArgs + 5)
 		self.writeArithmetic("SUB")
-		self.writePushPop("POP", "CONSTANT", "ARG")
+		self.writePushPop("POP", "STATE", "ARG")
 		#set LCL to SP
-		self.writePushPop("PUSH", "CONSTANT", "SP")
-		self.writePushPop("POP", "CONSTANT", "LCL")
+		self.writePushPop("PUSH", "STATE", "SP")
+		self.writePushPop("POP", "STATE", "LCL")
 		self.writeGoto("GOTO", fName)
 		self.outFile.write("(" + retAddr + ")\n")
 		
 	def close(self):
 		"""Close the output file"""
-		self.outFile.write("(WEAREDONE)\n@WEAREDONE\n0;JMP\n")
+		#self.outFile.write("(WEAREDONE)\n@WEAREDONE\n0;JMP\n")
 		self.outFile.close()

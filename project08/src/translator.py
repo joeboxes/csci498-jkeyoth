@@ -16,7 +16,7 @@ inPath = sys.argv[1]
 vmNames = []
 
 if path.isdir(inPath):
-	fileName = inPath
+	fileName = inPath + "/" + path.basename(inPath)
 	
 	for f in lsdir(inPath):
 		if path.splitext(f)[1] == ".vm":
@@ -84,6 +84,10 @@ for f in vmNames:
 			writer.writeGoto(parser.commandType()[2:], parser.arg1())
 		elif parser.commandType() == "C_FUNCTION":
 			writer.writeFunct(parser.arg1(), parser.arg2())
+		elif parser.commandType() == "C_CALL":
+			writer.writeCall(parser.arg1(), parser.arg2())
+		elif parser.commandType() == "C_RETURN":
+			writer.writeReturn()
 		else:
 			print "Command not supported:",parser.commandType()
 			

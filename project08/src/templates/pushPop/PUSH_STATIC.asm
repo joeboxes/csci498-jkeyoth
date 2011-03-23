@@ -1,4 +1,4 @@
-@${varName}
+@${varName}//PUSH_STATIC
 D=M
 @SP
 A=M

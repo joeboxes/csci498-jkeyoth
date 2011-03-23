@@ -1,4 +1,4 @@
-@${index}
+@${index}//PUSH_DIRECT
 D=M
 @SP
 A=M

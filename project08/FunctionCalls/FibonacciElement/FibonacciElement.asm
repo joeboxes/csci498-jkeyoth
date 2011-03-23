@@ -1,0 +1,927 @@
+//Function SYS.INIT
+(SYS.INIT)
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//Call MAIN.FIBONACCI 1//PUSH STATE SYS.INITRetAddr0
+@SYS.INITRetAddr0
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 6
+@6
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//End POP
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+//End POP
+//GOTO MAIN.FIBONACCI
+@SYS.INIT$MAIN.FIBONACCI
+0;JMP
+//End GOTO
+(SYS.INITRetAddr0)
+(SYS.INIT$WHILE)
+//GOTO WHILE
+@SYS.INIT$WHILE
+0;JMP
+//End GOTO
+//Function MAIN.FIBONACCI
+(MAIN.FIBONACCI)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//LT
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@LT_LESS2
+D;JLT
+@LT_NOTLESS2
+D;JGE
+(LT_LESS2)
+@SP
+A=M-1
+M=-1
+@LT_END2
+0;JMP
+(LT_NOTLESS2)
+@SP
+A=M-1
+M=0
+@LT_END2
+0;JMP
+(LT_END2)
+
+//End LT
+//IF-GOTO IF_TRUE
+@SP
+AM=M-1
+D=M
+@MAIN.FIBONACCI$IF_TRUE
+D;JNE
+//End GOTO
+//GOTO IF_FALSE
+@MAIN.FIBONACCI$IF_FALSE
+0;JMP
+//End GOTO
+(MAIN.FIBONACCI$IF_TRUE)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP TEMP 0
+@SP
+AM=M-1
+D=M
+@5
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//End POP
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//End POP
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+
+//End ADD
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE THAT
+@SP
+AM=M-1
+D=M
+@THAT
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE THIS
+@SP
+AM=M-1
+D=M
+@THIS
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+//End POP
+
+		@6
+
+		A=M
+
+		0;JMP
+
+		(MAIN.FIBONACCI$IF_FALSE)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//Call MAIN.FIBONACCI 1//PUSH STATE MAIN.FIBONACCIRetAddr10
+@MAIN.FIBONACCIRetAddr10
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 6
+@6
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//End POP
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+//End POP
+//GOTO MAIN.FIBONACCI
+@MAIN.FIBONACCI$MAIN.FIBONACCI
+0;JMP
+//End GOTO
+(MAIN.FIBONACCIRetAddr10)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//Call MAIN.FIBONACCI 1//PUSH STATE MAIN.FIBONACCIRetAddr13
+@MAIN.FIBONACCIRetAddr13
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 6
+@6
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//End POP
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+//End POP
+//GOTO MAIN.FIBONACCI
+@MAIN.FIBONACCI$MAIN.FIBONACCI
+0;JMP
+//End GOTO
+(MAIN.FIBONACCIRetAddr13)
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+
+//End ADD
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//POP TEMP 0
+@SP
+AM=M-1
+D=M
+@5
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//End POP
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//End POP
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+
+//End ADD
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE THAT
+@SP
+AM=M-1
+D=M
+@THAT
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE THIS
+@SP
+AM=M-1
+D=M
+@THIS
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//End POP
+//PUSH TEMP 0
+@5
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//End PUSH
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+//End SUB
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+//End POP
+
+		@6
+
+		A=M
+
+		0;JMP
+
+		(WEAREDONE)
+@WEAREDONE
+0;JMP

@@ -1,4 +1,4 @@
-@${const}
+@${const}//PUSH_CONST
 D=A
 @SP
 A=M
