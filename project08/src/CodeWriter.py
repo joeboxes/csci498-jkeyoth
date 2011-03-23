@@ -12,6 +12,8 @@ class CodeWriter:
 	
 	commonSegments = ["LOCAL", "ARGUMENT", "THIS", "THAT"]
 	
+	
+	
 	segmentTranslation = {"LOCAL" : "LCL", "ARGUMENT" : "ARG", "THIS" : "THIS", "THAT" : "THAT"}
 	
 	def __init__(self, outName):
@@ -64,9 +66,9 @@ class CodeWriter:
 		"""Set the name of the current vm file being read from. Used for static variable names"""
 		self.curVmFile = path.splitext(fName)[0]
 	
-	def writeBootStrap(self, ):
+	def writeBootStrap(self,):
 		"""Write the startup code"""
-	
+		
 	
 	def writeArithmetic(self, cmd):
 		"""Write cmd out to the file as assembly. cmd should be a string containing a arithetic vm command"""
@@ -120,14 +122,74 @@ class CodeWriter:
 		self.outFile.write(str(template))
 		self.outFile.write("//End GOTO\n")
 	
-	def writeFunct(self, fName, numArgs):
+	def writeFunct(self, fName, numVars):
 		"""write a function"""
 		self.functName = fName
+		self.outFile.write("//Function " + fName + "\n")
+		self.outFile.write("(" + fName + ")\n")
+		for i in xrange(numVars):
+			self.writePushPop("PUSH", "CONSTANT", 0)
 		
 		
-		self.functName = "main"
-
+	def restoreState(self, reg, off):
+		self.writePushPop("PUSH", "CONSTANT", 6)
+		self.writePushPop("PUSH", "CONSTANT", 1)
+		
 	
+	def writeReturn(self):
+		"""write the return from function code."""
+		
+		#frame = temp 0 = LCL
+		self.writePushPop("PUSH", "CONSTANT", "LCL")
+		self.writePushPop("POP", "TEMP", 0)
+		#ret = FRAME-5
+		self.writePushPop("PUSH", "TEMP", 0)
+		self.writePushPop("PUSH", "CONSTANT", 5)
+		self.writeArithmetic("SUB")
+		getRetAddr = """
+			@SP\n
+			AM=M-1\n
+			D=M\n
+			@6\n
+			M=D\n
+			"""
+		self.outFile.write(getRetAddr)
+		#put return value into arg
+		self.writePushPop("POP", "ARGUMENT", 0)
+		#retore state
+		self.writePushPop("PUSH", "CONSTANT", "ARG")
+		self.writePushPop("PUSH", "CONSTANT", 1)
+		self.writeArithmetic("ADD")
+		self.writePushPop("POP", "CONSTANT", "SP")
+		
+		
+		
+	
+	def writeCall(self, fName, numArgs):
+		"""write the code to call fName function. numArgs is the nubmer of arguments pushed"""
+		
+		retAddr = self.functName + "RetAddr" + str(self.labelCounter)
+		self.labelCounter += 1
+		
+		self.outFile.write("//Call " + fName + " " + str(numArgs))
+		
+		#save state
+		self.writePushPop("PUSH", "CONSTANT", retAddr)
+		self.writePushPop("PUSH", "CONSTANT", "LCL")#yay weak typing
+		self.writePushPop("PUSH", "CONSTANT", "ARG")
+		self.writePushPop("PUSH", "CONSTANT", "THIS")
+		self.writePushPop("PUSH", "CONSTANT", "THAT")
+		#set ARG
+		self.writePushPop("PUSH", "CONSTANT", "SP")
+		self.writePushPop("PUSH", "CONSTANT", numArgs + 5)
+		self.writeArithmetic("SUB")
+		self.writePushPop("POP", "CONSTANT", "ARG")
+		#set LCL to SP
+		self.writePushPop("PUSH", "CONSTANT", "SP")
+		self.writePushPop("POP", "CONSTANT", "LCL")
+		self.writeGoto("GOTO", fName)
+		self.outFile.write("(" + retAddr + ")\n")
+		
 	def close(self):
 		"""Close the output file"""
 		self.outFile.write("(WEAREDONE)\n@WEAREDONE\n0;JMP\n")
