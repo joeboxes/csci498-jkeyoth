@@ -18,6 +18,7 @@ class CodeWriter:
 	
 	def __init__(self, outName):
 		self.outFile = open(outName, "w")
+		self.writeBootStrap()
 		self.loadArithTemplates()
 		self.loadPushPopTemplates()
 		self.loadFlowTemplates()
@@ -68,6 +69,10 @@ class CodeWriter:
 	
 	def writeBootStrap(self,):
 		"""Write the startup code"""
+		tmpFile = open("templates/BOOTSTRAP.asm")
+		for c in tmpFile:
+			self.outFile.write(c)
+		tmpFile.close()
 		
 	
 	def writeArithmetic(self, cmd):
@@ -205,6 +210,7 @@ M=D
 		
 		#goto RET
 		self.outFile.write("""@"""+str(b+5)+"""
+A=M
 A=M
 0;JMP
 """)
