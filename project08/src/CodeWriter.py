@@ -161,8 +161,9 @@ class CodeWriter:
 		self.writeArithmetic("SUB")
 		self.writePushPop("POP", "TEMP", c)
 		self.outFile.write("""@"""+str(c+5)+"""
+A=M
 D=M
-@4
+@THAT
 M=D
 """)
 		
@@ -172,8 +173,9 @@ M=D
 		self.writeArithmetic("SUB")
 		self.writePushPop("POP", "TEMP", c)
 		self.outFile.write("""@"""+str(c+5)+"""
+A=M
 D=M
-@3
+@THIS
 M=D
 """)
 		
@@ -183,8 +185,9 @@ M=D
 		self.writeArithmetic("SUB")
 		self.writePushPop("POP", "TEMP", c)
 		self.outFile.write("""@"""+str(c+5)+"""
+A=M
 D=M
-@2
+@ARG
 M=D
 """)
 		
@@ -194,8 +197,9 @@ M=D
 		self.writeArithmetic("SUB")
 		self.writePushPop("POP", "TEMP", c)
 		self.outFile.write("""@"""+str(c+5)+"""
+A=M
 D=M
-@1
+@LCL
 M=D
 """)
 		

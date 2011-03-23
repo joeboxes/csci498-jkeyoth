@@ -170,8 +170,9 @@ D=M
 @8
 M=D
 @8
+A=M
 D=M
-@4
+@THAT
 M=D
 @6//PUSH_DIRECT
 D=M
@@ -198,8 +199,9 @@ D=M
 @8
 M=D
 @8
+A=M
 D=M
-@3
+@THIS
 M=D
 @6//PUSH_DIRECT
 D=M
@@ -226,8 +228,9 @@ D=M
 @8
 M=D
 @8
+A=M
 D=M
-@2
+@ARG
 M=D
 @6//PUSH_DIRECT
 D=M
@@ -254,8 +257,9 @@ D=M
 @8
 M=D
 @8
+A=M
 D=M
-@1
+@LCL
 M=D
 @7
 A=M
