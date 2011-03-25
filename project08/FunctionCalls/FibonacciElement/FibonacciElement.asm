@@ -2,6 +2,10 @@
 D=A
 @SP
 M=D
+@5
+D=A
+@SP
+M=M+D
 @SYS.INIT
 0;JMP
 //end of bootstrap
@@ -156,12 +160,6 @@ AM=M-1
 D=M
 A=A-1
 M=D+M
-//POP STATE SP
-@SP
-AM=M-1
-D=M
-@SP
-M=D
 //PUSH TEMP 1
 @6
 D=M
@@ -293,6 +291,12 @@ M=D
 A=M
 D=M
 @LCL
+M=D
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
 M=D
 @7
 A=M
@@ -609,12 +613,6 @@ AM=M-1
 D=M
 A=A-1
 M=D+M
-//POP STATE SP
-@SP
-AM=M-1
-D=M
-@SP
-M=D
 //PUSH TEMP 1
 @6
 D=M
@@ -746,6 +744,12 @@ M=D
 A=M
 D=M
 @LCL
+M=D
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
 M=D
 @7
 A=M

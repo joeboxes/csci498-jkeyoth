@@ -135,12 +135,12 @@ class CodeWriter:
 		self.functName = fName
 		self.outFile.write("//Function " + fName + "\n")
 		self.outFile.write("(" + fName + ")\n")
-		for i in xrange(numVars):
+		for i in xrange(numVars-1):
 			self.writePushPop("PUSH", "CONSTANT", 0)
 	
 	def writeReturn(self):
 		"""write the return from function code."""
-		
+		"""The problem is that when I set SP=ARG+1, then push and pop things, the values in the stored states are getting overwritten!"""
 		a=1
 		b=2
 		c=3
@@ -168,7 +168,10 @@ M=D
 		self.writePushPop("PUSH", "STATE", "ARG")
 		self.writePushPop("PUSH", "CONSTANT", 1)
 		self.writeArithmetic("ADD")
-		self.writePushPop("POP", "STATE", "SP")
+		
+		
+		
+		
 		#THAT
 		self.writePushPop("PUSH", "TEMP", a)
 		self.writePushPop("PUSH", "CONSTANT", 1)
@@ -216,6 +219,8 @@ D=M
 @LCL
 M=D
 """)
+		
+		self.writePushPop("POP", "STATE", "SP")
 		
 		#goto RET
 		self.outFile.write("""@"""+str(b+5)+"""

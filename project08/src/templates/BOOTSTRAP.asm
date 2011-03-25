@@ -2,5 +2,9 @@
 D=A
 @SP
 M=D
+@5
+D=A
+@SP
+M=M+D
 @SYS.INIT
 0;JMP
