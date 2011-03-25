@@ -1,4 +1,4 @@
-@${segment}//POP_COM
+@${segment}
 A=M
 D=A
 @${index}

@@ -1,2 +1,2 @@
-@${labelName}//GOTO
+@${labelName}
 0;JMP

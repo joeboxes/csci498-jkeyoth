@@ -108,6 +108,12 @@ AM=M-1
 D=M
 @7
 M=D
+ 
+@7
+A=M
+D=M
+@7
+M=D
 @ARG//POP_COM
 A=M
 D=A

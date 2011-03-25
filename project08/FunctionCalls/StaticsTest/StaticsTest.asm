@@ -1,0 +1,1438 @@
+@256
+D=A
+@SP
+M=D
+@SYS.INIT
+0;JMP
+//end of bootstrap
+
+//Function CLASS2.SET
+(CLASS2.SET)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATIC 0
+@SP
+AM=M-1
+D=M
+@Class2.0
+M=D
+//PUSH ARGUMENT 1
+@ARG
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATIC 1
+@SP
+AM=M-1
+D=M
+@Class2.1
+M=D
+//PUSH CONSTANT 0
+@0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//RETURNING
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 2
+@SP
+AM=M-1
+D=M
+@7
+M=D
+ 
+@7
+A=M
+D=M
+@7
+M=D
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THAT
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THIS
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@ARG
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@LCL
+M=D
+@7
+A=M
+0;JMP
+//Function CLASS2.GET
+(CLASS2.GET)
+//PUSH STATIC 0
+@Class2.0
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATIC 1
+@Class2.1
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//RETURNING
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 2
+@SP
+AM=M-1
+D=M
+@7
+M=D
+ 
+@7
+A=M
+D=M
+@7
+M=D
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THAT
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THIS
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@ARG
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@LCL
+M=D
+@7
+A=M
+0;JMP
+//Function CLASS1.SET
+(CLASS1.SET)
+//PUSH ARGUMENT 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATIC 0
+@SP
+AM=M-1
+D=M
+@Class1.0
+M=D
+//PUSH ARGUMENT 1
+@ARG
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATIC 1
+@SP
+AM=M-1
+D=M
+@Class1.1
+M=D
+//PUSH CONSTANT 0
+@0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//RETURNING
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 2
+@SP
+AM=M-1
+D=M
+@7
+M=D
+ 
+@7
+A=M
+D=M
+@7
+M=D
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THAT
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THIS
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@ARG
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@LCL
+M=D
+@7
+A=M
+0;JMP
+//Function CLASS1.GET
+(CLASS1.GET)
+//PUSH STATIC 0
+@Class1.0
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATIC 1
+@Class1.1
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//RETURNING
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP TEMP 1
+@SP
+AM=M-1
+D=M
+@6
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 2
+@SP
+AM=M-1
+D=M
+@7
+M=D
+ 
+@7
+A=M
+D=M
+@7
+M=D
+//POP ARGUMENT 0
+@ARG
+A=M
+D=A
+@0
+D=D+A
+@5
+M=D
+@SP
+AM=M-1
+D=M
+@5
+A=M
+M=D
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//ADD
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D+M
+//POP STATE SP
+@SP
+AM=M-1
+D=M
+@SP
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THAT
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 2
+@2
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@THIS
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 3
+@3
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@ARG
+M=D
+//PUSH TEMP 1
+@6
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 4
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP TEMP 3
+@SP
+AM=M-1
+D=M
+@8
+M=D
+@8
+A=M
+D=M
+@LCL
+M=D
+@7
+A=M
+0;JMP
+//Function SYS.INIT
+(SYS.INIT)
+//PUSH CONSTANT 6
+@6
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 8
+@8
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//Call CLASS1.SET 2
+@SYS.INITRetAddr26
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 7
+@7
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+@CLASS1.SET//call goto
+0;JMP
+(SYS.INITRetAddr26)
+//POP TEMP 0
+@SP
+AM=M-1
+D=M
+@5
+M=D
+//PUSH CONSTANT 23
+@23
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 15
+@15
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//Call CLASS2.SET 2
+@SYS.INITRetAddr28
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 7
+@7
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+@CLASS2.SET//call goto
+0;JMP
+(SYS.INITRetAddr28)
+//POP TEMP 0
+@SP
+AM=M-1
+D=M
+@5
+M=D
+//Call CLASS1.GET 0
+@SYS.INITRetAddr30
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+@CLASS1.GET//call goto
+0;JMP
+(SYS.INITRetAddr30)
+//Call CLASS2.GET 0
+@SYS.INITRetAddr32
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE LCL
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE ARG
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THIS
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE THAT
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//PUSH CONSTANT 5
+@5
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//SUB
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+//POP STATE ARG
+@SP
+AM=M-1
+D=M
+@ARG
+M=D
+//PUSH STATE SP
+@SP
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//POP STATE LCL
+@SP
+AM=M-1
+D=M
+@LCL
+M=D
+@CLASS2.GET//call goto
+0;JMP
+(SYS.INITRetAddr32)
+(SYS.INIT$WHILE)
+//GOTO WHILE
+@SYS.INIT$WHILE
+0;JMP

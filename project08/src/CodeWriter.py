@@ -73,11 +73,12 @@ class CodeWriter:
 		for c in tmpFile:
 			self.outFile.write(c)
 		tmpFile.close()
+		self.outFile.write("//end of bootstrap\n\n")
 		
 	
 	def writeArithmetic(self, cmd):
 		"""Write cmd out to the file as assembly. cmd should be a string containing a arithetic vm command"""
-		#self.outFile.write("//" + cmd + "\n")
+		self.outFile.write("//" + cmd + "\n")
 		template = Template(self.arithmeticTemplates[cmd])
 		template.num = str(self.labelCounter)
 		self.outFile.write(str(template))
@@ -87,7 +88,7 @@ class CodeWriter:
 	def writePushPop(self, cmd, segment, index):
 		"""Write a push or pop command to the file as assembly. cmd tells whether to push or pop, segment
 		tells which segment of memory to operate on, index is a non negative int that tells the offset to use"""
-		#self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
+		self.outFile.write("//" + cmd + " " + segment + " " + str(index) + "\n")
 		
 		#local, argument, this, that = common
 		if self.commonSegments.count(segment) > 0:
@@ -125,14 +126,14 @@ class CodeWriter:
 		else:
 			template = Template(self.ifgotoTemplate)
 		template.labelName = self.functName + "$" + labelName
-		#self.outFile.write("//" + cmd + " " + labelName + "\n")
+		self.outFile.write("//" + cmd + " " + labelName + "\n")
 		self.outFile.write(str(template))
 		#self.outFile.write("//End GOTO\n")
 	
 	def writeFunct(self, fName, numVars):
 		"""write a function"""
 		self.functName = fName
-		#self.outFile.write("//Function " + fName + "\n")
+		self.outFile.write("//Function " + fName + "\n")
 		self.outFile.write("(" + fName + ")\n")
 		for i in xrange(numVars):
 			self.writePushPop("PUSH", "CONSTANT", 0)
@@ -144,7 +145,7 @@ class CodeWriter:
 		b=2
 		c=3
 		self.outFile.write("//RETURNING\n")
-		#frame = temp 0 = LCL
+		#frame = LCL
 		self.writePushPop("PUSH", "STATE", "LCL")
 		self.writePushPop("POP", "TEMP", a)
 		#ret = FRAME-5
@@ -152,6 +153,14 @@ class CodeWriter:
 		self.writePushPop("PUSH", "CONSTANT", 5)
 		self.writeArithmetic("SUB")
 		self.writePushPop("POP", "TEMP", b)
+		#tempB = *tempB
+		self.outFile.write(""" 
+@7
+A=M
+D=M
+@7
+M=D
+""")
 		#put return value into arg
 		self.writePushPop("POP", "ARGUMENT", 0)
 		#restore state
@@ -211,7 +220,6 @@ M=D
 		#goto RET
 		self.outFile.write("""@"""+str(b+5)+"""
 A=M
-A=M
 0;JMP
 """)
 		
@@ -221,11 +229,18 @@ A=M
 		
 		retAddr = self.functName + "RetAddr" + str(self.labelCounter)
 		self.labelCounter += 1
-		
-		#self.outFile.write("//Call " + fName + " " + str(numArgs))
+		self.outFile.write("//Call " + fName + " " + str(numArgs) + "\n")
 		
 		#save state
-		self.writePushPop("PUSH", "STATE", retAddr)
+		#self.writePushPop("PUSH", "STATE", retAddr)
+		self.outFile.write("@" + retAddr + """
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+""")
 		self.writePushPop("PUSH", "STATE", "LCL")#yay weak typing
 		self.writePushPop("PUSH", "STATE", "ARG")
 		self.writePushPop("PUSH", "STATE", "THIS")
@@ -238,7 +253,11 @@ A=M
 		#set LCL to SP
 		self.writePushPop("PUSH", "STATE", "SP")
 		self.writePushPop("POP", "STATE", "LCL")
-		self.writeGoto("GOTO", fName)
+		#self.writeGoto("GOTO", fName)
+		#hardcode goto for function call
+		self.outFile.write("@" + fName + "//call goto\n" + "0;JMP\n")
+		
+		
 		self.outFile.write("(" + retAddr + ")\n")
 		
 	def close(self):

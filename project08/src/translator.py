@@ -21,7 +21,7 @@ if path.isdir(inPath):
 	for f in lsdir(inPath):
 		if path.splitext(f)[1] == ".vm":
 			vmNames.append(inPath + "/" + f)
-	print vmNames
+	#print vmNames
 else:
 	#get the fileName without extension, and the extension from the supplied path
 	fileName, extension = path.splitext(inPath)

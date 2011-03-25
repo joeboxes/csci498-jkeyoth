@@ -1,4 +1,4 @@
-@SP//POP_CONST
+@SP
 AM=M-1
 D=M
 @${const}

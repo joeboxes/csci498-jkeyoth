@@ -1,4 +1,4 @@
-@SP//POP_DIRECT
+@SP
 AM=M-1
 D=M
 @${index}

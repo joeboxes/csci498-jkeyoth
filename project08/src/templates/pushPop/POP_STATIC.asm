@@ -1,4 +1,4 @@
-@SP//POP_STATIC
+@SP
 AM=M-1
 D=M
 @${varName}
