@@ -1,0 +1,150 @@
+//Floating Point - 9 decimal accuracy
+//fix phantom error in file
+
+class M4D{//doesn't store bottom row - assumed to be [0 0 0 1]
+/*------------------STATIC VARIABLES--------------*/
+	static int length;
+/*------------------PRIVATE VARIABLES--------------*/
+	field Array a;
+/*------------------PRIVATE METHODS--------------*/
+	constructor M4D new(){/*Float a, Float b, Float c, Float d,
+					Float e, Float f, Float g, Float h, 
+					Float i, Float j, Float k, Float l ){*/
+		let a = Array.new(length);
+		do identity();//set(a,b,c,d, e,f,g,h, i,j,k,l);
+		return this;
+	}
+	method void set(Float a_, Float b, Float c, Float d,
+					Float e, Float f, Float g, Float h, 
+					Float i, Float j, Float k, Float l ){
+		do setI(0,a_); do setI(1,b); do setI(2,c); do setI(3,d);
+		do setI(4,e); do setI(5,f); do setI(6,g); do setI(7,h);
+		do setI(8,i); do setI(9,j); do setI(10,k); do setI(11,l);
+		return;
+	}
+	method void identity(){
+		var Float f0, f1;
+		let f0 = Float.new(Float.getPos(),0,0);
+		let f1 = Float.new(Float.getPos(),1,0);
+		do setI(0,f1); do setI(1,f0); do setI(2,f0); do setI(3,f0);
+		do setI(4,f0); do setI(5,f1); do setI(6,f0); do setI(7,f0);
+		do setI(8,f0); do setI(9,f0); do setI(10,f1); do setI(11,f0);
+		do f0.dispose();
+		do f1.dispose();
+		return;
+	}
+	method void setI(int i, Float n){
+		do Float.copy(a[i],n);
+		return;
+	}
+	method Float get(int i){
+		return a[i];
+	}
+	method void dispose(){
+		var int i;
+		var Float f;
+		while(i<length){
+			let f = a[i];
+			do f.dispose();
+			let i = i + 1;
+		}
+		do a.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+/*------------------STATIC FUNCTIONS--------------*/
+/*------------------INIT--------------*/
+	function void init(){
+		let length = 12;
+		return;
+	}
+	
+/*------------------MATH--------------*/
+	function void mul(M4D res, M4D a, M4D b){// res = a*b
+		var Float f1, f2, f3, f4, one, zero;
+		var M4D m;
+		let m = M4D.new();
+		let f1 = Float.new(0,0,0);
+		let f2 = Float.new(0,0,0);
+		let f3 = Float.new(0,0,0);
+		let f4 = Float.new(0,0,0);
+		let one = Float.new(Float.getPos(),1,0);
+		let zero = Float.new(Float.getPos(),0,0);
+		//0,0:
+		do Float.mul(f1,a.get(0),b.get(0));
+		do Float.mul(f2,a.get(1),b.get(4));
+		do Float.mul(f3,a.get(2),b.get(8));
+		do Float.mul(f4,a.get(3),zero);
+		do Float.add(f1,f1,f2);
+		do Float.add(f3,f3,f4);
+		do Float.add(f1,f1,f3);
+		do m.setI(0, f1 );
+		
+		do f1.dispose();
+		do f2.dispose();
+		do f3.dispose();
+		do f4.dispose();
+		do m.dispose();
+		return;
+	}
+	function void mulV4D(V4D res, V4D a, M4D m){// res = a*m
+		return;
+	}
+/*------------------TRANSFORMATIONS--------------*/// res = transform, a
+	function void translate(M4D res, M4D a, Float x, Float y, Float z){// res = a.translate(x,y,z)
+		var M4D tra;
+		let tra = M4D.new();
+		do tra.setI(3,x);
+		do tra.setI(7,y);
+		do tra.setI(11,z);
+		do M4D.mul(res,tra,a);
+		do tra.dispose();
+		return;
+	}
+	function void scale(M4D res, M4D a, Float x, Float y, Float z){// res = a.scale(x,y,z)
+		var M4D tra;
+		let tra = M4D.new();
+		do tra.setI(0,x);
+		do tra.setI(5,y);
+		do tra.setI(10,z);
+		do M4D.mul(res,tra,a);
+		do tra.dispose();
+		return;
+	}
+	function void rotateX(M4D res, M4D a, Float rad){// res = a.rotateX(rad)
+		return;
+	}
+	function void rotateY(M4D res, M4D a, Float rad){// res = a.rotateY(rad)
+		return;
+	}
+	function void rotateZ(M4D res, M4D a, Float rad){// res = a.rotateZ(rad)
+		return;
+	}
+/*------------------PRINT--------------*/
+	function void print(m M4D){// sign|mant|E|expo
+		var int i,j;
+		var Float f;
+		let j = 4;
+		while(i<length){
+			if(j=0){
+				do Output.println();
+				let j = 4;
+			}
+			let j = j - 1;
+			let f = m.get(i);
+			do f.print();
+			do Output.printString(" ");
+			let i = i + 1;
+		}
+		do Output.printString(" 0 0 0 1 ");
+		return;
+	}
+
+}
+
+
+
+
+
+
+
