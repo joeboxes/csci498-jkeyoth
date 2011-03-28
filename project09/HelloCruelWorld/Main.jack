@@ -1,0 +1,12 @@
+
+
+class Main
+{
+    function void main()
+    {
+        do Output.printString("I am jack's unoriginal joke.");
+        do Output.println();
+        
+        return;
+    }
+}
