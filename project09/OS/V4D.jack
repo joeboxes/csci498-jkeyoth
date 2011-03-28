@@ -1,0 +1,48 @@
+//Floating Point - 9 decimal accuracy
+class V4D{
+/*------------------STATIC VARIABLES--------------*/
+	//
+/*------------------PRIVATE VARIABLES--------------*/
+	field Float x,y,z,t;
+/*------------------PRIVATE METHODS--------------*/
+	constructor V4D new(Float a, Float b, Float c, Float d){
+		do set(a,b,c,d);
+		return this;
+	}
+	method void set(Float a, Float b, Float c, Float d){
+		let x = a;
+		let y = b;
+		let z = c;
+		let t = d;
+		return;
+	}
+	method void dispose(){
+		do x.dispose();
+		do y.dispose();
+		do z.dispose();
+		do t.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+/*------------------INIT--------------*/
+	function void init(){
+		return;
+	}
+/*------------------STATIC FUNCTIONS--------------*/
+
+/*------------------MATH--------------*/
+
+/*------------------PRINT--------------*/
+	function void print(Float Res){// sign|mant|E|expo
+		
+		return;
+	}
+
+}
+
+
+
+
+
+
+

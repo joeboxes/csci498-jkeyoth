@@ -1,0 +1,52 @@
+function V4D.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push pointer 0
+push argument 0
+push argument 1
+push argument 2
+push argument 3
+call V4D.set 5
+pop temp 0
+push pointer 0
+return
+function V4D.set 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 0
+push argument 2
+pop this 1
+push argument 3
+pop this 2
+push argument 4
+pop this 3
+push constant 0
+return
+function V4D.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Float.dispose 1
+pop temp 0
+push this 1
+call Float.dispose 1
+pop temp 0
+push this 2
+call Float.dispose 1
+pop temp 0
+push this 3
+call Float.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function V4D.init 0
+push constant 0
+return
+function V4D.print 0
+push constant 0
+return

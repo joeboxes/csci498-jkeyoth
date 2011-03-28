@@ -1,0 +1,147 @@
+//Main
+class Main{
+	function void main(){
+		/*----------------- DECLARE VARS ----------------*/
+		var Float A, B, C;
+		var int i, j, k, addr, x, y, col, start, stop;
+		var Array arr;
+		/*----------------- INIT CLASSES ----------------*/
+		do Display.init();
+		do Float.init();
+		//do Int28.init();
+		//do IntN.init();
+		//do M4D.init();
+		do V4D.init();
+		/*----------------- PROGRAM START ----------------*/
+		
+		
+		let arr = Array.new(2);
+		let x = 200;
+		let y = 140;
+		let col = 0;
+		let addr = Display.pixelToAddress(x,y);
+		do Output.printString("x,y: ");
+		do Output.printInt(x);
+		do Output.printString(" ");
+		do Output.printInt(y);
+		do Output.println();		
+		do Output.printString("address: ");
+		do Output.printInt(addr);
+		do Output.println();
+		
+		do Display.fillScreen(0);
+		/*
+		let start = 0;
+		let stop = 256;
+		let y = start;
+		while(y<stop){
+			do Display.colorPixel(x, y, col);
+			let y = y + 1;
+		}
+		*/
+
+do Display.fillCircle(100,80, 25, 1);
+do Screen.drawCircle(200,80,25);
+
+do Display.fillRect(50,150, 100,200, 1);
+do Screen.drawRectangle(150,150, 200,200);
+
+do Display.singleLine(100,2, 500,100, 1);
+do Screen.drawLine(100,8, 500,108);
+
+
+/*
+do Display.colorPixel(1, 1, col);
+do Display.colorPixel(100, 100, col);
+do Display.colorPixel(200, 100, col);
+do Display.colorPixel(100, 200, col);
+do Display.colorPixel(200, 200, col);
+
+do Display.singleLine(100,100, 200,80, 1);
+//do Screen.drawLine(120,120,220,100);
+do Display.singleLine(200,200, 250,10, 1);
+//do Screen.drawLine(205,205,255,15);
+do Display.singleLine(500,250, 400,10, 1);
+do Display.singleLine(450,240, 100,220, 1);
+*/
+//do Display.fillTri(150,50, 300,50, 250,100, 0);
+		
+		
+//do Output.printString("X: ");
+/*
+		let A = Float.new(Float.getPos(),8,0);
+		let B = Float.new(Float.getPos(),1,0);
+		let C = Float.new(0,0,0);
+		let i = 7000;
+		let j = i*10;
+		let k = i > j;
+		do Output.printString("i: ");
+		do Output.printInt(i);
+		do Output.printString(" j: ");
+		do Output.printInt(j);
+		do Output.printString(" k: ");
+		do Output.printInt(k);
+		let k = j > i;
+		do Output.printString(" ");
+		do Output.printInt(k);
+		do Output.println();
+
+		//do Float.exc(C,A);		
+		//do Float.pow(C,A,B);
+		//do Float.add(C,A,B);
+//do Float.sub(C,A,B);
+		//do Float.mul(C,A,B);
+		//do Float.div(C,A,B);
+		//do Float.sqrt(C,B);
+		//do Float.toFloat(C,k);
+		let i = Float.toInt(A,true);
+		let j = Float.toInt(B,true);
+		let k = Float.toInt(C,true);
+		do Output.printString("A: ");
+		do A.print();
+		do Output.printString(" | ");
+		do Output.printInt(i);
+		do Output.println();
+		do Output.printString("B: ");
+		do B.print();
+		do Output.printString(" | ");
+		do Output.printInt(j);
+		do Output.println();
+		do Output.printString("C: ");
+		do C.print();
+		do Output.printString(" | ");
+		do Output.printInt(k);
+		do Output.println();
+		
+		do A.dispose();
+		do B.dispose();
+		do C.dispose();
+		/*let A = Int28.new(0,0);
+		let B = Int28.new(1,8192);
+		let C = Int28.new(0,8192);
+		
+		do Output.printString("B: ");
+		do B.printBinary();
+		do Output.println();
+		do B.printDecimal();
+		do Output.println();
+		do Output.printString("C: ");
+		do C.printBinary();
+		do Output.println();
+		do C.printDecimal();
+		do Output.println();
+
+		do Int28.add(A,B,C);
+		
+		do Output.printString("A: ");
+		do A.printBinary();
+		do Output.println();
+		do A.printDecimal();
+		do Output.println();
+		*/
+		return;
+	}
+}
+
+
+

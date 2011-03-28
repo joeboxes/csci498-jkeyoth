@@ -1,0 +1,241 @@
+//Display
+class Display{
+/*------------------STATIC VARIABLES--------------*/
+	static int screen_width;
+	static int screen_height;
+	static int screen_address;
+	static int screen_addrLen;
+/*------------------PRIVATE VARIABLES--------------*/
+	//
+/*------------------PRIVATE METHODS--------------*/
+	constructor Display new(){
+		return this;
+	}
+/*------------------INIT--------------*/
+	function void init(){
+		let screen_width = 512;
+		let screen_height = 256;
+		let screen_address = 16384;
+		let screen_addrLen = 16;
+		return;
+	}
+/*------------------STATIC FUNCTIONS--------------*/
+	function int pixelToAddress(int x,int y){// address to word containing the pixel
+		var int addr, t1;
+		let addr = screen_width/screen_addrLen;
+		let addr = addr * y;
+		let t1 = x/screen_addrLen;
+		let addr =  addr+t1 + screen_address;
+		return addr;
+	}
+	
+	function void colorPixel(int x,int y,int c){
+		var int mem, val, tot, div, rem, mask;
+		let mem = Display.pixelToAddress(x,y);
+		let val = Memory.peek( mem );
+		let tot = screen_width/screen_addrLen;//32
+		let div = Math.abs(x/screen_addrLen);
+		let rem = div*screen_addrLen;
+		let rem = x - rem;
+		let mask = 1;// 0%000...001
+		while(rem>0){
+			let mask = mask+mask;
+			let rem = rem - 1;
+		}
+		if(~(c=0)){//color black [1]
+			let val = val | mask;
+		}else{// color white [0]
+			let mask = ~mask;//0%111...110
+			let val = val & mask;
+		}
+		do Memory.poke( mem, val);
+		return;
+	}
+	function void fillScreen(int c){
+		var int start, stop, col;
+		let start = screen_address;
+		let stop = (screen_width/screen_addrLen);
+		let stop = stop*screen_height;
+		let stop = stop + start;
+		if(~(c=0)){//black
+			let col = 0;
+			let col = ~col;
+		}else{//white
+			let col = 0;
+		}
+		while(start<stop){
+			do Memory.poke(start, col);
+			let start = start + 1;
+		}
+
+		return;
+
+	}
+	
+	function void fillCircle(int x0, int y0, int r, int c){// radius greater than ~90 will screw up  (x*x+y*y)
+		var int minX, maxX, minY, maxY, x, y, len, t0, t1, in;
+		let minX = x0 - r;
+		let minY = y0 - r;
+		let maxX = x0 + r;
+		let maxY = y0 + r;
+		let x = minX;
+		while( ~(x>maxX) ){
+			let y = minY;
+			//in = 0;
+			while( ~(y>maxY) ){
+				let t0 = y-y0;
+				let t0 = t0*t0;
+				let t1 = x-x0;
+				let t1 = t1*t1;
+				let t1 = t0+t1;
+				let len = Math.sqrt(t1);
+				if( len<r ){
+					do Display.colorPixel(x,y,c);
+					//do Screen.drawPixel(x,y);
+				}
+				/*if(in=2){
+					let y = 511;//next line
+				}*/
+				let y = y + 1;
+			}
+			let x = x + 1;
+		}
+		return;
+	}
+	function void fillRect(int x0, int y0, int x1, int y1, int c){// radius greater than ~90 will screw up  (x*x+y*y)
+		var int minX, maxX, minY, maxY, x, y, len, t0, t1;
+		let minX = Math.min( x0, x1 );
+		let minY = Math.min( y0, y1 );
+		let maxX = Math.max( x0, x1 );
+		let maxY = Math.max( y0, y1 );
+		let x = minX;
+		while( ~(x>maxX) ){
+			let y = minY;
+			while( ~(y>maxY) ){
+				do Display.colorPixel(x,y,c);
+				//do Screen.drawPixel(x,y);
+				let y = y + 1;
+			}
+			let x = x + 1;
+		}
+		return;
+	}
+	
+	function void fillTri(int x0, int y0, int x1, int y1, int x2, int y2, int c){
+		var int minX, maxX, minY, maxY, x, y, c0, c1, c2, uX, vX, wX, uY, vY, wY, t;
+		var int thresh, threshN;
+		var boolean bool1, bool2, bool3, bool4, bool5, bool6;
+		let thresh = 1;
+		let threshN = -thresh;
+		let minX = Math.min( x0, Math.min(x1,x2) );
+		let minY = Math.min( y0, Math.min(y1,y2) );
+		let maxX = Math.max( x0, Math.max(x1,x2) );
+		let maxY = Math.max( y0, Math.max(y1,y2) );
+		let x = minX;
+		while( ~(x>maxX) ){
+			let y = minY;
+			while( ~(y>maxY) ){
+				let uX = x-x0; let uY = y-y0;
+				let vX = x-x1; let vY = y-y1;
+				let wX = x-x2; let wY = y-y2;
+				let c0 = uX*vY/100; let t = uY*vX/100; let c0 = c0 - t;
+				let c1 = vX*wY/100; let t = vY*wX/100; let c1 = c1 - t;
+				let c2 = wX*uY/100; let t = wY*uX/100; let c2 = c2 - t;
+				if( ((c0>threshN) & (c1>threshN) & (c2>threshN)) | ((c0<thresh) & (c1<thresh) & (c2<thresh)) ){
+					do Display.colorPixel(x,y,c);
+				}
+				let y = y + 1;
+			}
+			let x = x + 1;
+		}
+		return;
+	}
+	function void singleLine(int minX, int minY, int maxX, int maxY ,int c){// (x1,y1) -> (x2,y2)
+		var int a, m, num, den, mode, x, y, t, u;
+		let num = (maxY-minY);//*1;
+		let den = (maxX-minX);//*1;
+		
+		if(den=0){// infinity
+			let m = 2;//vertical lines
+		}else{// #
+			let m = num/den;
+		}
+		let a = Math.abs(m);
+		
+		if(a<1){// more run than rise
+			if(maxX<minX){//start at minimum x
+				let m = maxX;
+				let maxX = minX;
+				let minX = m;
+				let m = maxY;
+				let maxY = minY;
+				let minY = m;
+			}
+			let num = (minY-maxY);
+			let den = (maxX-minX);
+			let m = minX*maxY; let t = maxX*minY; let m = m - t;
+			let y = minY;
+			let x = minX;
+			if(minY>maxY){//start at maximum y
+				while(~(x>maxX)){
+					do Display.colorPixel(x,y,c);
+					let t = num*x; let u = den*y; let t = t + u; let t = t + m;
+					if( t > 0 ){
+						let y = y - 1;
+					}
+					let x = x + 1;
+				}
+			}else{
+				while(~(x>maxX)){
+					do Display.colorPixel(x,y,c);
+					let t = num*x; let u = den*y; let t = t + u; let t = t + m;
+					if( t < 0 ){
+						let y = y + 1;
+					}
+					let x = x + 1;
+				}
+			}
+		}else{// more rise than run
+			if(maxY<minY){//start at minimum y
+				let m = maxX;
+				let maxX = minX;
+				let minX = m;
+				let m = maxY;
+				let maxY = minY;
+				let minY = m;
+			}
+			let num = (minY-maxY);
+			let den = (maxX-minX);
+			let m = minX*maxY; let t = maxX*minY; let m = m;
+			let y = minY;
+			let x = minX;
+			if(minX>maxX){//start at maximum x
+				while(~(y>maxY)){
+					do Display.colorPixel(x,y,c);
+					let t = num*x; let u = den*y; let t = t + u; let t = t + m;
+					if( t < 0 ){
+						let x = x - 1;
+					}
+					let y = y + 1;
+				}
+			}else{
+				while(~(y>maxY)){
+					do Display.colorPixel(x,y,c);
+					let t = num*x; let u = den*y; let t = t + u; let t = t + m;
+					if( t > 0 ){
+						let x = x + 1;
+					}
+					let y = y + 1;
+				}
+			}
+		}
+		return;
+	}
+}
+
+
+
+
+
+
+
