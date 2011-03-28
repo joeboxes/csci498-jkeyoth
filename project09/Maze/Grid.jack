@@ -1,0 +1,20 @@
+/**
+This class holds an array of Tiles that make up the maze. This class is how any other class should access the Tiles.
+*/
+
+class Grid
+{
+	field Array tiles;
+	
+	field int sizeX, sizeY;
+	
+	field int goalX, goalY;
+	
+	constructor Grid new(int sx, int sy, int gx, int gy)
+	{
+		let sizeX = sx;
+		let sizeY = sy;
+		let goalX = gx;
+		let goalY = gy;
+	}
+}
