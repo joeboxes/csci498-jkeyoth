@@ -6,10 +6,95 @@ class Display{
 	static int screen_address;
 	static int screen_addrLen;
 /*------------------PRIVATE VARIABLES--------------*/
-	//
+	field int posX, posY;
+	field int tlX, tlY, xLen, yLen;
 /*------------------PRIVATE METHODS--------------*/
-	constructor Display new(){
+	constructor Display new(int cX, int cY, int xL, int yL){
+		let posX = cX;
+		let posY = cY;
+		let xLen = xL/2;//no odd numbers
+		let yLen = yL/2;//no odd numbers
+		let tlX = posX - xLen;
+		let tlY = posY - yLen;
+		let xLen = xLen*2;
+		let yLen = yLen*2;
 		return this;
+	}
+	method void drawBounding(){
+		do Screen.drawLine(tlX,tlY,tlX+xLen,tlY);//top
+		do Screen.drawLine(tlX+xLen,tlY,tlX+xLen,tlY+yLen);//right
+		do Screen.drawLine(tlX+xLen,tlY+yLen,tlX,tlY+yLen);//bot
+		do Screen.drawLine(tlX,tlY+yLen,tlX,tlY);//left
+		//crosshair:
+		do Screen.drawLine(posX-2,posY,posX+2,posY);
+		do Screen.drawLine(posX,posY+2,posX,posY-2);
+		return;
+	}
+	method void clear(){
+		//do Screen.drawRectangle(tlX+1,tlY+1,tlX+xLen-1,tlY+yLen-1);
+		do Display.fillRect(tlX+1,tlY+1,tlX+xLen-1,tlY+yLen-1,0);
+		return;
+	}
+	method void render2DPoint(V3D v, Cam3D cam){// place v onto screen
+		var int maxX, minX, maxY, minY;
+		var Point p;
+		
+		if( Float.lt(v.getZ(), cam.getCut()) ){
+			return;
+		}
+		let p = Point.new( Float.toInt(v.getX(),true) , Float.toInt(v.getY(),true) );
+		let maxX = tlX+xLen;
+		let maxY = tlY+yLen;
+		do offsetPoint(p);
+/*
+do Output.printString("p: ");
+do Output.printInt( p.getX() );
+do Output.printString(", ");
+do Output.printInt( p.getY() );
+do Output.println();
+*/
+		//replace with intersection code for lines
+		if( p.getX()>maxX ){
+			do p.setX(maxY);
+		}
+		if( p.getX()<tlX ){
+			do p.setX(tlX);
+		}
+		if( p.getY()>maxY ){
+			do p.setY(maxY);
+		}
+		if( p.getY()<tlY ){
+			do p.setY(tlY);
+		}
+		
+		do Screen.drawCircle(p.getX(),p.getY(), 2);
+		
+		return;
+	}
+	method void offsetPoint(Point p){
+		do p.setX( p.getX() + tlX + (xLen/2) );//offset to my location
+		do p.setY( -p.getY() + tlY + (yLen/2) );//offset
+		return;
+	}
+	method void print(){
+		do Output.printString("center: ");
+		do Output.printInt(posX);
+		do Output.printString(", ");
+		do Output.printInt(posY);
+		do Output.printString(" : topLeft: ");
+		do Output.printInt(tlX);
+		do Output.printString(", ");
+		do Output.printInt(tlY);
+		do Output.printString(" : dim: ");
+		do Output.printInt(xLen);
+		do Output.printString(", ");
+		do Output.printInt(yLen);
+		do Output.println();
+		return;
+	}
+	method void dispose(){
+		do Memory.deAlloc(this);
+		return;
 	}
 /*------------------INIT--------------*/
 	function void init(){
@@ -20,6 +105,35 @@ class Display{
 		return;
 	}
 /*------------------STATIC FUNCTIONS--------------*/
+	
+	function void V3Dto2D(V3D p, M4D trans, V3D v, Cam3D cam){// p = perspective(trans*v)
+		var V3D newPt;
+		var Float scale, t, zero;
+		let scale = Float.new(0,0,0);
+		let t = Float.new(0,0,0);
+		let zero = Float.new(0,0,0);
+		do Float.getZero(zero);
+		let newPt = V3D.new(t,t,t);
+		
+		do M4D.mulV3D(newPt, trans, v);
+		do Float.mul(scale,cam.getScale(),cam.getLens());
+		do Float.add(t,cam.getLens(), newPt.getZ());
+		do Float.div(scale,scale,t);
+		if( Float.gt(scale,zero) ){
+			do Float.negate(scale,scale);
+		}
+		do Float.mul(t,scale,newPt.getX());
+		do newPt.setX(t);
+		do Float.mul(t,scale,newPt.getY());
+		do newPt.setY(t);
+		do Float.copy(p, newPt);
+		
+		do newPt.dispose();
+		do scale.dispose();
+		do t.dispose();
+		do zero.dispose();
+		return;
+	}
 	function int pixelToAddress(int x,int y){// address to word containing the pixel
 		var int addr, t1;
 		let addr = screen_width/screen_addrLen;
@@ -73,7 +187,7 @@ class Display{
 	}
 	
 	function void fillCircle(int x0, int y0, int r, int c){// radius greater than ~90 will screw up  (x*x+y*y)
-		var int minX, maxX, minY, maxY, x, y, len, t0, t1, in;
+		var int minX, maxX, minY, maxY, x, y, len, t0, t1;//, in;
 		let minX = x0 - r;
 		let minY = y0 - r;
 		let maxX = x0 + r;
