@@ -1,0 +1,22 @@
+/**
+Class that holds each tile in the maze grid.
+*/
+
+class Tile
+{
+	
+	field boolean northWall, westWall;
+	field int x,y;
+	/**
+	Create a new tile in the grid at position (x,y)
+	*/
+	constructor Tile new(int _x, int _y, boolean north, boolean west)
+	{
+		let x = _x;
+		let y = _y;
+		let northWall = north;
+		let westWall = west;
+	}
+	
+
+}
