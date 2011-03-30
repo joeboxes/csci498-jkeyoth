@@ -29,7 +29,7 @@ class Grid
 		let tiles = Array.new(sizeX * sizeY);
 		
 		//TODO: change this to something else
-		let GRID_SIZE=50;
+		let GRID_SIZE=100;
 		
 		return this;
 	}
