@@ -65,7 +65,46 @@ class Grid
 	method boolean hasNorthWall(int x, int y)
 	{
 		var boolean has;
-		let has = tiles[y * sizeX + x].isNorthWall()
+		var Tile t;
+		let t = tiles[y * sizeX + x];
+		let has = t.isNorthWall();
+		return has;
+	}
+
+	/**
+	Check if tile x,y has a west wall
+	*/
+	method boolean hasWestWall(int x, int y)
+	{
+		var boolean has;
+		var Tile t;
+		let t = tiles[y * sizeX + x];
+		let has = t.isWestWall();
+		return has;
+	}
+
+	/**
+	Check if tile x,y has a south wall
+	*/
+	method boolean hasSouthWall(int x, int y)
+	{
+		var boolean has;
+		var Tile t;
+		let t = tiles[(y+1) * sizeX + x];
+		let has = t.isNorthWall();
+		return has;
+	}
+
+	/**
+	Check if tile x,y has a east wall
+	*/
+	method boolean hasEastWall(int x, int y)
+	{
+		var boolean has;
+		var Tile t;
+		let t = tiles[y * sizeX + x + 1];
+		let has = t.isWestWall();
+		return has;
 	}
 	
 	/**
