@@ -97,6 +97,82 @@ push temp 0
 pop that 0
 push local 1
 return
+function Grid.hasNorthWall 2
+push argument 0
+pop pointer 0
+push argument 2
+push this 1
+call Math.multiply 2
+push argument 1
+add
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Tile.isNorthWall 1
+pop local 0
+push local 0
+return
+function Grid.hasWestWall 2
+push argument 0
+pop pointer 0
+push argument 2
+push this 1
+call Math.multiply 2
+push argument 1
+add
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Tile.isWestWall 1
+pop local 0
+push local 0
+return
+function Grid.hasSouthWall 2
+push argument 0
+pop pointer 0
+push argument 2
+push constant 1
+add
+push this 1
+call Math.multiply 2
+push argument 1
+add
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Tile.isNorthWall 1
+pop local 0
+push local 0
+return
+function Grid.hasEastWall 2
+push argument 0
+pop pointer 0
+push argument 2
+push this 1
+call Math.multiply 2
+push argument 1
+add
+push constant 1
+add
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Tile.isWestWall 1
+pop local 0
+push local 0
+return
 function Grid.canSeeFrom 0
 push argument 0
 pop pointer 0
