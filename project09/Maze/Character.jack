@@ -4,26 +4,18 @@
  * rotate clockwise, and rotate counter-clockwise)
  */
 class Character {
-	field Grid world;
 
-	field int direction; // 0 = N, 1 = E, 2 = S, 3 = W
-	field int movement;
+	/* ---------- Variables ---------- */
+	field Grid world;
+	field int facing_direction; // 0 = N, 1 = E, 2 = S, 3 = W
+	field int moving_direction; // 0 = N, 1 = E, 2 = S, 3 = W
 
 	// Character information
-	field int character_size = 2; // W x D x H
-	field int character_step = 1; // movement distance 
-	field int tile_x, tile_y;
+	field int pos_x, pos_y;
 
 	constructor Character new(Grid w) {
 		let world = w;
-	}
-
-	constructor Character new(Grid w, Float w_x, Float w_y, Float t_x, Float t_y) {
-		let world = w;
-		let world_x = w_x;
-		let world_y = w_y;
-		let tile_x = t_x;
-		let tile_y = t_y;
+		return this;
 	}
 
 	method void dispose() {
@@ -33,9 +25,10 @@ class Character {
 	}
 
 	method int checkMove(int x, int y) {
+		return 1;
 	}
 
-	method void move() {
+	method void move(int movement) {
 		var int valid_move;
 		if (movement = 1) {
 			// move forwards (North)
