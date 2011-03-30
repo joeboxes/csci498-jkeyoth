@@ -65,7 +65,8 @@ class Grid
 	method boolean hasNorthWall(int x, int y)
 	{
 		var boolean has;
-		let has = tiles[y * sizeX + x].isNorthWall()
+		let has = tiles[y * sizeX + x].isNorthWall();
+		return true;
 	}
 	
 	/**
