@@ -39,7 +39,7 @@ class Grid
 	returns a boolean array: [north,east,south,west]
 	deprecating, dont use this!
 	*/
-	method Array getWalls(int x, int y)
+	/*method Array getWalls(int x, int y)
 	{
 		var Tile t;
 		var Array walls;
@@ -57,7 +57,7 @@ class Grid
 		let eastTile = tiles[y * sizeX + x + 1];
 		let walls[1] = eastTile.isWestWall();
 		return walls;
-	}
+	}*/
 	
 	/**
 	Check if tile x,y has a north wall
