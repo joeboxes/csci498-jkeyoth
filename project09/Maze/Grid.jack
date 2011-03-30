@@ -7,6 +7,8 @@ class Grid
 	
 	field Array tiles;
 	
+	static int GRID_SIZE;
+	
 	field int sizeX, sizeY;
 	
 	field int goalX, goalY;
@@ -25,6 +27,9 @@ class Grid
 		let goalY = gy;
 		
 		let tiles = Array.new(sizeX * sizeY);
+		
+		//TODO: change this to something else
+		let GRID_SIZE=50;
 		
 		return this;
 	}
@@ -54,6 +59,17 @@ class Grid
 	method Array canSeeFrom(int x, int y)
 	{
 	
+	}
+	
+	/**
+	Transform teh x,y coordinates inside a tile into world coordinates
+	gx,gy: which tile you are in
+	tx,ty: position inside tile
+	*/
+	method Array coordTransform(int gx, int gy, int tx, int ty)
+	{
+		let newX = gx * GRID_SIZE + tx;
+		let newY = gy * GRID_SIZE + ty;
 	}
 	
 	//getters. No setter for size because the size of the maze should not change
