@@ -37,28 +37,45 @@ class Grid
 	/**
 	Which directions have walls at point(x,y)
 	returns a boolean array: [north,east,south,west]
+	deprecating, dont use this!
 	*/
 	method Array getWalls(int x, int y)
 	{
 		var Tile t;
+		var Array walls;
+		var Tile southTile;
+		var Tile eastTile;
+		
 		let t = tiles[y * sizeX + x];
-		var Array walls = Array.new(4);
+		let walls = Array.new(4);
 		let walls[0] = t.isNorthWall();
 		let walls[3] = t.isWestWall();
+		
 		let southTile = tiles[(y+1) * sizeX + x];
 		let walls[2] = southTile.isNorthWall();
+		
 		let eastTile = tiles[y * sizeX + x + 1];
 		let walls[1] = eastTile.isWestWall();
 		return walls;
 	}
 	
 	/**
+	Check if tile x,y has a north wall
+	*/
+	method boolean hasNorthWall(int x, int y)
+	{
+		var boolean has;
+		let has = tiles[y * sizeX + x].isNorthWall()
+	}
+	
+	/**
 	Used to get the array of tiles visible from tile at (x,y)
 	returns Array of Tiles 
 	*/
-	method Array canSeeFrom(int x, int y)
+	//TODO: change void to Array
+	method void canSeeFrom(int x, int y)
 	{
-	
+		return;
 	}
 	
 	/**
@@ -68,8 +85,17 @@ class Grid
 	*/
 	method Array coordTransform(int gx, int gy, int tx, int ty)
 	{
+		var int newX, newY;
+		var Array newCoords;
+		
 		let newX = gx * GRID_SIZE + tx;
 		let newY = gy * GRID_SIZE + ty;
+		
+		let newCoords = Array.new(2);
+		let newCoords[0] = newX;
+		let newCoords[1] = newY;
+		
+		return newCoords;
 	}
 	
 	//getters. No setter for size because the size of the maze should not change
@@ -89,7 +115,7 @@ class Grid
 	{
 		return goalY;
 	}
-	method void setGoal(int x, y)
+	method void setGoal(int x, int y)
 	{
 		let goalX = x;
 		let goalY = y;

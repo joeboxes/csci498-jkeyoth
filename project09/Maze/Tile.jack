@@ -45,7 +45,7 @@ class Tile
 	
 	method void dispose()
 	{
-		do Memory.deAlloc(this)
+		do Memory.deAlloc(this);
 		return;
 	}
 	
