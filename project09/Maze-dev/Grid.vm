@@ -58,6 +58,20 @@ return
 function Grid.hasSouthWall 2
 push argument 0
 pop pointer 0
+push argument 1
+push this 1
+eq
+push argument 2
+push this 2
+eq
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
 push argument 2
 push constant 1
 add
@@ -78,6 +92,20 @@ return
 function Grid.hasEastWall 2
 push argument 0
 pop pointer 0
+push argument 1
+push this 1
+eq
+push argument 2
+push this 2
+eq
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
 push argument 2
 push this 1
 call Math.multiply 2
@@ -100,41 +128,24 @@ push argument 0
 pop pointer 0
 push constant 0
 return
-function Grid.coordTransform 3
-push argument 0
-pop pointer 0
-push argument 1
-push static 0
-call Math.multiply 2
-push argument 3
-add
+function Grid.coordTransform 1
+call V2D.empty 0
 pop local 0
-push argument 2
-push static 0
-call Math.multiply 2
-push argument 4
-add
-pop local 1
-push constant 2
-call Array.new 1
-pop local 2
-push constant 0
-push local 2
-add
 push local 0
+push argument 0
+call V2D.getX 1
+push static 0
+call Math.divide 2
+call V2D.setX 2
 pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push constant 1
-push local 2
-add
-push local 1
+push local 0
+push argument 0
+call V2D.getY 1
+push static 0
+call Math.divide 2
+call V2D.setY 2
 pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push local 2
+push local 0
 return
 function Grid.getSizeX 0
 push argument 0
@@ -175,4 +186,7 @@ push pointer 0
 call Memory.deAlloc 1
 pop temp 0
 push constant 0
+return
+function Grid.getGridSize 0
+push static 0
 return

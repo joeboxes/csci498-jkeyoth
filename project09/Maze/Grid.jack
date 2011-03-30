@@ -90,6 +90,13 @@ class Grid
 	{
 		var boolean has;
 		var Tile t;
+	
+		if ((x = sizeX) & (y=sizeY))
+		{
+			return true;
+		}
+		
+		
 		let t = tiles[(y+1) * sizeX + x];
 		let has = t.isNorthWall();
 		return has;
@@ -102,6 +109,12 @@ class Grid
 	{
 		var boolean has;
 		var Tile t;
+	
+		if ((x = sizeX) & (y=sizeY))
+		{
+			return true;
+		}
+		
 		let t = tiles[y * sizeX + x + 1];
 		let has = t.isWestWall();
 		return has;
@@ -118,23 +131,17 @@ class Grid
 	}
 	
 	/**
-	Transform teh x,y coordinates inside a tile into world coordinates
-	gx,gy: which tile you are in
-	tx,ty: position inside tile
+	Get the tile you are currently in, as an array of two numbers.
+	x,y are the world coords.
+	IS A STATIC FUNCT NOW
 	*/
-	method Array coordTransform(int gx, int gy, int tx, int ty)
+	function Array coordTransform(V2D p)
 	{
-		var int newX, newY;
-		var Array newCoords;
-		
-		let newX = gx * GRID_SIZE + tx;
-		let newY = gy * GRID_SIZE + ty;
-		
-		let newCoords = Array.new(2);
-		let newCoords[0] = newX;
-		let newCoords[1] = newY;
-		
-		return newCoords;
+		var V2D pos;
+		let pos = V2D.empty();
+		do pos.setX(p.getX() / GRID_SIZE);
+		do pos.setY(p.getY() / GRID_SIZE);
+		return pos;
 	}
 	
 	//getters. No setter for size because the size of the maze should not change
@@ -168,6 +175,11 @@ class Grid
 		do tiles.dispose();
 		do Memory.deAlloc(this);
 		return;
+	}
+	
+	function int getGridSize()
+	{
+		return GRID_SIZE;
 	}
 	
 	

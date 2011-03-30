@@ -7,15 +7,19 @@ class Character {
 
 	/* ---------- Variables ---------- */
 	field Grid world;
-	field int facing_direction; // 0 = N, 1 = E, 2 = S, 3 = W
-	field int moving_direction; // 0 = N, 1 = E, 2 = S, 3 = W
-
+	
 	// Character information
-	field int pos_x, pos_y;
-	field int grid_x, grid_y;
+	field V2D pos;		//world coords of character
+	field V2D gridNum;	//which grid you are in
+	field V2D direction;	//(0,1) would be north, (1,0) would be east...
+
+	
 
 	constructor Character new(Grid w) {
 		let world = w;
+		let pos = V2D.new(Grid.getGridSize()/2, Grid.getGridSize()/2);
+		let gridNum = V2D.new(w.getSizeX(), w.getSizeY());
+		let direction = V2D.new(0,1);
 		return this;
 	}
 
@@ -30,22 +34,49 @@ class Character {
 		let canMove = false;
 		if (movement = 1) {
 			// move forwards (North)
-			let canMove = ~world.hasNorthWall(grid_x, grid_y);
+			let canMove = ~world.hasNorthWall(gridNum.getX(), gridNum.getY());
 			
 		}
 		if (movement = 2) {
 			// move backwards (South)
-			let canMove = ~world.hasSouthWall(grid_x, grid_y);
+			let canMove = ~world.hasSouthWall(gridNum.getX(), gridNum.getY());
 		}
 		if (movement = 3) {
 			// move counter-clockwise (West)
-			let canMove = ~world.hasWestWall(grid_x, grid_y);
+			let canMove = ~world.hasWestWall(gridNum.getX(), gridNum.getY());
 		}
 		if (movement = 4) {
 			// move clockwise (East)
-			let canMove = ~world.hasEastWall(grid_x, grid_y);
+			let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
 		}
 		return canMove;
+	}
+	
+	/**
+	Checks if the character is about to switch tiles.
+	*/
+	method boolean switchingTiles()
+	{
+		var V2D soonToBePos;
+		var V2D soonToBeGridNum;
+		var boolean switching;
+		
+		let switching = false;
+		
+		let soonToBePos = V2D.empty();
+		
+		let gridNum = Grid.coordTransform(pos);
+		
+		do V2D.add(pos, direction, soonToBePos);
+		
+		let soonToBeGridNum = Grid.coordTransform(soonToBePos);
+		
+		if(~(V2D.equals(gridNum, soonToBeGridNum)))
+		{
+			let switching = true;
+		}
+		
+		return switching;
 	}
 
 	method void move(int movement) {
