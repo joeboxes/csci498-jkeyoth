@@ -4,17 +4,81 @@ This class holds an array of Tiles that make up the maze. This class is how any 
 
 class Grid
 {
+	
 	field Array tiles;
 	
 	field int sizeX, sizeY;
 	
 	field int goalX, goalY;
 	
+	/**
+	Constructor for Grid
+	int sx: number of tiles in grid east-west
+	int sy: number of tiles in grid north-south
+	int gx,gy: location of goal spot
+	*/
 	constructor Grid new(int sx, int sy, int gx, int gy)
 	{
 		let sizeX = sx;
 		let sizeY = sy;
 		let goalX = gx;
 		let goalY = gy;
+		
+		let tiles = Array.new(sizeX * sizeY);
+		
+		return this;
 	}
+	
+	/**
+	Which directions have walls at point(x,y)
+	returns a boolean array: [north,east,south,west]
+	*/
+	method Array getWalls(int x, int y)
+	{
+	
+	}
+	
+	/**
+	Used to get the array of tiles visible from tile at (x,y)
+	returns Array of Tiles 
+	*/
+	method Array canSeeFrom(int x, int y)
+	{
+	
+	}
+	
+	//getters. No setter for size because the size of the maze should not change
+	method int getSizeX()
+	{
+		return sizeX;
+	}
+	method int getSizeY()
+	{
+		return sizeY;
+	}
+	method int getGoalX()
+	{
+		return goalX;
+	}
+	method int getGoalY()
+	{
+		return goalY;
+	}
+	method void setGoal(int x, y)
+	{
+		let goalX = x;
+		let goalY = y;
+		return;
+	}
+	
+	
+	//I hope this is the right way to dispose an array.
+	method void dispose()
+	{
+		do tiles.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+	
+	
 }

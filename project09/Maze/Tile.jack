@@ -16,6 +16,37 @@ class Tile
 		let y = _y;
 		let northWall = north;
 		let westWall = west;
+		
+		return this;
+	}
+	
+	
+	//getters. setters shouldn't be needed
+	method boolean isNorthWall()
+	{
+		return northWall;
+	}
+	
+	method boolean isWestWall()
+	{
+		return westWall;
+	}
+	
+	
+	method int getX()
+	{
+		return x;
+	}
+	
+	method int getY()
+	{
+		return y;
+	}
+	
+	method void dispose()
+	{
+		do Memory.deAlloc(this)
+		return;
 	}
 	
 
