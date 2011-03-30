@@ -1,0 +1,36 @@
+/*
+ *
+ */
+class Character {
+	field Grid world;
+	field int direction_facing; // 0 = N, 1 = E, 2 = S, 3 = W
+	field int direction_moving;
+
+	constructor Character new(Grid w) {
+		let world = w;
+	}
+
+	method void dispose() {
+		do world.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	method void move() {
+		if (direction_moving = 1) {
+			do world.moveNorth();
+		}
+		if (direction_moving = 2) {
+			do world.moveSouth();
+		}
+		if (direction_moving = 3) {
+			do world.moveWest(); // Rotate world counter-clockwise
+		}
+		if (direction_moving = 4) {
+			do world.moveEast(); // Rotate world clockwise
+		}
+
+		do Sys.wait(5);
+		return;
+	}
+}
