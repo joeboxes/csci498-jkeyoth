@@ -12,6 +12,7 @@ class Character {
 
 	// Character information
 	field int pos_x, pos_y;
+	field int grid_x, grid_y;
 
 	constructor Character new(Grid w) {
 		let world = w;
@@ -27,6 +28,8 @@ class Character {
 	method boolean verifyMove(int movement) {
 		if (movement = 1) {
 			// move forwards (North)
+			
+			
 		}
 		if (movement = 2) {
 			// move backwards (South)
