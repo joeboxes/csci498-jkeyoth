@@ -1,0 +1,58 @@
+/*
+ * This class maintains the character's position and facing direction.  This 
+ * class also handles the movement of the character (forwards, backwards, 
+ * rotate clockwise, and rotate counter-clockwise)
+ */
+class Character {
+	field Grid world;
+
+	field int direction; // 0 = N, 1 = E, 2 = S, 3 = W
+	field int movement;
+
+	// Character information
+	field int character_size = 2; // W x D x H
+	field int character_step = 1; // movement distance 
+	field int world_x, world_y;
+	field int tile_x, tile_y;
+
+	constructor Character new(Grid w) {
+		let world = w;
+	}
+
+	constructor Character new(Grid w, int w_x, int w_y, int t_x, int t_y) {
+		let world = w;
+		let world_x = w_x;
+		let world_y = w_y;
+		let tile_x = t_x;
+		let tile_y = t_y;
+	}
+
+	method void dispose() {
+		do world.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	method int checkMove(int x, int y) {
+	}
+
+	method void move() {
+		var int valid_move;
+		if (movement = 1) {
+			// move forwards (North)
+			valid_move = validMove(
+		}
+		if (movement = 2) {
+			// move backwards (South)
+		}
+		if (movement = 3) {
+			// move counter-clockwise (West)
+		}
+		if (movement = 4) {
+			// move clockwise (East)
+		}
+
+		do Sys.wait(5);
+		return;
+	}
+}
