@@ -26,24 +26,30 @@ class Character {
 	}
 
 	method boolean verifyMove(int movement) {
+		var boolean canMove;
+		let canMove = false;
 		if (movement = 1) {
 			// move forwards (North)
-			
+			let canMove = ~world.hasNorthWall(grid_x, grid_y);
 			
 		}
 		if (movement = 2) {
 			// move backwards (South)
+			let canMove = ~world.hasSouthWall(grid_x, grid_y);
 		}
 		if (movement = 3) {
 			// move counter-clockwise (West)
+			let canMove = ~world.hasWestWall(grid_x, grid_y);
 		}
 		if (movement = 4) {
 			// move clockwise (East)
+			let canMove = ~world.hasEastWall(grid_x, grid_y);
 		}
-		return true;
+		return canMove;
 	}
 
 	method void move(int movement) {
+		
 		if (verifyMove(movement)) {
 		}
 
