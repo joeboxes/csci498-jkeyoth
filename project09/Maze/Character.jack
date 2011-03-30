@@ -24,12 +24,7 @@ class Character {
 		return;
 	}
 
-	method int checkMove(int x, int y) {
-		return 1;
-	}
-
-	method void move(int movement) {
-		var int valid_move;
+	method boolean verifyMove(int movement) {
 		if (movement = 1) {
 			// move forwards (North)
 		}
@@ -41,6 +36,12 @@ class Character {
 		}
 		if (movement = 4) {
 			// move clockwise (East)
+		}
+		return true;
+	}
+
+	method void move(int movement) {
+		if (verifyMove(movement)) {
 		}
 
 		do Sys.wait(5);
