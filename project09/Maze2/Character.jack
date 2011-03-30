@@ -12,14 +12,13 @@ class Character {
 	// Character information
 	field int character_size = 2; // W x D x H
 	field int character_step = 1; // movement distance 
-	field int world_x, world_y;
 	field int tile_x, tile_y;
 
 	constructor Character new(Grid w) {
 		let world = w;
 	}
 
-	constructor Character new(Grid w, int w_x, int w_y, int t_x, int t_y) {
+	constructor Character new(Grid w, Float w_x, Float w_y, Float t_x, Float t_y) {
 		let world = w;
 		let world_x = w_x;
 		let world_y = w_y;
@@ -40,7 +39,6 @@ class Character {
 		var int valid_move;
 		if (movement = 1) {
 			// move forwards (North)
-			valid_move = validMove(
 		}
 		if (movement = 2) {
 			// move backwards (South)
