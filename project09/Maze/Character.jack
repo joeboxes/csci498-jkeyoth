@@ -32,7 +32,7 @@ class Character {
 	If so, check to make sure a wall isnt in the way.
 	*/
 	
-	method boolean verifyMove(int x, int y) {
+	method boolean verifyMove()) {
 		
 		var boolean canMove;
 		
