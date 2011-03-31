@@ -35,7 +35,6 @@ class Character {
 		if (y = 1) {
 			// move forwards (North)
 			let canMove = ~world.hasNorthWall(gridNum.getX(), gridNum.getY());
-			
 		}
 		if (y = -1) {
 			// move backwards (South)
@@ -83,9 +82,15 @@ class Character {
 		return switching;
 	}
 
-	method void move() {
-		
-
+	method void move(int movement) {
+		if (movement = 1) {
+		}
+		if (movement = 2) {
+		}
+		if (movement = 3) {
+		}
+		if (movement = 4) {
+		}
 		do Sys.wait(5);
 		return;
 	}
