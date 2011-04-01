@@ -41,7 +41,7 @@ class Main{
 		do A.set(Float.getPos(),0,0);
 		do B.set(Float.getPos(),5,0);
 		do C.set(Float.getPos(),0,0);
-		do cam.setPosZ(A);
+		do cam.setPosZ(A); //---------------------------Should this be X?
 		do cam.setPosY(B);
 		do cam.setPosZ(C);
 		

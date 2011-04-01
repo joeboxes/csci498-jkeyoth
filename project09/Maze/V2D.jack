@@ -42,6 +42,12 @@ class V2D {
 		let y = Y;
 		return;
 	}
+	method void set(int X, int Y)
+	{
+		let x = X;
+		let y = Y;
+		return;
+	}
 	
 	/*
 	 * Add two 2D vectors, put results into 3rd parameter.
@@ -63,6 +69,18 @@ class V2D {
 			let eq = false;
 		}
 		return eq;
+	}
+	
+	/**
+	Copy a and return a new V2D
+	*/
+	function V2D copy(V2D a)
+	{
+		var V2D n;
+		
+		let n = V2D.new(a.getX(), a.getY());
+		
+		return n;
 	}
 	
 	

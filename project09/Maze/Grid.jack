@@ -8,6 +8,7 @@ class Grid {
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
 	static int GRID_SIZE;
+	static int VIEW_DISTANCE; //in number of tiles
 	field int sizeX, sizeY;
 	field int goalX, goalY;
 
@@ -29,6 +30,7 @@ class Grid {
 		
 		//TODO: change this to something else
 		let GRID_SIZE=100;
+		let VIEW_DISTANCE=3;
 		
 		return this;
 	}
@@ -106,12 +108,140 @@ class Grid {
 	
 	/*
 	 * Used to get the array of tiles visible from tile at (x,y)
-	 * Returns Array of Tiles
+	 * Returns Array of V2Ds, each specifying a tile, i.e. the parameter tile (x,y) would be a V2D(x,y). End of array may be filled in with V2D(-1,-1)'s
+	 * Is agnostic about which direction you are facing(for now). Also assumes hallways will always be 1 wide (no rooms)
 	 *
-	 * TODO: change void to Array
+	 * 
+	 * Uses VIEW_DISTANCE
+	 *
 	 */
-	method void canSeeFrom(int x, int y) {
-		return;
+	method Array canSeeFrom(int x, int y) {
+		var Tile thisTile;
+		var Array visibles;
+		var int curVisibles;
+		var int numPossibleVisible; //number of  tiles possibly visible, within view distance
+		var int offset; //offset x or y by -VIEW_DISTANCE to VIEW_DISTANCE to check
+		var boolean contin;//true until wall is found or view distance is reached
+		var V2D visSpotToAdd;
+		
+		/*For this, I'm assuming you can only see in the cardinal directions. x is where you're standing, v is possibly visible. in example, view distance is 3.
+		  #########
+		  ####v####
+		  ####v####
+		  ####v####
+		  #vvvxvvv#
+		  ####v####
+		  ####v####
+		  ####v####
+		  #########
+		*/
+		
+		let numPossibleVisible = 4 * VIEW_DISTANCE;
+		
+		let visibles = Array.new(numPossibleVisible);
+		let curVisibles = 0;
+		let visSpotToAdd = V2D.empty();
+		
+		
+		//check north
+		let offset = 0;
+		let contin = true;
+		
+		while(contin)
+		{
+			if(~hasNorthWall(x,y-offset))
+			{
+				do visSpotToAdd.set(x,y-offset);
+				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
+				let curVisibles = curVisibles + 1;
+				let offset = offset + 1;
+				if(offset > VIEW_DISTANCE)
+				{
+					let contin = false;
+				}
+			}
+			else
+			{
+				let contin = false;
+			}
+		}
+		
+		//check south
+		let offset = 0;
+		let contin = true;
+		
+		while(contin)
+		{
+			if(~hasSouthWall(x,y+offset))
+			{
+				do visSpotToAdd.set(x,y+offset);
+				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
+				let curVisibles = curVisibles + 1;
+				let offset = offset + 1;
+				if(offset > VIEW_DISTANCE)
+				{
+					let contin = false;
+				}
+			}
+			else
+			{
+				let contin = false;
+			}
+		}
+		
+		//check east
+		let offset = 0;
+		let contin = true;
+		
+		while(contin)
+		{
+			if(~hasEastWall(x + offset, y))
+			{
+				do visSpotToAdd.set(x+ offset, y);
+				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
+				let curVisibles = curVisibles + 1;
+				let offset = offset + 1;
+				if(offset > VIEW_DISTANCE)
+				{
+					let contin = false;
+				}
+			}
+			else
+			{
+				let contin = false;
+			}
+		}
+		
+		//check west
+		let offset = 0;
+		let contin = true;
+		
+		while(contin)
+		{
+			if(~hasWestWall(x-offset,y))
+			{
+				do visSpotToAdd.set(x-offset, y);
+				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
+				let curVisibles = curVisibles + 1;
+				let offset = offset + 1;
+				if(offset > VIEW_DISTANCE)
+				{
+					let contin = false;
+				}
+			}
+			else
+			{
+				let contin = false;
+			}
+		}
+		
+		while(curVisibles < numPossibleVisible)
+		{
+			let visibles[curVisibles] = V2D.new(-1,-1);
+			let curVisibles = curVisibles + 1;
+		}
+		
+		return visibles;
 	}
 
 	/*
