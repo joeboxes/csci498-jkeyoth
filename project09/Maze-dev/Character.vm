@@ -1,0 +1,150 @@
+function Character.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+call Grid.getGridSize 0
+push constant 2
+call Math.divide 2
+call Grid.getGridSize 0
+push constant 2
+call Math.divide 2
+call V2D.new 2
+pop this 1
+push argument 0
+call Grid.getSizeX 1
+push argument 0
+call Grid.getSizeY 1
+call V2D.new 2
+pop this 2
+push constant 0
+push constant 1
+call V2D.new 2
+pop this 3
+push pointer 0
+return
+function Character.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Grid.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Character.move 6
+push argument 0
+pop pointer 0
+push constant 0
+pop local 3
+call V2D.empty 0
+pop local 1
+push this 1
+call Grid.coordTransform 1
+pop this 2
+push this 1
+push this 3
+push local 1
+call V2D.add 3
+pop temp 0
+push local 1
+call Grid.coordTransform 1
+pop local 2
+push this 2
+push local 2
+call V2D.equals 2
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 3
+push local 2
+call V2D.getX 1
+push this 2
+call V2D.getX 1
+sub
+pop local 4
+push local 2
+call V2D.getY 1
+push this 2
+call V2D.getY 1
+sub
+pop local 5
+label IF_FALSE0
+push constant 0
+not
+pop local 0
+push local 3
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 5
+push constant 1
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 0
+push this 2
+call V2D.getX 1
+push this 2
+call V2D.getY 1
+call Grid.hasNorthWall 3
+not
+pop local 0
+label IF_FALSE2
+push local 5
+push constant 1
+neg
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+push this 2
+call V2D.getX 1
+push this 2
+call V2D.getY 1
+call Grid.hasSouthWall 3
+not
+pop local 0
+label IF_FALSE3
+push local 4
+push constant 1
+neg
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push this 0
+push this 2
+call V2D.getX 1
+push this 2
+call V2D.getY 1
+call Grid.hasWestWall 3
+not
+pop local 0
+label IF_FALSE4
+push local 4
+push constant 1
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push this 0
+push this 2
+call V2D.getX 1
+push this 2
+call V2D.getY 1
+call Grid.hasEastWall 3
+not
+pop local 0
+label IF_FALSE5
+label IF_FALSE1
+push local 0
+return

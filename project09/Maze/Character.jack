@@ -5,7 +5,6 @@
  */
 class Character {
 
-	/* ---------- Variables ---------- */
 	field Grid world;
 	
 	// Character information
@@ -27,12 +26,12 @@ class Character {
 		return;
 	}
 
-	/**
-	Checks if the next movement will place the character in a new tile. 
-	If so, check to make sure a wall isnt in the way.
-	*/
-	
-	method boolean verifyMove()) {
+	/*
+	 * Checks to see if the next move will place the character in a new 
+	 * tile.  If so, check to make sure a wall is not in the way.  If 
+	 * nothing is in the way, move.
+	 */
+	method boolean move() {
 		
 		var boolean canMove;
 		
@@ -80,71 +79,5 @@ class Character {
 			}
 		}
 		return canMove;
-	}
-
-	method void move(int movement) {
-		var int x, y;
-		let x = direction.getX();
-		let y = direction.getY();
-
-		// 0 = none, 1 = North, 2 = South, 3 = West, 4 = East
-		// where West = counter-clockwise rotation
-		// where East = clockwise rotation
-		if (movement = 1) {
-			if (verifyMove(x,y)) {
-				var int px, py;
-				let px = pos.getX();
-				let py = pos.getY();
-
-				pos = V2D.new((px + x),(py + y));
-			}
-		}
-		if (movement = 2) {
-			var int x2, y2;
-			let x2 = -x;
-			let y2 = -y;
-
-			if (verifyMove(x2,y2)) {
-				var int px, py;
-				let px = pos.getX();
-				let py = pos.getY();
-
-				pos = V2D.new((px + x2),(py + y2));
-			}
-		}
-		if (movement = 3) {
-			if (x = -1) {
-				if (y = -1) { direction.setX(0); }
-				if (y = 0) { direction.setY(-1); }
-				if (y = 1) { direction.setY(0); }
-			}
-			if (x = 0) {
-				if (y = -1) { direction.setX(1); }
-				if (y = 1) { direction.setX(-1); }
-			}
-			if (x = 1) {
-				if (y = -1) { direction.setY(0); }
-				if (y = 0) { direction.setY(1); }
-				if (y = 1) { direction.setX(0); }
-			}
-		}
-		if (movement = 4) {
-			if (x = -1) {
-				if (y = -1) { direction.setY(0); }
-				if (y = 0) { direction.setY(1); }
-				if (y = 1) { direction.setX(0); }
-			}
-			if (x = 0) {
-				if (y = -1) { direction.setX(-1); }
-				if (y = 1) { direction.setX(1); }
-			}
-			if (x = 1) {
-				if (y = -1) { direction.setX(0); }
-				if (y = 0) { direction.setY(-1); }
-				if (y = 1) { direction.setY(0); }
-			}
-		}
-		do Sys.wait(5);
-		return;
 	}
 }
