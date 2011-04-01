@@ -64,4 +64,10 @@ class V2D {
 		}
 		return eq;
 	}
+	
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
 }
