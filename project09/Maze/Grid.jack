@@ -2,8 +2,7 @@
  * This class holds an array of Tiles that make up the maze.  This class is how
  * any other class should access the Tiles.
  */
-class Grid
-{
+class Grid {
 	/*-------------------- STATIC VARIABLES --------------------*/
 
 	/*-------------------- PRIVATE VARIABLES --------------------*/
@@ -46,6 +45,8 @@ class Grid
 		let walls[1] = hasSouthWall(x,y);
 		let walls[2] = hasEastWall(x,y);
 		let walls[3] = hasWestWall(x,y);
+
+		return walls;
 	}
 	
 	/*
@@ -111,6 +112,63 @@ class Grid
 	 */
 	method void canSeeFrom(int x, int y) {
 		return;
+	}
+
+	/*
+	 * Checks to see if the next move will place the character in a new
+	 * tile.  If so, check to make sure a wall is not in the way.  If
+	 * nothing is in the way, move.
+	 */
+	method boolean canMove(int pos_x, int pos_y, int dir_x, int dir_y) {
+		var V2D gridNum;
+		var V2D pos;
+		var V2D direction;
+		var boolean canMove;
+		var V2D soonToBePos;
+		var V2D soonToBeGridNum;
+		var boolean switching;
+		var int xmove;
+		var int ymove;
+		
+		let pos = V2D.new(pos_x,pos_y);
+		let direction = V2D.new(dir_x,dir_y);
+
+		let switching = false;
+		
+		let soonToBePos = V2D.empty();
+		
+		let gridNum = Grid.coordTransform(pos);
+		
+		do V2D.add(pos, direction, soonToBePos);
+		
+		let soonToBeGridNum = Grid.coordTransform(soonToBePos);
+		
+		if(~(V2D.equals(gridNum, soonToBeGridNum))) {
+			let switching = true;
+			let xmove = soonToBeGridNum.getX() - gridNum.getX();
+			let ymove = soonToBeGridNum.getY() - gridNum.getY();
+		}
+		let canMove = true;
+		if(switching) {
+		
+			if (ymove = 1) {
+				// move forwards (North)
+				let canMove = ~world.hasNorthWall(gridNum.getX(), gridNum.getY());
+			}
+			if (ymove = -1) {
+				// move backwards (South)
+				let canMove = ~world.hasSouthWall(gridNum.getX(), gridNum.getY());
+			}
+			if (xmove = -1) {
+				// move counter-clockwise (West)
+				let canMove = ~world.hasWestWall(gridNum.getX(), gridNum.getY());
+			}
+			if (xmove = 1) {
+				// move clockwise (East)
+				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
+			}
+		}
+		return canMove;
 	}
 	
 	/*

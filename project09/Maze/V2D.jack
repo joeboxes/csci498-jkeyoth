@@ -1,67 +1,67 @@
+/*
+ * This class a basic 2D vector implementation.  It used primarily for Tile and
+ * Grid.
+ */
+class V2D {
+	/*-------------------- STATIC VARIABLES --------------------*/
 
-class V2D
-{
+	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field int x, y;
 	
-	constructor V2D empty()
-	{
+	/*
+	 * Constructors for V2D
+	 */
+	constructor V2D empty() {
 		let x = 0;
 		let y = 0;
 		
 		return this;
 	}
 	
-	constructor V2D new(int X, int Y)
-	{
+	constructor V2D new(int X, int Y) {
 		let x = X;
 		let y = Y;
 		
 		return this;
 	}
 	
-	method int getX()
-	{
+	/*-------------------- GETTERS --------------------*/
+	method int getX() {
 		return x;
 	}
-	method int getY()
-	{
+	method int getY() {
 		return y;
 	}
 	
-	method void setX(int X)
-	{
+	/*-------------------- SETTERS --------------------*/
+	method void setX(int X) {
 		let x = X;
 		return;
 	}
-	method void setY(int Y)
-	{
+	method void setY(int Y) {
 		let y = Y;
 		return;
 	}
 	
-	/**
-	add two 2d vectors, put resultes into 3rd parameter.
-	*/
-	function void add(V2D a, V2D b, V2D res)
-	{
+	/*
+	 * Add two 2D vectors, put results into 3rd parameter.
+	 */
+	function void add(V2D a, V2D b, V2D res) {
 		do res.setX(a.getX() + b.getX());
 		do res.setY(a.getY() + b.getY());
 		return;
 	}
 	
-	/**
-	checks if two vectors are equal
-	*/	
-	function boolean equals(V2D a, V2D b)
-	{
+	/*
+	 * Checks to see if the two vectors are equal
+	 */
+	function boolean equals(V2D a, V2D b) {
 		var boolean eq;
 		let eq = true;
 		
-		if (~(a.getX() = b.getX()) | ~(a.getY() = b.getY()))
-		{
+		if (~(a.getX() = b.getX()) | ~(a.getY() = b.getY())) {
 			let eq = false;
 		}
 		return eq;
 	}
-	
 }
