@@ -1,26 +1,26 @@
-/**
-This class holds an array of Tiles that make up the maze. This class is how any other class should access the Tiles.
-*/
-
+/*
+ * This class holds an array of Tiles that make up the maze.  This class is how
+ * any other class should access the Tiles.
+ */
 class Grid
 {
-	
+	/*-------------------- STATIC VARIABLES --------------------*/
+
+	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
-	
 	static int GRID_SIZE;
-	
 	field int sizeX, sizeY;
-	
 	field int goalX, goalY;
-	
-	/**
-	Constructor for Grid
-	int sx: number of tiles in grid east-west
-	int sy: number of tiles in grid north-south
-	int gx,gy: location of goal spot
-	*/
-	constructor Grid new(int sx, int sy, int gx, int gy)
-	{
+
+	/*-------------------- PRIVATE METHODS --------------------*/
+
+	/*
+	 * Constructor for Grid
+	 * int sx: number of tiles in grid east-west
+	 * int sy: number of tiles in grid north-south
+	 * int gx,gy: location of goal spot
+	 */
+	constructor Grid new(int sx, int sy, int gx, int gy) {
 		let sizeX = sx;
 		let sizeY = sy;
 		let goalX = gx;
@@ -34,36 +34,24 @@ class Grid
 		return this;
 	}
 	
-	/**
-	Which directions have walls at point(x,y)
-	returns a boolean array: [north,east,south,west]
-	deprecating, dont use this!
-	*/
-	/*method Array getWalls(int x, int y)
-	{
-		var Tile t;
+	/*
+	 * Which walls are present at point(x,y)
+	 * Returns a boolean array: [North, South, East, West]
+	 */
+	method Array getWalls(int x, int y) {
 		var Array walls;
-		var Tile southTile;
-		var Tile eastTile;
-		
-		let t = tiles[y * sizeX + x];
+
 		let walls = Array.new(4);
-		let walls[0] = t.isNorthWall();
-		let walls[3] = t.isWestWall();
-		
-		let southTile = tiles[(y+1) * sizeX + x];
-		let walls[2] = southTile.isNorthWall();
-		
-		let eastTile = tiles[y * sizeX + x + 1];
-		let walls[1] = eastTile.isWestWall();
-		return walls;
-	}*/
+		let walls[0] = hasNorthWall(x,y);
+		let walls[1] = hasSouthWall(x,y);
+		let walls[2] = hasEastWall(x,y);
+		let walls[3] = hasWestWall(x,y);
+	}
 	
-	/**
-	Check if tile x,y has a north wall
-	*/
-	method boolean hasNorthWall(int x, int y)
-	{
+	/*
+	 * Check if tile x,y has a north wall
+	 */
+	method boolean hasNorthWall(int x, int y) {
 		var boolean has;
 		var Tile t;
 		let t = tiles[y * sizeX + x];
@@ -71,11 +59,10 @@ class Grid
 		return has;
 	}
 
-	/**
-	Check if tile x,y has a west wall
-	*/
-	method boolean hasWestWall(int x, int y)
-	{
+	/*
+	 * Check if tile x,y has a west wall
+	 */
+	method boolean hasWestWall(int x, int y) {
 		var boolean has;
 		var Tile t;
 		let t = tiles[y * sizeX + x];
@@ -83,16 +70,14 @@ class Grid
 		return has;
 	}
 
-	/**
-	Check if tile x,y has a south wall
-	*/
-	method boolean hasSouthWall(int x, int y)
-	{
+	/*
+	 * Check if tile x,y has a south wall
+	 */
+	method boolean hasSouthWall(int x, int y) {
 		var boolean has;
 		var Tile t;
 	
-		if ((x = sizeX) & (y=sizeY))
-		{
+		if ((x = sizeX) & (y=sizeY)) {
 			return true;
 		}
 		
@@ -102,16 +87,14 @@ class Grid
 		return has;
 	}
 
-	/**
-	Check if tile x,y has a east wall
-	*/
-	method boolean hasEastWall(int x, int y)
-	{
+	/*
+	 * Check if tile x,y has a east wall
+	 */
+	method boolean hasEastWall(int x, int y) {
 		var boolean has;
 		var Tile t;
 	
-		if ((x = sizeX) & (y=sizeY))
-		{
+		if ((x = sizeX) & (y=sizeY)) {
 			return true;
 		}
 		
@@ -120,23 +103,22 @@ class Grid
 		return has;
 	}
 	
-	/**
-	Used to get the array of tiles visible from tile at (x,y)
-	returns Array of Tiles 
-	*/
-	//TODO: change void to Array
-	method void canSeeFrom(int x, int y)
-	{
+	/*
+	 * Used to get the array of tiles visible from tile at (x,y)
+	 * Returns Array of Tiles
+	 *
+	 * TODO: change void to Array
+	 */
+	method void canSeeFrom(int x, int y) {
 		return;
 	}
 	
-	/**
-	Get the tile you are currently in, as an array of two numbers.
-	x,y are the world coords.
-	IS A STATIC FUNCT NOW
-	*/
-	function Array coordTransform(V2D p)
-	{
+	/*
+	 * Get the tile  you are currently in, as an array of two numbers
+	 * x,y are the world coordinates
+	 * IS A STATIC FUNCTION NOW
+	 */
+	function Array coordTransform(V2D p) {
 		var V2D pos;
 		let pos = V2D.empty();
 		do pos.setX(p.getX() / GRID_SIZE);
@@ -144,43 +126,35 @@ class Grid
 		return pos;
 	}
 	
-	//getters. No setter for size because the size of the maze should not change
-	method int getSizeX()
-	{
+	/*-------------------- GETTERS --------------------*/
+	// No setters for size since it should not change
+	method int getSizeX() {
 		return sizeX;
 	}
-	method int getSizeY()
-	{
+	method int getSizeY() {
 		return sizeY;
 	}
-	method int getGoalX()
-	{
+	method int getGoalX() {
 		return goalX;
 	}
-	method int getGoalY()
-	{
+	method int getGoalY() {
 		return goalY;
 	}
-	method void setGoal(int x, int y)
-	{
+	function int getGridSize() {
+		return GRID_SIZE;
+	}
+
+	/*-------------------- SETTERS --------------------*/
+	method void setGoal(int x, int y) {
 		let goalX = x;
 		let goalY = y;
 		return;
 	}
 	
-	
-	//I hope this is the right way to dispose an array.
-	method void dispose()
-	{
+	/*-------------------- CLEANUP --------------------*/
+	method void dispose() {
 		do tiles.dispose();
 		do Memory.deAlloc(this);
 		return;
 	}
-	
-	function int getGridSize()
-	{
-		return GRID_SIZE;
-	}
-	
-	
 }
