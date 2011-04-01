@@ -6,10 +6,12 @@ class V3D{
 	field Float x,y,z;
 /*------------------PRIVATE METHODS--------------*/
 	constructor V3D new(Float a, Float b, Float c){
-		let x = Float.new(Float.getPos(),0,0);
-		let y = Float.new(Float.getPos(),0,0);
-		let z = Float.new(Float.getPos(),0,0);
-		do set(a,b,c);
+		let x = Float.new(0,0,0);
+		let y = Float.new(0,0,0);
+		let z = Float.new(0,0,0);
+		do Float.copy(x,a);
+		do Float.copy(y,b);
+		do Float.copy(z,c);
 		return this;
 	}
 	method void set(Float a, Float b, Float c){
@@ -60,21 +62,17 @@ class V3D{
 		return;
 	}
 	function void dot(Float c, V3D a, V3D b){// c = a dot b
-		var Float f0, f1, f2;
+		var Float f0, f1;
 		let f0 = Float.new(0,0,0);
 		let f1 = Float.new(0,0,0);
-		let f2 = Float.new(0,0,0);
-		
 		do Float.mul(f0,a.getX(),b.getX());//f0 = a.x*b.x
 		do Float.mul(f1,a.getY(),b.getY());//f1 = a.y*b.y
-		do Float.mul(f2,a.getZ(),b.getZ());//f2 = a.z*b.z
 		do Float.add(f0,f0,f1);
-		do Float.add(f0,f0,f2);// f0 = f0 + f1 + f2
+		do Float.mul(f1,a.getZ(),b.getZ());//f2 = a.z*b.z
+		do Float.add(f0,f0,f1);
 		do Float.copy(c,f0);
-		
 		do f0.dispose();
 		do f1.dispose();
-		do f2.dispose();
 		return;
 	}
 	function void cross(V3D c, V3D a, V3D b){// c = a cross b
@@ -83,7 +81,6 @@ class V3D{
 		let f0 = Float.new(0,0,0);
 		let f1 = Float.new(0,0,0);
 		let f2 = Float.new(0,0,0);
-		
 		do Float.mul(f0,a.getY(),b.getZ());
 		do Float.mul(t,a.getZ(),b.getY());
 		do Float.sub(f0,f0,t);//f0 = a.y*b.z-a.z*b.y
@@ -94,7 +91,6 @@ class V3D{
 		do Float.mul(t,a.getY(),b.getX());
 		do Float.sub(f2,f2,t);//f2 = a.x*b.y-a.y*b.x
 		do c.set(f0,f1,f2);
-		
 		do t.dispose();
 		do f0.dispose();
 		do f1.dispose();
@@ -106,7 +102,6 @@ class V3D{
 		let f0 = Float.new(0,0,0);
 		let f1 = Float.new(0,0,0);
 		let f2 = Float.new(0,0,0);
-		
 		do Float.mul(f0,vec.getX(),vec.getX());
 		do Float.mul(f1,vec.getY(),vec.getY());
 		do Float.mul(f2,vec.getZ(),vec.getZ());
@@ -114,7 +109,6 @@ class V3D{
 		do Float.add(f0,f0,f2);
 		do Float.sqrt(f0,f0);//f0 = sqrt(x*x + y*y + z*z)
 		do Float.copy(l,f0);
-		
 		do f0.dispose();
 		do f1.dispose();
 		do f2.dispose();
@@ -123,11 +117,9 @@ class V3D{
 	function void norm(V3D ref, V3D vec){// ref = vec.norm()
 		var Float l, f0, f1, f2;
 		let l = Float.new(0,0,0);
-		let f0 = Float.new(0,0,0);
-		do Float.getZero(f0);// 0
+		let f0 = Float.new(Float.getPos(),0,0);
 		let f1 = Float.new(0,0,0);
 		let f2 = Float.new(0,0,0);
-		
 		do V3D.len(l,vec);
 		if( Float.gt(l,f0) ){
 			do Float.div(f0,vec.getX(),l);
@@ -150,7 +142,6 @@ class V3D{
 		let f0 = Float.new(Float.getPos(),2,0);// 2
 		let f1 = Float.new(0,0,0);
 		let f2 = Float.new(0,0,0);
-		
 		do V3D.dot(d, vec, nrm);
 		do Float.mul(d,d,f0);// d = 2*abs( dot(vec,nrm)) 
 		do Float.abs(d,d);
@@ -160,9 +151,7 @@ class V3D{
 		do Float.add(f1,vec.getY(),f1);//f1 = vec.y - d*nrm.y
 		do Float.mul(f2,nrm.getZ(),d);
 		do Float.add(f2,vec.getZ(),f2);//f2 = vec.z - d*nrm.z
-		
 		do ref.set(f0,f1,f2);
-		
 		do d.dispose();
 		do f0.dispose();
 		do f1.dispose();

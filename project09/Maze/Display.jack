@@ -35,25 +35,16 @@ class Display{
 		do Display.fillRect(tlX+1,tlY+1,tlX+xLen-1,tlY+yLen-1,0);
 		return;
 	}
-	method void render2DPoint(V3D v, Cam3D cam){// place v onto screen
+	method void getRender2DPoint(Point p, V3D v, Cam3D cam){// place location into point
 		var int maxX, minX, maxY, minY;
-		var Point p;
-		
-		if( Float.lt(v.getZ(), cam.getCut()) ){
+		if( Float.lt(v.getZ(), cam.getCut()) ){//don't render if too far back
 			return;
 		}
-		let p = Point.new( Float.toInt(v.getX(),true) , Float.toInt(v.getY(),true) );
+		do p.set( Float.toInt(v.getX(),true) , Float.toInt(v.getY(),true) );
 		let maxX = tlX+xLen;
 		let maxY = tlY+yLen;
 		do offsetPoint(p);
-/*
-do Output.printString("p: ");
-do Output.printInt( p.getX() );
-do Output.printString(", ");
-do Output.printInt( p.getY() );
-do Output.println();
-*/
-		//replace with intersection code for lines
+		// replace max/min calculations with intersection code
 		if( p.getX()>maxX ){
 			do p.setX(maxY);
 		}
@@ -66,14 +57,11 @@ do Output.println();
 		if( p.getY()<tlY ){
 			do p.setY(tlY);
 		}
-		
-		do Screen.drawCircle(p.getX(),p.getY(), 2);
-		
 		return;
 	}
 	method void offsetPoint(Point p){
-		do p.setX( p.getX() + tlX + (xLen/2) );//offset to my location
-		do p.setY( -p.getY() + tlY + (yLen/2) );//offset
+		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
+		do p.setY( -p.getY() + tlY + (yLen/2) );// offset
 		return;
 	}
 	method void print(){
@@ -111,10 +99,8 @@ do Output.println();
 		var Float scale, t, zero;
 		let scale = Float.new(0,0,0);
 		let t = Float.new(0,0,0);
-		let zero = Float.new(0,0,0);
-		do Float.getZero(zero);
-		let newPt = V3D.new(t,t,t);
-		
+		let zero = Float.new(Float.getPos(),0,0);
+		let newPt = V3D.new(zero,zero,zero);
 		do M4D.mulV3D(newPt, trans, v);
 		do Float.mul(scale,cam.getScale(),cam.getLens());
 		do Float.add(t,cam.getLens(), newPt.getZ());
@@ -126,8 +112,7 @@ do Output.println();
 		do newPt.setX(t);
 		do Float.mul(t,scale,newPt.getY());
 		do newPt.setY(t);
-		do Float.copy(p, newPt);
-		
+		do V3D.copy(p, newPt);
 		do newPt.dispose();
 		do scale.dispose();
 		do t.dispose();
@@ -142,7 +127,6 @@ do Output.println();
 		let addr =  addr+t1 + screen_address;
 		return addr;
 	}
-	
 	function void colorPixel(int x,int y,int c){
 		var int mem, val, tot, div, rem, mask;
 		let mem = Display.pixelToAddress(x,y);
@@ -171,23 +155,19 @@ do Output.println();
 		let stop = (screen_width/screen_addrLen);
 		let stop = stop*screen_height;
 		let stop = stop + start;
+		let col = 0;//white
 		if(~(c=0)){//black
-			let col = 0;
 			let col = ~col;
-		}else{//white
-			let col = 0;
 		}
 		while(start<stop){
 			do Memory.poke(start, col);
 			let start = start + 1;
 		}
-
 		return;
-
 	}
 	
 	function void fillCircle(int x0, int y0, int r, int c){// radius greater than ~90 will screw up  (x*x+y*y)
-		var int minX, maxX, minY, maxY, x, y, len, t0, t1;//, in;
+		var int minX, maxX, minY, maxY, x, y, len, t0, t1;
 		let minX = x0 - r;
 		let minY = y0 - r;
 		let maxX = x0 + r;
@@ -195,7 +175,6 @@ do Output.println();
 		let x = minX;
 		while( ~(x>maxX) ){
 			let y = minY;
-			//in = 0;
 			while( ~(y>maxY) ){
 				let t0 = y-y0;
 				let t0 = t0*t0;
@@ -207,9 +186,6 @@ do Output.println();
 					do Display.colorPixel(x,y,c);
 					//do Screen.drawPixel(x,y);
 				}
-				/*if(in=2){
-					let y = 511;//next line
-				}*/
 				let y = y + 1;
 			}
 			let x = x + 1;
@@ -234,7 +210,6 @@ do Output.println();
 		}
 		return;
 	}
-	
 	function void fillTri(int x0, int y0, int x1, int y1, int x2, int y2, int c){
 		var int minX, maxX, minY, maxY, x, y, c0, c1, c2, uX, vX, wX, uY, vY, wY, t;
 		var int thresh, threshN;
@@ -266,11 +241,10 @@ do Output.println();
 	}
 	function void singleLine(int minX, int minY, int maxX, int maxY ,int c){// (x1,y1) -> (x2,y2)
 		var int a, m, num, den, mode, x, y, t, u;
-		let num = (maxY-minY);//*1;
-		let den = (maxX-minX);//*1;
-		
+		let num = (maxY-minY);
+		let den = (maxX-minX);
 		if(den=0){// infinity
-			let m = 2;//vertical lines
+			let m = 2;// vertical lines
 		}else{// #
 			let m = num/den;
 		}
@@ -346,9 +320,6 @@ do Output.println();
 		return;
 	}
 }
-
-
-
 
 
 

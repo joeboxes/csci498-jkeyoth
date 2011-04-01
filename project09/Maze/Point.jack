@@ -10,6 +10,11 @@ class Point{
 		let y = myY;
 		return this;
 	}
+	method void set(int myX, int myY){
+		let x = myX;
+		let y = myY;
+		return;
+	}
 	method int getX(){
 		return x;
 	}

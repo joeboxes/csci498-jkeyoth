@@ -1,0 +1,11 @@
+to edit:
+change/add any of the .jack files in the project09/OS/ folder
+
+to compile:
+from the tools folder, run: ./JackCompiler.sh ../path to.../csci498-jkeyoth/project09/OS/
+
+to run:
+from the tools folder, run: ./VMEmulator.sh (&)
+	> open the folder .../project09/OS/
+	> if you get an error, press ok (theres an error in my M4D class as of now)
+	> move speed to fast, and set to no animation, and run doubletime.

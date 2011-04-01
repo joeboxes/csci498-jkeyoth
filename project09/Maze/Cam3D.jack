@@ -15,7 +15,7 @@ class Cam3D{
 		let posZ = Float.new(Float.getPos(),0,0);// 0
 		let rotY = Float.new(Float.getPos(),0,0);// 0
 		let lens = Float.new(Float.getPos(),15,2);// 150
-		let scale = Float.new(Float.getPos(),35,0);// 3.5x
+		let scale = Float.new(Float.getPos(),45,0);// 4.5x
 		let cut = Float.new(Float.getNeg(),1,2);// 100
 		return this;
 	}

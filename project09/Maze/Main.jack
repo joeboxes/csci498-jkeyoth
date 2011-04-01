@@ -3,11 +3,11 @@ class Main{
 	function void main(){
 		/*----------------- DECLARE VARS ----------------*/
 		var boolean b0, b1, b2;
-		var int i, j, k, addr, x, y, col, start, stop;
+		var int i, j, k, addr, x, y, col, start, stop, arrLen;
 		var Array arr;
-		var Float A, B, C, rot, pos, fl0;
+		var Float A, B, C, rot, pos;
 		var V3D u, v, w;
-		var M4D global, trans;
+		var M4D global;
 		var Cam3D cam;
 		var Point p;
 		var Display disp;
@@ -19,67 +19,24 @@ class Main{
 		do Cam3D.init();
 		do Point.init();
 		/*----------------- PROGRAM START ----------------*/
-		
-		let A = Float.new(0,0,0);
-		let B = Float.new(0,0,0);
-		let C = Float.new(0,0,0);
-		do A.set(Float.getPos(),1,0);
-		do B.set(Float.getPos(),2,0);
-		do C.set(Float.getPos(),3,0);
+		let A = Float.new(Float.getPos(),0,0);
+		let B = Float.new(Float.getPos(),0,0);
+		let C = Float.new(Float.getPos(),0,0);
 		let u = V3D.new(A, B, C);
-		do A.set(Float.getPos(),4,0);
-		do B.set(Float.getPos(),5,0);
-		do C.set(Float.getPos(),6,0);
 		let v = V3D.new(A, B, C);
-		do A.set(Float.getPos(),7,0);
-		do B.set(Float.getPos(),8,0);
-		do C.set(Float.getPos(),9,0);
 		let w = V3D.new(A, B, C);
-		
+		// temporary square array = 4 points * x,y = 8
+		let arrLen = 8;
+		let arr = Array.new(arrLen);
+		// global matrix
 		let global = M4D.new();
-		let trans = M4D.new();
-		
-		let disp = Display.new(512/2,256/2,150,100);
-		
-		//do M4D.mul(global,global,trans);
-/*
-		
-		do A.set(Float.getPos(),3141,0);
-		do M4D.rotateY(global,global,A);
-
-		do Output.printString("global: ");
-		do Output.println();
-		do global.print();
-		do Output.println();
-		
-		do M4D.mulV3D(u,global,v);
-		
-		do Output.printString("A: ");
-		do A.print();
-		do Output.println();
-		do Output.printString("B: ");
-		do B.print();
-		do Output.println();
-		do Output.printString("C: ");
-		do C.print();
-		do Output.println();
-		
-		do Output.printString("u: ");
-		do u.print();
-		do Output.println();
-		do Output.printString("v: ");
-		do v.print();
-		do Output.println();
-		do Output.printString("w: ");
-		do w.print();
-		do Output.println();
-*/
-		//do disp.print();
-		//MAIN LOOP:
-		let rot = Float.new(Float.getPos(),1,-1);//incrementer
-		let pos = Float.new(Float.getPos(),1,-1);//incrementer
-		let fl0 = Float.new(0,0,0);//temp float var
-		let p = Point.new(0,0);
+		//let disp = Display.new(512/2,256/2,150,100);
+		let disp = Display.new(512/2,256/2,250,150);
+		//
+		let rot = Float.new(Float.getPos(),1,-1);//increment rotation
+		let pos = Float.new(Float.getPos(),2,-1);//increment position
+		let p = Point.new(0,0);// temp screen point
+		//CAMERA:
 		let cam = Cam3D.new();
 		do A.set(Float.getPos(),0,0);
 		do B.set(Float.getPos(),5,0);
@@ -87,48 +44,49 @@ class Main{
 		do cam.setPosZ(A);
 		do cam.setPosY(B);
 		do cam.setPosZ(C);
+		
+		//MAIN LOOP:------------
 		let b0 = true;
 		while(b0){
+			// USER INPUT:
 			let i = Keyboard.keyPressed();
 			//do Output.printString("w: ");
 			//do Output.printInt(i);
 			if(i=131){//up
-				do Float.add(fl0,cam.getPosY(),pos);
-				do cam.setPosY(fl0);
-do Output.printString("cam.posY: ");
-do fl0.print();
-do Output.println();
+				do Float.add(A,cam.getPosY(),pos);
+				do cam.setPosY(A);
+				//do Output.printString("cam.posY: ");
+				//do fl0.print();
+				//do Output.println();
 			}
 			if(i=133){//down
-				do Float.sub(fl0,cam.getPosY(),pos);
-				do cam.setPosY(fl0);
-do Output.printString("cam.posY: ");
-do fl0.print();
-do Output.println();
+				do Float.sub(A,cam.getPosY(),pos);
+				do cam.setPosY(A);
+				//do Output.printString("cam.posY: ");
+				//do fl0.print();
+				//do Output.println();
 			}
 			if(i=132){//right
-//				do Screen.clearScreen();
-				do Float.add(fl0,cam.getRotY(),rot);
-				do Float.radianAlias(fl0,fl0);
-do Output.printString("cam.rotY: ");
-do fl0.print();
-do Output.println();
-
-				do cam.setRotY(fl0);
+				do Float.add(A,cam.getRotY(),rot);
+				do Float.radianAlias(A,A);
+				do cam.setRotY(A);
+				//do Output.printString("cam.rotY: ");
+				//do fl0.print();
+				//do Output.println();
 			}
 			if(i=130){//left
-//				do Screen.clearScreen();
-				do Float.sub(fl0,cam.getRotY(),rot);
-				do Float.radianAlias(fl0,fl0);
-do Output.printString("cam.rotY: ");
-do fl0.print();
-do Output.println();
-
-				do cam.setRotY(fl0);
+				do Float.sub(A,cam.getRotY(),rot);
+				do Float.radianAlias(A,A);
+				do cam.setRotY(A);
+				//do Output.printString("cam.rotY: ");
+				//do fl0.print();
+				//do Output.println();
 			}
-			//if(~(i=0)){
-			if(i=128){//enter - render
-				
+			if(~(i=0)){
+			//if(i=128){//enter - render
+				//do Output.printString("RENDER");
+				//do Output.println();
+				// ROTATE / TRANSLATE MATRIX TO CAMERA POSITION
 				do M4D.identity(global);
 				do Float.negate(A,cam.getRotY());
 				do M4D.rotateY(global,global,A);
@@ -136,80 +94,113 @@ do Output.println();
 				do Float.negate(B,cam.getPosY());
 				do Float.negate(C,cam.getPosZ());
 				do M4D.translate(global,global,A,B,C);
-				
-				
-				//do disp.clear();
+				// INIT SCREEN FOR DRAWLING
 				do Screen.clearScreen();
 				do disp.drawBounding();
 				
-				
+				// RENDER BOX:
+				// 1
 				do A.set(Float.getNeg(),1,1);
 				do B.set(Float.getPos(),0,0);
 				do C.set(Float.getPos(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+					let arr[0] = p.getX();
+					let arr[1] = p.getY();
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+				// 2
 				do A.set(Float.getNeg(),1,1);
 				do B.set(Float.getPos(),2,1);
 				do C.set(Float.getPos(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+					let arr[2] = p.getX();
+					let arr[3] = p.getY();
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+				// 3
 				do A.set(Float.getPos(),1,1);
 				do B.set(Float.getPos(),2,1);
 				do C.set(Float.getPos(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+					let arr[4] = p.getX();
+					let arr[5] = p.getY();
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+				// 4
 				do A.set(Float.getPos(),1,1);
 				do B.set(Float.getPos(),0,0);
 				do C.set(Float.getPos(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
+				do disp.getRender2DPoint(p, v, cam);
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+					let arr[6] = p.getX();
+					let arr[7] = p.getY();
 				
-				//2
+				//DRAW SQUARE:
+				do Screen.drawLine(arr[0],arr[1], arr[2],arr[3]);
+				do Screen.drawLine(arr[2],arr[3], arr[4],arr[5]);
+				do Screen.drawLine(arr[4],arr[5], arr[6],arr[7]);
+				do Screen.drawLine(arr[6],arr[7], arr[0],arr[1]);
 				
+				// 5
 				do A.set(Float.getNeg(),1,1);
 				do B.set(Float.getPos(),0,0);
 				do C.set(Float.getNeg(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+					let arr[0] = p.getX();
+					let arr[1] = p.getY();
+				// 6
 				do A.set(Float.getNeg(),1,1);
 				do B.set(Float.getPos(),2,1);
 				do C.set(Float.getNeg(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+					let arr[2] = p.getX();
+					let arr[3] = p.getY();
+				// 7
 				do A.set(Float.getPos(),1,1);
 				do B.set(Float.getPos(),2,1);
 				do C.set(Float.getNeg(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
-				
+				do disp.getRender2DPoint(p, v, cam);
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+					let arr[4] = p.getX();
+					let arr[5] = p.getY();
+				// 8
 				do A.set(Float.getPos(),1,1);
 				do B.set(Float.getPos(),0,0);
 				do C.set(Float.getNeg(),9,0);
 				do u.set(A, B, C);
 				do M4D.mulV3D(v,global,u);
 				do Display.V3Dto2D(v, global, v, cam);
-				do disp.render2DPoint(v, cam);
+				do disp.getRender2DPoint(p, v, cam);
+				//do Screen.drawCircle(p.getX(),p.getY(), 2);
+					let arr[6] = p.getX();
+					let arr[7] = p.getY();
+				
+				//DRAW SQUARE:
+				do Screen.drawLine(arr[0],arr[1], arr[2],arr[3]);
+				do Screen.drawLine(arr[2],arr[3], arr[4],arr[5]);
+				do Screen.drawLine(arr[4],arr[5], arr[6],arr[7]);
+				do Screen.drawLine(arr[6],arr[7], arr[0],arr[1]);
 			}
-			//let b0 = false;
 		}
 /*
 KEYS LIST:
@@ -220,176 +211,23 @@ RIGHT: 132
 SPACE: 32 
 ENTER: 128
 */
-		//do V3D.dot(A,u,v);
-		//do V3D.reflect(w,u,v);
-		//do V3D.cross(w,u,v);
-		//do Float.sub(C,B,A);
-		//do V3D.norm(w,u);
-		//do Float.getPi(A);
-		//do A.set(Float.getPos(),12,0);
-		//do Float.cos(B,A);
-		/*
-		let b0 = Float.gt(B,A);
-		let b1 = Float.gt(B,C);
-		let b2 = Float.gt(A,C);
-		do Output.printString("b0: ");
-		do Output.printInt(b0);
-		do Output.println();
-		do Output.printString("b1: ");
-		do Output.printInt(b1);
-		do Output.println();
-		do Output.printString("b2: ");
-		do Output.printInt(b2);
-		do Output.println();
-		*/
-		/*
-		do Output.printString("u: ");
-		do u.print();
-		do Output.println();
-		do Output.printString("v: ");
-		do v.print();
-		do Output.println();
-		do Output.printString("w: ");
-		do w.print();
-		do Output.println();
-		*/
-/*
-		do Output.printString("A: ");
-		do A.print();
-		do Output.println();
-		do Output.printString("B: ");
-		do B.print();
-		do Output.println();
-		do Output.printString("C: ");
-		do C.print();
-		do Output.println();
-*/
-		
-/*
-		let arr = Array.new(2);
-		let x = 200;
-		let y = 140;
-		let col = 0;
-		let addr = Display.pixelToAddress(x,y);
-		do Output.printString("x,y: ");
-		do Output.printInt(x);
-		do Output.printString(" ");
-		do Output.printInt(y);
-		do Output.println();		
-		do Output.printString("address: ");
-		do Output.printInt(addr);
-		do Output.println();
-		do Display.fillScreen(0);
-*/
-		/*
-		let start = 0;
-		let stop = 256;
-		let y = start;
-		while(y<stop){
-			do Display.colorPixel(x, y, col);
-			let y = y + 1;
-		}
-		*/
-/*
-do Display.fillCircle(100,80, 25, 1);
-do Screen.drawCircle(200,80,25);
-
-do Display.fillRect(50,150, 100,200, 1);
-do Screen.drawRectangle(150,150, 200,200);
-
-do Display.singleLine(100,2, 500,100, 1);
-do Screen.drawLine(100,8, 500,108);
-*/
-
-/*
-do Display.colorPixel(1, 1, col);
-do Display.colorPixel(100, 100, col);
-do Display.colorPixel(200, 100, col);
-do Display.colorPixel(100, 200, col);
-do Display.colorPixel(200, 200, col);
-
-do Display.singleLine(100,100, 200,80, 1);
-//do Screen.drawLine(120,120,220,100);
-do Display.singleLine(200,200, 250,10, 1);
-//do Screen.drawLine(205,205,255,15);
-do Display.singleLine(500,250, 400,10, 1);
-do Display.singleLine(450,240, 100,220, 1);
-*/
-//do Display.fillTri(150,50, 300,50, 250,100, 0);
-		
-		
-//do Output.printString("X: ");
-/*
-		let A = Float.new(Float.getPos(),8,0);
-		let B = Float.new(Float.getPos(),1,0);
-		let C = Float.new(0,0,0);
-		let i = 7000;
-		let j = i*10;
-		let k = i > j;
-		do Output.printString("i: ");
-		do Output.printInt(i);
-		do Output.printString(" j: ");
-		do Output.printInt(j);
-		do Output.printString(" k: ");
-		do Output.printInt(k);
-		let k = j > i;
-		do Output.printString(" ");
-		do Output.printInt(k);
-		do Output.println();
-
-		//do Float.exc(C,A);		
-		//do Float.pow(C,A,B);
-		//do Float.add(C,A,B);
-//do Float.sub(C,A,B);
-		//do Float.mul(C,A,B);
-		//do Float.div(C,A,B);
-		//do Float.sqrt(C,B);
-		//do Float.toFloat(C,k);
-		let i = Float.toInt(A,true);
-		let j = Float.toInt(B,true);
-		let k = Float.toInt(C,true);
-		do Output.printString("A: ");
-		do A.print();
-		do Output.printString(" | ");
-		do Output.printInt(i);
-		do Output.println();
-		do Output.printString("B: ");
-		do B.print();
-		do Output.printString(" | ");
-		do Output.printInt(j);
-		do Output.println();
-		do Output.printString("C: ");
-		do C.print();
-		do Output.printString(" | ");
-		do Output.printInt(k);
-		do Output.println();
 		
 		do A.dispose();
 		do B.dispose();
 		do C.dispose();
-		/*let A = Int28.new(0,0);
-		let B = Int28.new(1,8192);
-		let C = Int28.new(0,8192);
-		
-		do Output.printString("B: ");
-		do B.printBinary();
-		do Output.println();
-		do B.printDecimal();
-		do Output.println();
-		do Output.printString("C: ");
-		do C.printBinary();
-		do Output.println();
-		do C.printDecimal();
-		do Output.println();
-
-		do Int28.add(A,B,C);
-		
-		do Output.printString("A: ");
-		do A.printBinary();
-		do Output.println();
-		do A.printDecimal();
-		do Output.println();
-		*/
+		do rot.dispose();
+		do pos.dispose();
+		//
+		do arr.dispose();
+		//
+		do u.dispose();
+		do v.dispose();
+		do w.dispose();
+		//
+		do global.dispose();
+		do cam.dispose();
+		do p.dispose();
+		do disp.dispose();
 		do Output.printString(" done ");
 		do Output.println();
 		return;
