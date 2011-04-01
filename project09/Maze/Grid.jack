@@ -4,16 +4,14 @@
  */
 class Grid {
 	/*-------------------- STATIC VARIABLES --------------------*/
-
+		//
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
 	static int GRID_SIZE;
 	static int VIEW_DISTANCE; //in number of tiles
 	field int sizeX, sizeY;
 	field int goalX, goalY;
-
 	/*-------------------- PRIVATE METHODS --------------------*/
-
 	/*
 	 * Constructor for Grid
 	 * int sx: number of tiles in grid east-west
@@ -31,7 +29,6 @@ class Grid {
 		// TODO: change this to something else
 		let GRID_SIZE=10;
 		let VIEW_DISTANCE=3;
-
 		// 10 x 10 Maze
 		/*
 		 * 01234567890
@@ -159,8 +156,7 @@ class Grid {
 			let tiles[99] = Tile.new(0,0,true,false);
 		}
 		// 100 x 100 Maze
-		// On second tought, this may take too long to implement
-		
+		// On second thought, this may take too long to implement
 		return this;
 	}
 	
@@ -168,71 +164,52 @@ class Grid {
 	 * Which walls are present at point(x,y)
 	 * Returns a boolean array: [North, South, East, West]
 	 */
-	method Array getWalls(int x, int y) {
-		var Array walls;
-
-		let walls = Array.new(4);
+	method void getWalls(Array walls, int x, int y) {
+		//let walls = Array.new(4);
 		let walls[0] = hasNorthWall(x,y);
 		let walls[1] = hasSouthWall(x,y);
 		let walls[2] = hasEastWall(x,y);
 		let walls[3] = hasWestWall(x,y);
-
-		return walls;
+		return;// walls;
 	}
-	
 	/*
 	 * Check if tile x,y has a north wall
 	 */
 	method boolean hasNorthWall(int x, int y) {
-		var boolean has;
 		var Tile t;
 		let t = tiles[y * sizeX + x];
-		let has = t.isNorthWall();
-		return has;
+		return t.isNorthWall();
 	}
-
 	/*
 	 * Check if tile x,y has a west wall
 	 */
 	method boolean hasWestWall(int x, int y) {
-		var boolean has;
 		var Tile t;
 		let t = tiles[y * sizeX + x];
-		let has = t.isWestWall();
-		return has;
+		return t.isWestWall();
 	}
 
 	/*
 	 * Check if tile x,y has a south wall
 	 */
 	method boolean hasSouthWall(int x, int y) {
-		var boolean has;
 		var Tile t;
-	
 		if ((x = sizeX) & (y=sizeY)) {
 			return true;
 		}
-		
-		
 		let t = tiles[(y+1) * sizeX + x];
-		let has = t.isNorthWall();
-		return has;
+		return t.isNorthWall();
 	}
-
 	/*
 	 * Check if tile x,y has a east wall
 	 */
 	method boolean hasEastWall(int x, int y) {
-		var boolean has;
 		var Tile t;
-	
 		if ((x = sizeX) & (y=sizeY)) {
 			return true;
 		}
-		
 		let t = tiles[y * sizeX + x + 1];
-		let has = t.isWestWall();
-		return has;
+		return t.isWestWall();
 	}
 	
 	/*

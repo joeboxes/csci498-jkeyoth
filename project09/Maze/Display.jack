@@ -44,7 +44,7 @@ class Display{
 		let maxX = tlX+xLen;
 		let maxY = tlY+yLen;
 		do offsetPoint(p);
-		// replace max/min calculations with intersection code
+		// replace max/min calculations with border-lines intersection code - renderLine();
 		if( p.getX()>maxX ){
 			do p.setX(maxY);
 		}
@@ -61,7 +61,7 @@ class Display{
 	}
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
-		do p.setY( -p.getY() + tlY + (yLen/2) );// offset
+		do p.setY( p.getY() + tlY + (yLen/2) );
 		return;
 	}
 	method void print(){

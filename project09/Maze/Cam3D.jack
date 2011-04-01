@@ -14,9 +14,9 @@ class Cam3D{
 		let posY = Float.new(Float.getPos(),0,0);// 0
 		let posZ = Float.new(Float.getPos(),0,0);// 0
 		let rotY = Float.new(Float.getPos(),0,0);// 0
-		let lens = Float.new(Float.getPos(),15,2);// 150
-		let scale = Float.new(Float.getPos(),45,0);// 4.5x
-		let cut = Float.new(Float.getNeg(),1,2);// 100
+		let lens = Float.new(Float.getPos(),1,2);// 100
+		let scale = Float.new(Float.getPos(),1,1);// 10x
+		let cut = Float.new(Float.getNeg(),5,2);// -50
 		return this;
 	}
 	method void set(Float pX, Float pY, Float pZ, Float rY, Float l, Float s, Float c){
@@ -28,6 +28,26 @@ class Cam3D{
 		do Float.copy(scale,s);
 		do Float.copy(cut,c);
 		return;
+	}
+	method void getNorm(V3D norm){
+		var Float fl0;
+		let fl0 = Float.new(Float.getPos(),0,0);
+		do norm.setY(fl0);//no rotation x or z
+		do Float.sin(fl0,rotY);
+		do norm.setX(fl0);
+		do Float.cos(fl0,rotY);
+		do norm.setZ(fl0);
+		do fl0.dispose();
+		return;
+	}
+	method int getPosXInt(){
+		return Float.toInt(posX, true);
+	}
+	method int getPosYInt(){
+		return Float.toInt(posY, true);
+	}
+	method int getPosZInt(){
+		return Float.toInt(posZ, true);
 	}
 	method Float getPosX(){
 		return posX;
