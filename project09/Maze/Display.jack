@@ -59,6 +59,135 @@ class Display{
 		}
 		return;
 	}
+	method void renderLine(Point p1, Point p2, Cam3D cam){// put projected line onto screen, with clipping
+		var bool inside1, inside2;
+		var Point interrior, exterrior;
+		let exterrior = Point.new(0,0);
+		let inside1 = isInterrior(p1);
+		let inside2 = isInterrior(p2);
+		if(inside1 & inside2){// both interrior - usual
+			do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+		}else{
+			if( inside1 | inside2 ){// one interrior, one exterrior
+				if(inside1){
+					let interrior = p1;
+					let inside1 = getBorderIntersection(exterrior, p1, p2);
+				}else{
+					let interrior = p2;
+					let inside1 = getBorderIntersection(exterrior, p2, p1);
+				}
+				if(inside1){
+					do Screen.drawLine(interrior.getX(),interrior.getY(), exterrior.getX(),exterrior.getY());
+				}
+			}
+		}//both exterrior
+		do exterrior.dispose();
+		return;
+	}
+	method boolean getBorderIntersection(Point ret, Point p1, Point p2){
+		var Float fl0;
+		var V3D v0,v1,v2,v3, i0,i1;
+		var boolean b0, b1;
+		let fl0 = Float.new(Float.getPos(),0,0);
+		let v0 = V3D.new(fl0,fl0,fl0);
+		let v1 = V3D.new(fl0,fl0,fl0);
+		let v2 = V3D.new(fl0,fl0,fl0);
+		let v3 = V3D.new(fl0,fl0,fl0);
+		let i0 = V3D.new(fl0,fl0,fl0);
+		let i1 = V3D.new(fl0,fl0,fl0);
+		
+		do Float.toFloat(v0.getX(),tlX);
+		do Float.toFloat(v0.getY(),tlY);
+		do Float.toFloat(v1.getX(),tlX+xLen);
+		do Float.toFloat(v1.getY(),tlY);
+		do Float.toFloat(v2.getX(),tlX+xLen);
+		do Float.toFloat(v2.getY(),tlY+yLen);
+		do Float.toFloat(v3.getX(),tlX);
+		do Float.toFloat(v3.getY(),tlY+yLen);
+		
+		do Float.toFloat(i0.getX(),p1.getX());
+		do Float.toFloat(i0.getY(),p1.getY());
+		do Float.toFloat(i1.getX(),p2.getX());
+		do Float.toFloat(i1.getY(),p2.getY());
+		
+		let b1 = true;//assume intersection
+		let b0 = Display.getLineInt2DSeg(i0.getX(),i0.getY(),i1.getX(),i1.getY(), v0.getX() ,v0.getY(),v3.getX(),v3.getY());//LEFT
+		if( ~b0 ){
+			let b0 = Display.getLineInt2DSeg(i0.getX(),i0.getY(),i1.getX(),i1.getY(), v0.getX(),v0.getY(),v3.getX(),v3.getY());//RIGHT
+			if(~b0){
+				let b0 = Display.getLineInt2DSeg(i0.getX(),i0.getY(),i1.getX(),i1.getY(), v0.getX(),v0.getY(),v3.getX(),v3.getY());//TOP
+				if( ~b0 ){
+					let b0 = Display.getLineInt2DSeg(i0.getX(),i0.getY(),i1.getX(),i1.getY(), v0.getX(),v0.getY(),v3.getX(),v3.getY());//BOT
+					if(~b0){
+						let b1 = false;//no intersection anywhere
+					}
+				}
+			}
+		}
+		do v0.dispose();
+		do v1.dispose();
+		do v2.dispose();
+		do i0.dispose();
+		do i1.dispose();
+		do fl0.dispose();
+		return b1;
+	}
+	function boolean getLineInt2DSeg(Float aX, Float aY, Float bX, Float bY,  Float cX, Float cY, Float dX, Float dY){
+		
+		
+		
+		
+		
+		
+		return false;
+	}
+/*
+	function boolean getLineInt2DSeg(aX:Number,aY:Number,bX:Number,bY:Number, cX:Number,cY:Number,dX:Number,dY:Number){
+		var caX:Number = cX-aX;
+		var acX:Number = -caX;
+		var dcX:Number = dX-cX;
+		var baX:Number = bX-aX;
+		var caY:Number = cY-aY;
+				var acY:Number = -caY;
+		var dcY:Number = dY-cY;
+		var baY:Number = bY-aY;
+		var num2:Number = baY*caX - baX*caY;
+		var den2:Number = baX*dcY - baY*dcX;
+		if(den2==0){
+			return false;
+		}
+		var t2:Number = num2/den2;
+		var num1:Number = dcY*acX - dcX*acY;
+		var den1:Number = dcX*baY - dcY*baX;
+		if(den1==0){
+			return false;
+		}
+		var t1:Number = num1/den1;
+		if(t1>0 && t1<=1 && t2>0 && t2<=1){
+			return new V2D( aX + t1*baX, aY + t1*baY );
+			return true;
+		}
+		return false;
+	}
+*/
+	//field int posX, posY;
+	//field int tlX, tlY, xLen, yLen;
+	method boolean isInterrior(Point p){
+		if( (p1.getX()>tlX) & (p1.getX()<(tlX+xLen))){//HORIZONTAL
+			if( (p1.getY()>tlY) & (p1.getY()<(tlY+yLen))){//VERTICAL
+				return true;
+			}
+		}
+		return false;
+	}
+/*
+if both points inside : render line regularly
+if one point is inside border, and one outside border, do:
+	check intersect with 4 border lines
+	if yes:
+		render inside point to 
+		
+*/
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
 		do p.setY( p.getY() + tlY + (yLen/2) );
