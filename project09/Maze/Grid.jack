@@ -26,7 +26,6 @@ class Grid {
 		
 		let tiles = Array.new(sizeX * sizeY);
 		
-		// TODO: change this to something else
 		let GRID_SIZE=10;
 		let TILE_SIZE=100;	//number of 3D units per Tile
 		let VIEW_DISTANCE=3;
@@ -348,6 +347,8 @@ class Grid {
 			let curVisibles = curVisibles + 1;
 		}
 		
+		
+		do visSpotToAdd.dispose();
 		return visibles;
 	}
 
@@ -405,12 +406,19 @@ class Grid {
 				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
 			}
 		}
+		do pos.dispose();
+		do direction.dispose();
+		do soonToBePos.dispose();
+		do gridNum.dispose();
+		do soonToBeGridNum.dispose();
+		
 		return canMove;
 	}
 	
 	/*
 	 * Get the tile  you are currently in, as an array of two numbers
 	 * x,y are the world coordinates
+	 * Allocates, dispose returned V2D after use.
 	 * IS A STATIC FUNCTION NOW
 	 */
 	function Array coordTransform(V2D p) {
@@ -449,6 +457,7 @@ class Grid {
 	/*-------------------- CLEANUP --------------------*/
 	method void dispose() {
 		do tiles.dispose();
+		
 		do Memory.deAlloc(this);
 		return;
 	}
