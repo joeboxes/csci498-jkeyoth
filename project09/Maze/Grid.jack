@@ -7,7 +7,7 @@ class Grid {
 		//
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
-	static int GRID_SIZE;
+	static int GRID_SIZE, TILE_SIZE;
 	static int VIEW_DISTANCE; //in number of tiles
 	field int sizeX, sizeY;
 	field int goalX, goalY;
@@ -28,6 +28,7 @@ class Grid {
 		
 		// TODO: change this to something else
 		let GRID_SIZE=10;
+		let TILE_SIZE=100;	//number of 3D units per Tile
 		let VIEW_DISTANCE=3;
 		// 10 x 10 Maze
 		/*
@@ -415,8 +416,8 @@ class Grid {
 	function Array coordTransform(V2D p) {
 		var V2D pos;
 		let pos = V2D.empty();
-		do pos.setX(p.getX() / GRID_SIZE);
-		do pos.setY(p.getY() / GRID_SIZE);
+		do pos.setX(p.getX() / TILE_SIZE);
+		do pos.setY(p.getY() / TILE_SIZE);
 		return pos;
 	}
 	
