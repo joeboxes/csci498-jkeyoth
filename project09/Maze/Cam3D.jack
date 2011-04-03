@@ -16,7 +16,7 @@ class Cam3D{
 		let rotY = Float.new(Float.getPos(),0,0);// 0
 		let lens = Float.new(Float.getPos(),1,2);// 100
 		let scale = Float.new(Float.getPos(),1,1);// 10x
-		let cut = Float.new(Float.getNeg(),5,2);// -50
+		let cut = Float.new(Float.getNeg(),1,2);// -100
 		return this;
 	}
 	method void set(Float pX, Float pY, Float pZ, Float rY, Float l, Float s, Float c){

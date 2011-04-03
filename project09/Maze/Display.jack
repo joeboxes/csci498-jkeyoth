@@ -44,29 +44,14 @@ class Display{
 		let maxX = tlX+xLen;
 		let maxY = tlY+yLen;
 		do offsetPoint(p);
-/*
-		// replace max/min calculations with border-lines intersection code - renderLine();
-		if( p.getX()>maxX ){
-			do p.setX(maxY);
-		}
-		if( p.getX()<tlX ){
-			do p.setX(tlX);
-		}
-		if( p.getY()>maxY ){
-			do p.setY(maxY);
-		}
-		if( p.getY()<tlY ){
-			do p.setY(tlY);
-		}
-*/
 		return;
 	}
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
-		do p.setY( p.getY() + tlY + (yLen/2) );
+		do p.setY( p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
 		return;
 	}
-	method void renderLine(Point a, Point b, Cam3D cam){// put projected line onto screen, with clipping
+	method void renderLine(Point a, Point b){// put projected line onto screen, with clipping
 		var Point p1, p2;
 		var bool inside1, inside2;
 		
@@ -225,35 +210,6 @@ class Display{
 		do zero.dispose();
 		return b0;
 	}
-/*
-	function boolean getLineInt2DSeg(aX:Number,aY:Number,bX:Number,bY:Number, cX:Number,cY:Number,dX:Number,dY:Number){
-		var caX:Number = cX-aX;
-		var acX:Number = -caX;
-		var dcX:Number = dX-cX;
-		var baX:Number = bX-aX;
-		var caY:Number = cY-aY;
-				var acY:Number = -caY;
-		var dcY:Number = dY-cY;
-		var baY:Number = bY-aY;
-		var num2:Number = baY*caX - baX*caY;
-		var den2:Number = baX*dcY - baY*dcX;
-		if(den2==0){
-			return false;
-		}
-		var t2:Number = num2/den2;
-		var num1:Number = dcY*acX - dcX*acY;
-		var den1:Number = dcX*baY - dcY*baX;
-		if(den1==0){
-			return false;
-		}
-		var t1:Number = num1/den1;
-		if(t1>0 && t1<=1 && t2>0 && t2<=1){
-			return new V2D( aX + t1*baX, aY + t1*baY );
-			return true;
-		}
-		return false;
-	}
-*/
 	method void print(){
 		do Output.printString("center: ");
 		do Output.printInt(posX);
