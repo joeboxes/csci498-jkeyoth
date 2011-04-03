@@ -154,6 +154,8 @@ class Grid {
 			let tiles[97] = Tile.new(0,0,true,false);
 			let tiles[98] = Tile.new(0,0,true,false);
 			let tiles[99] = Tile.new(0,0,true,false);
+			// GOAL (Cake/Exit)
+			do setGoal(9,9);
 		}
 		// 100 x 100 Maze
 		// On second thought, this may take too long to implement
@@ -456,6 +458,7 @@ class Grid {
 	
 	/*-------------------- CLEANUP --------------------*/
 	method void dispose() {
+		var int i;
 		do tiles.dispose();
 		
 		do Memory.deAlloc(this);
