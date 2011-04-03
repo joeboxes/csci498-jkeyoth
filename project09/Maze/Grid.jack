@@ -18,13 +18,10 @@ class Grid {
 	 * int sy: number of tiles in grid north-south
 	 * int gx,gy: location of goal spot
 	 */
-	constructor Grid new(int sx, int sy, int gx, int gy) {
-		let sizeX = sx;
-		let sizeY = sy;
-		let goalX = gx;
-		let goalY = gy;
+	constructor Grid new() {
 		
-		let tiles = Array.new(sizeX * sizeY);
+		
+		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
 		
 		let GRID_SIZE=10;
 		let TILE_SIZE=100;	//number of 3D units per Tile
