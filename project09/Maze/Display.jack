@@ -85,29 +85,10 @@ class Display{
 					let inside1 = getBorderIntersection(p1, p2, p1);// p1 = new point
 				}
 				if(inside1){
-/*do Output.printString("L2: ");
-do Output.printInt(a.getX());
-do Output.printString(", ");
-do Output.printInt(a.getY());
-do Output.printString(" -> ");
-do Output.printInt(b.getX());
-do Output.printString(", ");
-do Output.printInt(b.getY());
-
-do Output.printString(" : ");
-do Output.printInt(p1.getX());
-do Output.printString(", ");
-do Output.printInt(p1.getY());
-do Output.printString(" -> ");
-do Output.printInt(p2.getX());
-do Output.printString(", ");
-do Output.printInt(p2.getY());
-do Output.printString(" ");
-do Output.println();
-*/
 					do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
 				}else{
 					do Output.printString("INVALID RETURN - RENDER LINE");
+					do Output.println();
 				}
 			}
 		}//both exterrior - don't drawl
