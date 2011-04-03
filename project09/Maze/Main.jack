@@ -67,7 +67,7 @@ class Main{
 		do cam.setPosZ(C);
 		let tilt = Float.new(Float.getNeg(),1,-1);//rotX tilt
 		//GRID:
-		let grid = Grid.new(10,10,9,9);
+		let grid = Grid.new();
 		let unitLength = Float.new(Float.getPos(),1,1);//10x10x10 cubes
 		
 		//MAIN LOOP:------------

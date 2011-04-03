@@ -9,16 +9,13 @@ class Tile {
 
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field boolean northWall, westWall;
-	field int x,y;
 
 	/*-------------------- PRIVATE METHODS --------------------*/
 
 	/*
 	 * Create a new tile in the grid at position (x,y)
 	 */
-	constructor Tile new(int _x, int _y, boolean north, boolean west) {
-		let x = _x;
-		let y = _y;
+	constructor Tile new(boolean north, boolean west) {
 		let northWall = north;
 		let westWall = west;
 		
@@ -34,15 +31,6 @@ class Tile {
 	
 	method boolean isWestWall() {
 		return westWall;
-	}
-	
-	
-	method int getX() {
-		return x;
-	}
-	
-	method int getY() {
-		return y;
 	}
 	
 	/*-------------------- CLEANUP --------------------*/

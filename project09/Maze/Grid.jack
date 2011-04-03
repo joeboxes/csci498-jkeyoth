@@ -7,7 +7,7 @@ class Grid {
 		//
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
-	static int GRID_SIZE;
+	static int GRID_SIZE, TILE_SIZE;
 	static int VIEW_DISTANCE; //in number of tiles
 	field int sizeX, sizeY;
 	field int goalX, goalY;
@@ -18,16 +18,13 @@ class Grid {
 	 * int sy: number of tiles in grid north-south
 	 * int gx,gy: location of goal spot
 	 */
-	constructor Grid new(int sx, int sy, int gx, int gy) {
-		let sizeX = sx;
-		let sizeY = sy;
-		let goalX = gx;
-		let goalY = gy;
+	constructor Grid new() {
 		
-		let tiles = Array.new(sizeX * sizeY);
 		
-		// TODO: change this to something else
+		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
+		
 		let GRID_SIZE=10;
+		let TILE_SIZE=100;	//number of 3D units per Tile
 		let VIEW_DISTANCE=3;
 		// 10 x 10 Maze
 		/*
@@ -45,115 +42,117 @@ class Grid {
 		 */
 		if (GRID_SIZE = 10) {
 			// Row 0
-			let tiles[0] = Tile.new(0,0,true,true);
-			let tiles[1] = Tile.new(0,0,true,false);
-			let tiles[2] = Tile.new(0,0,true,false);
-			let tiles[3] = Tile.new(0,0,true,false);
-			let tiles[4] = Tile.new(0,0,true,false);
-			let tiles[5] = Tile.new(0,0,true,true);
-			let tiles[6] = Tile.new(0,0,true,false);
-			let tiles[7] = Tile.new(0,0,true,false);
-			let tiles[8] = Tile.new(0,0,true,false);
-			let tiles[9] = Tile.new(0,0,true,false);
+			let tiles[0] = Tile.new(true,true);
+			let tiles[1] = Tile.new(true,false);
+			let tiles[2] = Tile.new(true,false);
+			let tiles[3] = Tile.new(true,false);
+			let tiles[4] = Tile.new(true,false);
+			let tiles[5] = Tile.new(true,true);
+			let tiles[6] = Tile.new(true,false);
+			let tiles[7] = Tile.new(true,false);
+			let tiles[8] = Tile.new(true,false);
+			let tiles[9] = Tile.new(true,false);
 			// Row 1
-			let tiles[10] = Tile.new(0,0,true,true);
-			let tiles[11] = Tile.new(0,0,false,true);
-			let tiles[12] = Tile.new(0,0,true,true);
-			let tiles[13] = Tile.new(0,0,true,false);
-			let tiles[14] = Tile.new(0,0,false,true);
-			let tiles[15] = Tile.new(0,0,false,true);
-			let tiles[16] = Tile.new(0,0,true,false);
-			let tiles[17] = Tile.new(0,0,true,true);
-			let tiles[18] = Tile.new(0,0,true,false);
-			let tiles[19] = Tile.new(0,0,false,true);
+			let tiles[10] = Tile.new(true,true);
+			let tiles[11] = Tile.new(false,true);
+			let tiles[12] = Tile.new(true,true);
+			let tiles[13] = Tile.new(true,false);
+			let tiles[14] = Tile.new(false,true);
+			let tiles[15] = Tile.new(false,true);
+			let tiles[16] = Tile.new(true,false);
+			let tiles[17] = Tile.new(true,true);
+			let tiles[18] = Tile.new(true,false);
+			let tiles[19] = Tile.new(false,true);
 			// Row 2
-			let tiles[20] = Tile.new(0,0,false,true);
-			let tiles[21] = Tile.new(0,0,false,false);
-			let tiles[22] = Tile.new(0,0,true,false);
-			let tiles[23] = Tile.new(0,0,false,true);
-			let tiles[24] = Tile.new(0,0,false,true);
-			let tiles[25] = Tile.new(0,0,true,false);
-			let tiles[26] = Tile.new(0,0,false,true);
-			let tiles[27] = Tile.new(0,0,false,false);
-			let tiles[28] = Tile.new(0,0,true,false);
-			let tiles[29] = Tile.new(0,0,false,true);
+			let tiles[20] = Tile.new(false,true);
+			let tiles[21] = Tile.new(false,false);
+			let tiles[22] = Tile.new(true,false);
+			let tiles[23] = Tile.new(false,true);
+			let tiles[24] = Tile.new(false,true);
+			let tiles[25] = Tile.new(true,false);
+			let tiles[26] = Tile.new(false,true);
+			let tiles[27] = Tile.new(false,false);
+			let tiles[28] = Tile.new(true,false);
+			let tiles[29] = Tile.new(false,true);
 			// Row 3
-			let tiles[30] = Tile.new(0,0,false,true);
-			let tiles[31] = Tile.new(0,0,false,true);
-			let tiles[32] = Tile.new(0,0,true,true);
-			let tiles[33] = Tile.new(0,0,false,false);
-			let tiles[34] = Tile.new(0,0,true,false);
-			let tiles[35] = Tile.new(0,0,false,true);
-			let tiles[36] = Tile.new(0,0,true,false);
-			let tiles[37] = Tile.new(0,0,true,false);
-			let tiles[38] = Tile.new(0,0,true,false);
-			let tiles[39] = Tile.new(0,0,false,true);
+			let tiles[30] = Tile.new(false,true);
+			let tiles[31] = Tile.new(false,true);
+			let tiles[32] = Tile.new(true,true);
+			let tiles[33] = Tile.new(false,false);
+			let tiles[34] = Tile.new(true,false);
+			let tiles[35] = Tile.new(false,true);
+			let tiles[36] = Tile.new(true,false);
+			let tiles[37] = Tile.new(true,false);
+			let tiles[38] = Tile.new(true,false);
+			let tiles[39] = Tile.new(false,true);
 			// Row 4
-			let tiles[40] = Tile.new(0,0,false,true);
-			let tiles[41] = Tile.new(0,0,false,true);
-			let tiles[42] = Tile.new(0,0,true,false);
-			let tiles[43] = Tile.new(0,0,false,false);
-			let tiles[44] = Tile.new(0,0,true,false);
-			let tiles[45] = Tile.new(0,0,true,false);
-			let tiles[46] = Tile.new(0,0,true,false);
-			let tiles[47] = Tile.new(0,0,true,false);
-			let tiles[48] = Tile.new(0,0,true,false);
-			let tiles[49] = Tile.new(0,0,false,false);
+			let tiles[40] = Tile.new(false,true);
+			let tiles[41] = Tile.new(false,true);
+			let tiles[42] = Tile.new(true,false);
+			let tiles[43] = Tile.new(false,false);
+			let tiles[44] = Tile.new(true,false);
+			let tiles[45] = Tile.new(true,false);
+			let tiles[46] = Tile.new(true,false);
+			let tiles[47] = Tile.new(true,false);
+			let tiles[48] = Tile.new(true,false);
+			let tiles[49] = Tile.new(false,false);
 			// Row 5
-			let tiles[50] = Tile.new(0,0,true,true);
-			let tiles[51] = Tile.new(0,0,true,false);
-			let tiles[52] = Tile.new(0,0,true,false);
-			let tiles[53] = Tile.new(0,0,false,true);
-			let tiles[54] = Tile.new(0,0,true,true);
-			let tiles[55] = Tile.new(0,0,true,false);
-			let tiles[56] = Tile.new(0,0,false,true);
-			let tiles[57] = Tile.new(0,0,true,false);
-			let tiles[58] = Tile.new(0,0,false,false);
-			let tiles[59] = Tile.new(0,0,false,true);
+			let tiles[50] = Tile.new(true,true);
+			let tiles[51] = Tile.new(true,false);
+			let tiles[52] = Tile.new(true,false);
+			let tiles[53] = Tile.new(false,true);
+			let tiles[54] = Tile.new(true,true);
+			let tiles[55] = Tile.new(true,false);
+			let tiles[56] = Tile.new(false,true);
+			let tiles[57] = Tile.new(true,false);
+			let tiles[58] = Tile.new(false,false);
+			let tiles[59] = Tile.new(false,true);
 			// Row 6
-			let tiles[60] = Tile.new(0,0,false,true);
-			let tiles[61] = Tile.new(0,0,true,false);
-			let tiles[62] = Tile.new(0,0,true,false);
-			let tiles[63] = Tile.new(0,0,false,false);
-			let tiles[64] = Tile.new(0,0,true,false);
-			let tiles[65] = Tile.new(0,0,false,false);
-			let tiles[66] = Tile.new(0,0,true,true);
-			let tiles[67] = Tile.new(0,0,true,false);
-			let tiles[68] = Tile.new(0,0,false,true);
-			let tiles[69] = Tile.new(0,0,false,true);
+			let tiles[60] = Tile.new(false,true);
+			let tiles[61] = Tile.new(true,false);
+			let tiles[62] = Tile.new(true,false);
+			let tiles[63] = Tile.new(false,false);
+			let tiles[64] = Tile.new(true,false);
+			let tiles[65] = Tile.new(false,false);
+			let tiles[66] = Tile.new(true,true);
+			let tiles[67] = Tile.new(true,false);
+			let tiles[68] = Tile.new(false,true);
+			let tiles[69] = Tile.new(false,true);
 			// Row 7
-			let tiles[70] = Tile.new(0,0,true,true);
-			let tiles[71] = Tile.new(0,0,false,true);
-			let tiles[72] = Tile.new(0,0,true,true);
-			let tiles[73] = Tile.new(0,0,false,true);
-			let tiles[74] = Tile.new(0,0,true,true);
-			let tiles[75] = Tile.new(0,0,true,false);
-			let tiles[76] = Tile.new(0,0,false,true);
-			let tiles[77] = Tile.new(0,0,false,true);
-			let tiles[78] = Tile.new(0,0,true,false);
-			let tiles[79] = Tile.new(0,0,false,true);
+			let tiles[70] = Tile.new(true,true);
+			let tiles[71] = Tile.new(false,true);
+			let tiles[72] = Tile.new(true,true);
+			let tiles[73] = Tile.new(false,true);
+			let tiles[74] = Tile.new(true,true);
+			let tiles[75] = Tile.new(true,false);
+			let tiles[76] = Tile.new(false,true);
+			let tiles[77] = Tile.new(false,true);
+			let tiles[78] = Tile.new(true,false);
+			let tiles[79] = Tile.new(false,true);
 			// Row 8
-			let tiles[80] = Tile.new(0,0,false,true);
-			let tiles[81] = Tile.new(0,0,false,true);
-			let tiles[82] = Tile.new(0,0,false,true);
-			let tiles[83] = Tile.new(0,0,false,false);
-			let tiles[84] = Tile.new(0,0,true,false);
-			let tiles[85] = Tile.new(0,0,false,false);
-			let tiles[86] = Tile.new(0,0,false,true);
-			let tiles[87] = Tile.new(0,0,true,true);
-			let tiles[88] = Tile.new(0,0,false,false);
-			let tiles[89] = Tile.new(0,0,false,false);
+			let tiles[80] = Tile.new(false,true);
+			let tiles[81] = Tile.new(false,true);
+			let tiles[82] = Tile.new(false,true);
+			let tiles[83] = Tile.new(false,false);
+			let tiles[84] = Tile.new(true,false);
+			let tiles[85] = Tile.new(false,false);
+			let tiles[86] = Tile.new(false,true);
+			let tiles[87] = Tile.new(true,true);
+			let tiles[88] = Tile.new(false,false);
+			let tiles[89] = Tile.new(false,false);
 			// Row 9
-			let tiles[90] = Tile.new(0,0,false,true);
-			let tiles[91] = Tile.new(0,0,false,false);
-			let tiles[92] = Tile.new(0,0,false,false);
-			let tiles[93] = Tile.new(0,0,false,true);
-			let tiles[94] = Tile.new(0,0,true,true);
-			let tiles[95] = Tile.new(0,0,false,false);
-			let tiles[96] = Tile.new(0,0,false,true);
-			let tiles[97] = Tile.new(0,0,true,false);
-			let tiles[98] = Tile.new(0,0,true,false);
-			let tiles[99] = Tile.new(0,0,true,false);
+			let tiles[90] = Tile.new(false,true);
+			let tiles[91] = Tile.new(false,false);
+			let tiles[92] = Tile.new(false,false);
+			let tiles[93] = Tile.new(false,true);
+			let tiles[94] = Tile.new(true,true);
+			let tiles[95] = Tile.new(false,false);
+			let tiles[96] = Tile.new(false,true);
+			let tiles[97] = Tile.new(true,false);
+			let tiles[98] = Tile.new(true,false);
+			let tiles[99] = Tile.new(true,false);
+			// GOAL (Cake/Exit)
+			do setGoal(9,9);
 		}
 		// 100 x 100 Maze
 		// On second thought, this may take too long to implement
@@ -407,19 +406,26 @@ class Grid {
 				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
 			}
 		}
+		do pos.dispose();
+		do direction.dispose();
+		do soonToBePos.dispose();
+		do gridNum.dispose();
+		do soonToBeGridNum.dispose();
+		
 		return canMove;
 	}
 	
 	/*
 	 * Get the tile  you are currently in, as an array of two numbers
 	 * x,y are the world coordinates
+	 * Allocates, dispose returned V2D after use.
 	 * IS A STATIC FUNCTION NOW
 	 */
 	function Array coordTransform(V2D p) {
 		var V2D pos;
 		let pos = V2D.empty();
-		do pos.setX(p.getX() / GRID_SIZE);
-		do pos.setY(p.getY() / GRID_SIZE);
+		do pos.setX(p.getX() / TILE_SIZE);
+		do pos.setY(p.getY() / TILE_SIZE);
 		return pos;
 	}
 	
@@ -451,6 +457,7 @@ class Grid {
 	/*-------------------- CLEANUP --------------------*/
 	method void dispose() {
 		do tiles.dispose();
+		
 		do Memory.deAlloc(this);
 		return;
 	}
