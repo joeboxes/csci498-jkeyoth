@@ -20,6 +20,12 @@ class Main
 		
 		let i = 0;
 		
+		do Output.printString("Visible tiles from: ");
+		do Output.printInt(x);
+		do Output.printString(" ");
+		do Output.printInt(y);
+		do Output.println();
+		
 		while (i < hold[0])
 		{
 			let curVis = seen[i];
@@ -29,6 +35,56 @@ class Main
 			do Output.println();
 			let i = i + 1;
 		}
+		
+		do Output.printString("Walls at: ");
+		do Output.printInt(x);
+		do Output.printString(" ");
+		do Output.printInt(y);
+		do Output.println();
+		
+		do Output.printString("North: ");
+		if(grid.hasNorthWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("South: ");
+		if(grid.hasSouthWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("East: ");
+		if(grid.hasEastWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("West: ");
+		if(grid.hasWestWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		
+		
+		
 		
 		return;
 	}
