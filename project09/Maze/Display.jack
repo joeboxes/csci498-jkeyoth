@@ -35,20 +35,17 @@ class Display{
 		do Display.fillRect(tlX+1,tlY+1,tlX+xLen-1,tlY+yLen-1,0);
 		return;
 	}
-	method void getRender2DPoint(Point p, V3D v, Cam3D cam){// place location into point
-		var int maxX, minX, maxY, minY;
+	method boolean getRender2DPoint(Point p, V3D v, Cam3D cam){// place location into point
 		if( Float.lt(v.getZ(), cam.getCut()) ){//don't render if too far back
-			return;
+			return false;
 		}
 		do p.set( Float.toInt(v.getX(),true) , Float.toInt(v.getY(),true) );
-		let maxX = tlX+xLen;
-		let maxY = tlY+yLen;
 		do offsetPoint(p);
-		return;
+		return true;
 	}
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
-		do p.setY( p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
+		do p.setY( -p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
 		return;
 	}
 	method void renderLine(Point a, Point b){// put projected line onto screen, with clipping

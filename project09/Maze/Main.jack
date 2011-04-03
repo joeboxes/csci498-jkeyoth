@@ -60,12 +60,12 @@ class Main{
 		//CAMERA:
 		let cam = Cam3D.new();
 		do A.set(Float.getPos(),5,0);
-		do B.set(Float.getPos(),0,0);
+		do B.set(Float.getPos(),5,0);
 		do C.set(Float.getPos(),5,0);
 		do cam.setPosX(A);
 		do cam.setPosY(B);
 		do cam.setPosZ(C);
-		let tilt = Float.new(Float.getNeg(),1,-1);//rotX tilt
+		let tilt = Float.new(Float.getPos(),1,-1);//rotX tilt
 		//GRID:
 		let grid = Grid.new(10,10,9,9);
 		let unitLength = Float.new(Float.getPos(),1,1);//10x10x10 cubes
@@ -151,13 +151,14 @@ do u.print();
 do Output.println();
 do Output.printString("POS: ");
 do Output.printInt(x);
-do Output.printString(", ");
+do Output.printString(",");
 do Output.printInt(z);
 do Output.println();
 				do grid.canSeeFrom(arrTemp, x, z);
 				let arrSeeLen = arrTemp[0];
 				let arrSee = arrTemp[1];
 				let i = 0;
+do Output.printString("see: ");
 				while(i<arrSeeLen){
 					let v2d0 = arrSee[i];
 					//if( (~(v2d0.getX()=-1)) & (i=0) ){
@@ -165,10 +166,15 @@ do Output.println();
 						let x = v2d0.getX();
 						let z = v2d0.getY();
 						do Main.renderCube();
+do Output.printInt(x);
+do Output.printString(", ");
+do Output.printInt(z);
+do Output.printString(" ");
 					}
 					do v2d0.dispose();
 					let i = i + 1;
 				}
+do Output.println();
 				do arrSee.dispose();
 				do Output.println();
 			}
@@ -222,42 +228,34 @@ do Output.printInt(z);*/
 /*do Output.printString("V0: ");
 do v0.print();
 do Output.println();*/
-		do M4D.mulV3D(v0,global,v0);// v0
 		do Display.V3Dto2D(v0, global, v0, cam);
 		do disp.getRender2DPoint(p, v0, cam);
 		let arrRender[0] = p.getX();
 		let arrRender[1] = p.getY();
-		do M4D.mulV3D(v1,global,v1);// v1
 		do Display.V3Dto2D(v1, global, v1, cam);
 		do disp.getRender2DPoint(p, v1, cam);
 		let arrRender[2] = p.getX();
 		let arrRender[3] = p.getY();
-		do M4D.mulV3D(v2,global,v2);// v2
 		do Display.V3Dto2D(v2, global, v2, cam);
 		do disp.getRender2DPoint(p, v2, cam);
 		let arrRender[4] = p.getX();
 		let arrRender[5] = p.getY();
-		do M4D.mulV3D(v3,global,v3);// v3
 		do Display.V3Dto2D(v3, global, v3, cam);
 		do disp.getRender2DPoint(p, v3, cam);
 		let arrRender[6] = p.getX();
 		let arrRender[7] = p.getY();
-		do M4D.mulV3D(v4,global,v4);// v4
 		do Display.V3Dto2D(v4, global, v4, cam);
 		do disp.getRender2DPoint(p, v4, cam);
 		let arrRender[8] = p.getX();
 		let arrRender[9] = p.getY();
-		do M4D.mulV3D(v5,global,v5);// v5
 		do Display.V3Dto2D(v5, global, v5, cam);
 		do disp.getRender2DPoint(p, v5, cam);
 		let arrRender[10] = p.getX();
 		let arrRender[11] = p.getY();
-		do M4D.mulV3D(v6,global,v6);// v6
 		do Display.V3Dto2D(v6, global, v6, cam);
 		do disp.getRender2DPoint(p, v6, cam);
 		let arrRender[12] = p.getX();
 		let arrRender[13] = p.getY();
-		do M4D.mulV3D(v7,global,v7);// v7
 		do Display.V3Dto2D(v7, global, v7, cam);
 		do disp.getRender2DPoint(p, v7, cam);
 		let arrRender[14] = p.getX();
