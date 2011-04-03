@@ -65,7 +65,13 @@ class Main{
 		do cam.setPosX(A);
 		do cam.setPosY(B);
 		do cam.setPosZ(C);
-		let tilt = Float.new(Float.getPos(),1,-1);//rotX tilt
+		do A.set(Float.getPos(),0,0);// 0=+z
+		do B.set(Float.getPos(),1,2);// 100
+		do C.set(Float.getPos(),3,0);
+		do cam.setRotY(A);
+		do cam.setLens(B);
+		do cam.setScale(C);
+		let tilt = Float.new(Float.getPos(),9,-1);// rotX tilt, default: +1E-1
 		//GRID:
 		let grid = Grid.new();
 		let unitLength = Float.new(Float.getPos(),1,1);//10x10x10 cubes
@@ -75,7 +81,8 @@ class Main{
 		while(b0){
 			// USER INPUT:
 			let i = Keyboard.keyPressed();
-			if(~(i=0)){
+			if(~(i=0)){				
+				// INIT SCREEN FOR DRAWLING
 				do Screen.clearScreen();
 				do disp.drawBounding();
 			}
@@ -124,8 +131,6 @@ class Main{
 				do Float.negate(A,cam.getRotY());
 				do M4D.rotateY(global,global,A);
 				do M4D.rotateX(global,global,tilt);
-				
-				// INIT SCREEN FOR DRAWLING
 				
 				// RENDER TILES:
 				do Float.copy(A,cam.getPosX());
