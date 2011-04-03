@@ -239,15 +239,20 @@ class Grid {
 		  #########
 		*/
 		
-		let numPossibleVisible = 4 * VIEW_DISTANCE;
+		let numPossibleVisible = 4 * VIEW_DISTANCE + 1;
 		
 		
 		let visibles = Array.new(numPossibleVisible);
 		let hold[0] = numPossibleVisible;
 		let hold[1] = visibles;
 		
-		let curVisibles = 0;
+		
 		let visSpotToAdd = V2D.empty();
+		
+		do visSpotToAdd.set(x,y);
+		
+		let visibles[0] = V2D.copy(visSpotToAdd);
+		let curVisibles = 1;
 		
 		
 		//check north

@@ -12,8 +12,8 @@ class Main
 		let grid = Grid.new();
 		
 		
-		let x = 7;
-		let y = 3;
+		let x = 8;
+		let y = 8;
 		let hold = Array.new(2);
 		do grid.canSeeFrom(hold,x,y);
 		let seen = hold[1];
