@@ -13,12 +13,18 @@ class Main
 		
 		
 		let x = 0;
-		let y = 1;
+		let y = 0;
 		let hold = Array.new(2);
-		do grid.canSeeFrom(hold,1,0);
+		do grid.canSeeFrom(hold,0,0);
 		let seen = hold[1];
 		
 		let i = 0;
+		
+		do Output.printString("Visible tiles from: ");
+		do Output.printInt(x);
+		do Output.printString(" ");
+		do Output.printInt(y);
+		do Output.println();
 		
 		while (i < hold[0])
 		{
@@ -29,6 +35,56 @@ class Main
 			do Output.println();
 			let i = i + 1;
 		}
+		
+		do Output.printString("Walls at: ");
+		do Output.printInt(x);
+		do Output.printString(" ");
+		do Output.printInt(y);
+		do Output.println();
+		
+		do Output.printString("North: ");
+		if(grid.hasNorthWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("South: ");
+		if(grid.hasSouthWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("East: ");
+		if(grid.hasEastWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		do Output.printString("West: ");
+		if(grid.hasWestWall(x,y))
+		{
+			do Output.printString("yes");
+		}
+		else
+		{
+			do Output.printString("no");
+		}
+		do Output.println();
+		
+		
+		
 		
 		return;
 	}
