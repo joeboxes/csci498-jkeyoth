@@ -16,6 +16,7 @@ class Main
 		let x = 0;
 		let y = 9;
 		
+
 		//while (allI < 10) //run canSeeFrom and getWalls on all
 		//{
 			//while (allJ < 10)
@@ -24,7 +25,14 @@ class Main
 				//let y = allJ;
 				let hold = Array.new(2);
 				do grid.canSeeFrom(hold,x,y);
-				let seen = hold[1];
+		
+		let x = 0;
+		let y = 0;
+		let hold = Array.new(2);
+		do grid.canSeeFrom(hold,0,0);
+		let seen = hold[1];
+		
+		let i = 0;
 		
 				let i = 0;
 		
