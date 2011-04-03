@@ -211,7 +211,7 @@ class Grid {
 	
 	/*
 	 * Used to get the array of tiles visible from tile at (x,y)
-	 * Returns Array of V2Ds, each specifying a tile, i.e. the parameter tile (x,y) would be a V2D(x,y). End of array may be filled in with V2D(-1,-1)'s
+	 * Modifies hold to -hold- [numberOfElements, arrayOfVisibles]. Expects hold to be already be an array of size 2.
 	 * Is agnostic about which direction you are facing(for now). Also assumes hallways will always be 1 wide (no rooms)
 	 *
 	 * 
@@ -241,6 +241,7 @@ class Grid {
 		
 		let numPossibleVisible = 4 * VIEW_DISTANCE;
 		
+		
 		let visibles = Array.new(numPossibleVisible);
 		let hold[0] = numPossibleVisible;
 		let hold[1] = visibles;
@@ -250,18 +251,18 @@ class Grid {
 		
 		
 		//check north
-		let offset = 1;
+		let offset = 0;
 		let contin = true;
 		
 		while(contin)
 		{
 			if(~hasNorthWall(x,y-offset))
 			{
-				do visSpotToAdd.set(x,y-offset);
+				do visSpotToAdd.set(x,y-offset-1);
 				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
 				let curVisibles = curVisibles + 1;
 				let offset = offset + 1;
-				if(offset > VIEW_DISTANCE)
+				if(~(offset < VIEW_DISTANCE)) //>=
 				{
 					let contin = false;
 				}
@@ -273,18 +274,18 @@ class Grid {
 		}
 		
 		//check south
-		let offset = 1;
+		let offset = 0;
 		let contin = true;
 		
 		while(contin)
 		{
 			if(~hasSouthWall(x,y+offset))
 			{
-				do visSpotToAdd.set(x,y+offset);
+				do visSpotToAdd.set(x,y+offset+1);
 				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
 				let curVisibles = curVisibles + 1;
 				let offset = offset + 1;
-				if(offset > VIEW_DISTANCE)
+				if(~(offset < VIEW_DISTANCE))
 				{
 					let contin = false;
 				}
@@ -296,18 +297,18 @@ class Grid {
 		}
 		
 		//check east
-		let offset = 1;
+		let offset = 0;
 		let contin = true;
 		
 		while(contin)
 		{
 			if(~hasEastWall(x + offset, y))
 			{
-				do visSpotToAdd.set(x+ offset, y);
+				do visSpotToAdd.set(x+offset+1, y);
 				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
 				let curVisibles = curVisibles + 1;
 				let offset = offset + 1;
-				if(offset > VIEW_DISTANCE)
+				if(~(offset < VIEW_DISTANCE))
 				{
 					let contin = false;
 				}
@@ -319,18 +320,18 @@ class Grid {
 		}
 		
 		//check west
-		let offset = 1;
+		let offset = 0;
 		let contin = true;
 		
 		while(contin)
 		{
 			if(~hasWestWall(x-offset,y))
 			{
-				do visSpotToAdd.set(x-offset, y);
+				do visSpotToAdd.set(x-offset-1, y);
 				let visibles[curVisibles] = V2D.copy(visSpotToAdd);
 				let curVisibles = curVisibles + 1;
 				let offset = offset + 1;
-				if(offset > VIEW_DISTANCE)
+				if(~(offset < VIEW_DISTANCE))
 				{
 					let contin = false;
 				}
