@@ -8,7 +8,7 @@ class Main{
 		static V3D v0, v1, v2, v3, v4, v5, v6, v7;
 		static M4D global;
 		static Cam3D cam;
-		static Point p;
+		static Point p, q;
 		static Display disp;
 		static Grid grid;
 	function void main(){
@@ -52,6 +52,7 @@ class Main{
 		let rot = Float.new(Float.getPos(),1,-1);//increment rotation
 		let pos = Float.new(Float.getPos(),2,0);//increment position
 		let p = Point.new(0,0);// temp screen point
+		let q = Point.new(0,0);// temp screen point
 		//CAMERA:
 		let cam = Cam3D.new();
 		do A.set(Float.getPos(),5,0);
@@ -144,7 +145,7 @@ do Output.println();
 				let arrWalls[2] = -1;
 				let arrWalls[3] = -1;
 				
-		do Output.printString("walls: ");
+		do Output.printString("w: ");
 		do Output.printInt(arrWalls[0]);
 		do Output.printString(", ");
 		do Output.printInt(arrWalls[1]);
@@ -160,9 +161,9 @@ do Output.println();
 				do Float.toFloat(v0.getZ(),z);
 				do Float.mul(v0.getZ(),v0.getZ(),unitLength);
 				do Float.getZero(v0.getY());
-		do Output.printString("CORNER: ");
+		/*do Output.printString("CORNER: ");
 		do v0.print();
-		do Output.println();
+		do Output.println();*/
 				do V3D.copy(v1,v0);// v1
 				do Float.add(v1.getZ(),v1.getZ(),unitLength);
 				do V3D.copy(v2,v1);// v2
@@ -219,6 +220,61 @@ do Output.println();
 				let arrRender[14] = p.getX();
 				let arrRender[15] = p.getY();
 				// RENDER 12 LINES FOR CUBE
+				
+				if(arrWalls[0]){// EXCLUSIVE NORTH
+					do p.set(arrRender[0],arrRender[1]);
+					do q.set(arrRender[6],arrRender[7]);
+					do disp.renderLine(p, q, cam);// BOTTOM
+					do p.set(arrRender[8],arrRender[9]);
+					do q.set(arrRender[14],arrRender[15]);
+					do disp.renderLine(p, q, cam);// TOP
+				}
+				if(arrWalls[1]){// EXCLUSIVE EAST
+					do p.set(arrRender[6],arrRender[7]);
+					do q.set(arrRender[4],arrRender[5]);
+					do disp.renderLine(p, q, cam);// BOTTOM
+					do p.set(arrRender[14],arrRender[15]);
+					do q.set(arrRender[12],arrRender[13]);
+					do disp.renderLine(p, q, cam);// TOP
+				}
+				if(arrWalls[0]){// EXCLUSIVE SOUTH
+					do p.set(arrRender[4],arrRender[5]);
+					do q.set(arrRender[2],arrRender[3]);
+					do disp.renderLine(p, q, cam);// BOTTOM
+					do p.set(arrRender[12],arrRender[13]);
+					do q.set(arrRender[10],arrRender[11]);
+					do disp.renderLine(p, q, cam);// TOP
+				}
+				if(arrWalls[1]){// EXCLUSIVE WEST
+					do p.set(arrRender[2],arrRender[3]);
+					do q.set(arrRender[0],arrRender[1]);
+					do disp.renderLine(p, q, cam);// BOTTOM
+					do p.set(arrRender[10],arrRender[11]);
+					do q.set(arrRender[8],arrRender[9]);
+					do disp.renderLine(p, q, cam);// TOP
+				}
+				if(arrWalls[0] | arrWalls[1]){// NORTH | EAST
+					do p.set(arrRender[6],arrRender[7]);
+					do q.set(arrRender[14],arrRender[15]);
+					do disp.renderLine(p, q, cam);
+				}
+				if(arrWalls[1] | arrWalls[2]){// EAST | SOUTH
+					do p.set(arrRender[4],arrRender[5]);
+					do q.set(arrRender[12],arrRender[13]);
+					do disp.renderLine(p, q, cam);
+				}
+				if(arrWalls[2] | arrWalls[3]){// SOUTH | WEST
+					do p.set(arrRender[2],arrRender[3]);
+					do q.set(arrRender[10],arrRender[11]);
+					do disp.renderLine(p, q, cam);
+				}
+				if(arrWalls[3] | arrWalls[0]){// WEST | NORTH
+					do p.set(arrRender[0],arrRender[1]);
+					do q.set(arrRender[8],arrRender[9]);
+					do disp.renderLine(p, q, cam);
+				}
+				
+				/*
 				if(arrWalls[0]){// EXCLUSIVE NORTH
 					do Screen.drawLine(arrRender[0],arrRender[1], arrRender[6],arrRender[7]);// BOTTOM
 					do Screen.drawLine(arrRender[8],arrRender[9], arrRender[14],arrRender[15]);// TOP
@@ -247,7 +303,7 @@ do Output.println();
 				if(arrWalls[3] | arrWalls[0]){// WEST | NORTH
 					do Screen.drawLine(arrRender[0],arrRender[1], arrRender[8],arrRender[9]);
 				}
-				
+				*/
 				
 				
 				/*do Float.toFloat(A,x);
