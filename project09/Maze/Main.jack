@@ -67,7 +67,7 @@ class Main{
 		do cam.setPosZ(C);
 		let tilt = Float.new(Float.getNeg(),1,-1);//rotX tilt
 		//GRID:
-		let grid = Grid.new();
+		let grid = Grid.new(10,10,9,9);
 		let unitLength = Float.new(Float.getPos(),1,1);//10x10x10 cubes
 		
 		//MAIN LOOP:------------
@@ -160,7 +160,8 @@ do Output.println();
 				let i = 0;
 				while(i<arrSeeLen){
 					let v2d0 = arrSee[i];
-					if( (~(v2d0.getX()=-1)) & (i=0) ){
+					//if( (~(v2d0.getX()=-1)) & (i=0) ){
+					if( (~(v2d0.getX()=-1)) ){
 						let x = v2d0.getX();
 						let z = v2d0.getY();
 						do Main.renderCube();
@@ -218,9 +219,9 @@ do Output.printInt(z);*/
 		do V3D.copy(v7,v3);// v7
 		do Float.add(v7.getY(),v7.getY(),unitLength);
 		// CONVERT TO 2D
-do Output.printString("V0: ");
+/*do Output.printString("V0: ");
 do v0.print();
-do Output.println();
+do Output.println();*/
 		do M4D.mulV3D(v0,global,v0);// v0
 		do Display.V3Dto2D(v0, global, v0, cam);
 		do disp.getRender2DPoint(p, v0, cam);

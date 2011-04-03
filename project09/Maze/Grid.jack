@@ -7,7 +7,7 @@ class Grid {
 		//
 	/*-------------------- PRIVATE VARIABLES --------------------*/
 	field Array tiles;
-	static int GRID_SIZE, TILE_SIZE;
+	static int GRID_SIZE;
 	static int VIEW_DISTANCE; //in number of tiles
 	field int sizeX, sizeY;
 	field int goalX, goalY;
@@ -18,13 +18,16 @@ class Grid {
 	 * int sy: number of tiles in grid north-south
 	 * int gx,gy: location of goal spot
 	 */
-	constructor Grid new() {
+	constructor Grid new(int sx, int sy, int gx, int gy) {
+		let sizeX = sx;
+		let sizeY = sy;
+		let goalX = gx;
+		let goalY = gy;
 		
+		let tiles = Array.new(sizeX * sizeY);
 		
-		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
-		
+		// TODO: change this to something else
 		let GRID_SIZE=10;
-		let TILE_SIZE=100;	//number of 3D units per Tile
 		let VIEW_DISTANCE=3;
 		// 10 x 10 Maze
 		/*
@@ -151,8 +154,6 @@ class Grid {
 			let tiles[97] = Tile.new(true,false);
 			let tiles[98] = Tile.new(true,false);
 			let tiles[99] = Tile.new(true,false);
-			// GOAL (Cake/Exit)
-			do setGoal(9,9);
 		}
 		// 100 x 100 Maze
 		// On second thought, this may take too long to implement
@@ -406,26 +407,19 @@ class Grid {
 				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
 			}
 		}
-		do pos.dispose();
-		do direction.dispose();
-		do soonToBePos.dispose();
-		do gridNum.dispose();
-		do soonToBeGridNum.dispose();
-		
 		return canMove;
 	}
 	
 	/*
 	 * Get the tile  you are currently in, as an array of two numbers
 	 * x,y are the world coordinates
-	 * Allocates, dispose returned V2D after use.
 	 * IS A STATIC FUNCTION NOW
 	 */
 	function Array coordTransform(V2D p) {
 		var V2D pos;
 		let pos = V2D.empty();
-		do pos.setX(p.getX() / TILE_SIZE);
-		do pos.setY(p.getY() / TILE_SIZE);
+		do pos.setX(p.getX() / GRID_SIZE);
+		do pos.setY(p.getY() / GRID_SIZE);
 		return pos;
 	}
 	
@@ -457,7 +451,6 @@ class Grid {
 	/*-------------------- CLEANUP --------------------*/
 	method void dispose() {
 		do tiles.dispose();
-		
 		do Memory.deAlloc(this);
 		return;
 	}
