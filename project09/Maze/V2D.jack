@@ -62,13 +62,10 @@ class V2D {
 	 * Checks to see if the two vectors are equal
 	 */
 	function boolean equals(V2D a, V2D b) {
-		var boolean eq;
-		let eq = true;
-		
 		if (~(a.getX() = b.getX()) | ~(a.getY() = b.getY())) {
-			let eq = false;
+			return false;
 		}
-		return eq;
+		return true;
 	}
 	
 	/**
@@ -77,9 +74,7 @@ class V2D {
 	function V2D copy(V2D a)
 	{
 		var V2D n;
-		
 		let n = V2D.new(a.getX(), a.getY());
-		
 		return n;
 	}
 	

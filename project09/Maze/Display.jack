@@ -44,25 +44,171 @@ class Display{
 		let maxX = tlX+xLen;
 		let maxY = tlY+yLen;
 		do offsetPoint(p);
-		// replace max/min calculations with border-lines intersection code - renderLine();
-		if( p.getX()>maxX ){
-			do p.setX(maxY);
-		}
-		if( p.getX()<tlX ){
-			do p.setX(tlX);
-		}
-		if( p.getY()>maxY ){
-			do p.setY(maxY);
-		}
-		if( p.getY()<tlY ){
-			do p.setY(tlY);
-		}
 		return;
 	}
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
-		do p.setY( p.getY() + tlY + (yLen/2) );
+		do p.setY( p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
 		return;
+	}
+	method void renderLine(Point a, Point b){// put projected line onto screen, with clipping
+		var Point p1, p2;
+		var bool inside1, inside2;
+		
+		let p1 = Point.new(a.getX(),a.getY());
+		let p2 = Point.new(b.getX(),b.getY());
+		
+		let inside1 = isInterrior(p1);
+		let inside2 = isInterrior(p2);
+		if(inside1 & inside2){// both interrior - usual
+			do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+		}else{
+			if( inside1 | inside2 ){// one interrior, one exterrior
+				if(inside1){
+					let inside1 = getBorderIntersection(p2, p1, p2);// p2 = new point
+				}else{
+					let inside1 = getBorderIntersection(p1, p2, p1);// p1 = new point
+				}
+				if(inside1){
+					do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+				}else{
+					do Output.printString("INVALID RETURN - RENDER LINE");
+					do Output.println();
+				}
+			}
+		}//both exterrior - don't drawl
+		do p1.dispose();
+		do p2.dispose();
+		return;
+	}
+	method boolean isInterrior(Point p1){
+		if( (p1.getX()>tlX) & (p1.getX()<(tlX+xLen))){//HORIZONTAL
+			if( (p1.getY()>tlY) & (p1.getY()<(tlY+yLen))){//VERTICAL
+				return true;
+			}
+		}
+		return false;
+	}
+	method boolean getBorderIntersection(Point ret, Point p1, Point p2){
+		var Float fl0;
+		var V3D v0,v1,v2,v3, i0,i1, temp;
+		var boolean b0;
+		var int i;
+		let fl0 = Float.new(Float.getPos(),0,0);
+		let v0 = V3D.new(fl0,fl0,fl0);
+		let v1 = V3D.new(fl0,fl0,fl0);
+		let v2 = V3D.new(fl0,fl0,fl0);
+		let v3 = V3D.new(fl0,fl0,fl0);
+		let i0 = V3D.new(fl0,fl0,fl0);
+		let i1 = V3D.new(fl0,fl0,fl0);
+		let temp = V3D.new(fl0,fl0,fl0);
+		
+		do Float.toFloat(v0.getX(),tlX);
+		do Float.toFloat(v0.getY(),tlY);
+		let i = tlX+xLen;
+		do Float.toFloat(v1.getX(),i);
+		do Float.toFloat(v1.getY(),tlY);
+		let i = tlX+xLen;
+		do Float.toFloat(v2.getX(),i);
+		let i = tlY+yLen;
+		do Float.toFloat(v2.getY(),i);
+		do Float.toFloat(v3.getX(),tlX);
+		let i = tlY+yLen;
+		do Float.toFloat(v3.getY(),i);
+		
+		do Float.toFloat(i0.getX(),p1.getX());
+		do Float.toFloat(i0.getY(),p1.getY());
+		do Float.toFloat(i1.getX(),p2.getX());
+		do Float.toFloat(i1.getY(),p2.getY());
+		let b0 = Display.getLineInt2DSeg(temp, i0.getX(),i0.getY(),i1.getX(),i1.getY(), v3.getX(),v3.getY(),v0.getX(),v0.getY());//LEFT
+		if( ~b0 ){
+			let b0 = Display.getLineInt2DSeg(temp, i0.getX(),i0.getY(),i1.getX(),i1.getY(), v1.getX(),v1.getY(),v2.getX(),v2.getY());//RIGHT
+			if( ~b0 ){
+				let b0 = Display.getLineInt2DSeg(temp, i0.getX(),i0.getY(),i1.getX(),i1.getY(), v0.getX(),v0.getY(),v1.getX(),v1.getY());//TOP
+				if( ~b0 ){
+					let b0 = Display.getLineInt2DSeg(temp, i0.getX(),i0.getY(),i1.getX(),i1.getY(), v2.getX(),v2.getY(),v3.getX(),v3.getY());//BOT
+				}
+			}
+		}
+		if(b0){
+			do ret.setX( Float.toInt(temp.getX(), true) );
+			do ret.setY( Float.toInt(temp.getY(), true) );
+		}
+		do v0.dispose();
+		do v1.dispose();
+		do v2.dispose();
+		do v3.dispose();
+		do i0.dispose();
+		do i1.dispose();
+		do temp.dispose();
+		do fl0.dispose();
+		return b0;
+	}
+	function boolean getLineInt2DSeg(V3D ret, Float aX, Float aY, Float bX, Float bY,  Float cX, Float cY, Float dX, Float dY){
+		var Float caX, dcX, baX, caY, dcY, baY, num, den, t, zero;
+		var boolean b0;
+		
+		let caX = Float.new(0,0,0);
+		let dcX = Float.new(0,0,0);
+		let baX = Float.new(0,0,0);
+		let caY = Float.new(0,0,0);
+		let dcY = Float.new(0,0,0);
+		let baY = Float.new(0,0,0);
+		let num = Float.new(0,0,0);
+		let den = Float.new(0,0,0);
+		let t = Float.new(0,0,0);
+		let zero = Float.new(Float.getPos(),0,0);
+		
+		do Float.sub(caX,cX,aX);
+		do Float.sub(dcX,dX,cX);
+		do Float.sub(baX,bX,aX);
+		do Float.sub(caY,cY,aY);
+		do Float.sub(dcY,dY,cY);
+		do Float.sub(baY,bY,aY);
+		do Float.mul(num,baY,caX);//num = baY*caX - baX*caY
+		do Float.mul(t,baX,caY);
+		do Float.sub(num,num,t);
+		do Float.mul(den,baX,dcY);//den = baX*dcY - baY*dcX
+		do Float.mul(t,baY,dcX);
+		do Float.sub(den,den,t);
+		
+		if(Float.eq(den,zero)){
+			let b0 = false;
+		}else{//t2 = t, t1 = num, caX = TEMP
+			do Float.div(t,num,den);
+			do Float.mul(num,dcX,caY);//num = dcX*caY - dcY*caX
+			do Float.mul(caX,dcY,caX);
+			do Float.sub(num,num,caX);
+			do Float.mul(den,dcX,baY);//den = dcX*baY - dcY*baX
+			do Float.mul(caX,dcY,baX);
+			do Float.sub(den,den,caX);
+			if(Float.eq(den,zero)){
+				let b0 = false;
+			}else{
+				do Float.div(num,num,den);
+				do caX.set(Float.getPos(),1,0);// 1
+				if( Float.gt(num,zero) & Float.le(num,caX) & Float.gt(t,zero) & Float.le(t,caX) ){
+					do Float.mul(caX,num,baX);
+					do Float.add(caX,caX,aX);
+					do ret.setX(caX);//num*baX+aY
+					do Float.mul(caX,num,baY);
+					do Float.add(caX,caX,aY);
+					do ret.setY(caX);//num*baY+aY
+					let b0 = true;
+				}
+			}
+		}
+		do caX.dispose();
+		do dcX.dispose();
+		do baX.dispose();
+		do caY.dispose();
+		do dcY.dispose();
+		do baY.dispose();
+		do num.dispose();
+		do den.dispose();
+		do t.dispose();
+		do zero.dispose();
+		return b0;
 	}
 	method void print(){
 		do Output.printString("center: ");

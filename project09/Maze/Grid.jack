@@ -19,14 +19,12 @@ class Grid {
 	 */
 	constructor Grid new() {
 		
-		
-		
-		
 		let GRID_SIZE=10;
 		
 		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
 		
 		let TILE_SIZE=100;	//number of 3D units per Tile
+
 		let VIEW_DISTANCE=3;
 		// 10 x 10 Maze
 		/*
@@ -153,8 +151,6 @@ class Grid {
 			let tiles[97] = Tile.new(true,false);
 			let tiles[98] = Tile.new(true,false);
 			let tiles[99] = Tile.new(true,false);
-			// GOAL (Cake/Exit)
-			do setGoal(9,9);
 		}
 		// 100 x 100 Maze
 		// On second thought, this may take too long to implement
@@ -222,8 +218,8 @@ class Grid {
 	 * Uses VIEW_DISTANCE
 	 *
 	 */
-	method Array canSeeFrom(int x, int y) {
-		var Tile thisTile;
+	method Array canSeeFrom(Array hold, int x, int y) {
+//		var Tile thisTile;
 		var Array visibles;
 		var int curVisibles;
 		var int numPossibleVisible; //number of  tiles possibly visible, within view distance
@@ -246,6 +242,9 @@ class Grid {
 		let numPossibleVisible = 4 * VIEW_DISTANCE;
 		
 		let visibles = Array.new(numPossibleVisible);
+		let hold[0] = numPossibleVisible;
+		let hold[1] = visibles;
+		
 		let curVisibles = 0;
 		let visSpotToAdd = V2D.empty();
 		
@@ -347,10 +346,8 @@ class Grid {
 			let visibles[curVisibles] = V2D.new(-1,-1);
 			let curVisibles = curVisibles + 1;
 		}
-		
-		
 		do visSpotToAdd.dispose();
-		return visibles;
+		return hold;
 	}
 
 	/*
@@ -407,26 +404,19 @@ class Grid {
 				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
 			}
 		}
-		do pos.dispose();
-		do direction.dispose();
-		do soonToBePos.dispose();
-		do gridNum.dispose();
-		do soonToBeGridNum.dispose();
-		
 		return canMove;
 	}
 	
 	/*
 	 * Get the tile  you are currently in, as an array of two numbers
 	 * x,y are the world coordinates
-	 * Allocates, dispose returned V2D after use.
 	 * IS A STATIC FUNCTION NOW
 	 */
 	function Array coordTransform(V2D p) {
 		var V2D pos;
 		let pos = V2D.empty();
-		do pos.setX(p.getX() / TILE_SIZE);
-		do pos.setY(p.getY() / TILE_SIZE);
+		do pos.setX(p.getX() / GRID_SIZE);
+		do pos.setY(p.getY() / GRID_SIZE);
 		return pos;
 	}
 	
@@ -458,7 +448,6 @@ class Grid {
 	/*-------------------- CLEANUP --------------------*/
 	method void dispose() {
 		do tiles.dispose();
-		
 		do Memory.deAlloc(this);
 		return;
 	}
