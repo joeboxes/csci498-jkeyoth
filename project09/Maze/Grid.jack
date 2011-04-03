@@ -218,8 +218,9 @@ class Grid {
 	 * Uses VIEW_DISTANCE
 	 *
 	 */
-	method void canSeeFrom(Array visibles, int x, int y) {
+	method void canSeeFrom(Array hold, int x, int y) {
 //		var Tile thisTile;
+		var Array visibles;
 		var int curVisibles;
 		var int numPossibleVisible; //number of  tiles possibly visible, within view distance
 		var int offset; //offset x or y by -VIEW_DISTANCE to VIEW_DISTANCE to check
@@ -346,7 +347,7 @@ class Grid {
 			let curVisibles = curVisibles + 1;
 		}
 		do visSpotToAdd.dispose();
-		return visibles;
+		return;
 	}
 
 	/*
