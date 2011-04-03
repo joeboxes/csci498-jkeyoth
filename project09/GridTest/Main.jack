@@ -12,10 +12,10 @@ class Main
 		let grid = Grid.new();
 		
 		
-		let x = 3;
-		let y = 4;
+		let x = 0;
+		let y = 1;
 		let hold = Array.new(2);
-		do grid.canSeeFrom(hold,x,y);
+		do grid.canSeeFrom(hold,1,0);
 		let seen = hold[1];
 		
 		let i = 0;
