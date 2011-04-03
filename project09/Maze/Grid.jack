@@ -9,7 +9,6 @@ class Grid {
 	field Array tiles;
 	static int GRID_SIZE, TILE_SIZE;
 	static int VIEW_DISTANCE; //in number of tiles
-	field int sizeX, sizeY;
 	field int goalX, goalY;
 	/*-------------------- PRIVATE METHODS --------------------*/
 	/*
@@ -21,9 +20,12 @@ class Grid {
 	constructor Grid new() {
 		
 		
-		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
+		
 		
 		let GRID_SIZE=10;
+		
+		let tiles = Array.new(GRID_SIZE*GRID_SIZE);
+		
 		let TILE_SIZE=100;	//number of 3D units per Tile
 		let VIEW_DISTANCE=3;
 		// 10 x 10 Maze
@@ -176,7 +178,7 @@ class Grid {
 	 */
 	method boolean hasNorthWall(int x, int y) {
 		var Tile t;
-		let t = tiles[y * sizeX + x];
+		let t = tiles[y * GRID_SIZE + x];
 		return t.isNorthWall();
 	}
 	/*
@@ -184,7 +186,7 @@ class Grid {
 	 */
 	method boolean hasWestWall(int x, int y) {
 		var Tile t;
-		let t = tiles[y * sizeX + x];
+		let t = tiles[y * GRID_SIZE + x];
 		return t.isWestWall();
 	}
 
@@ -193,10 +195,10 @@ class Grid {
 	 */
 	method boolean hasSouthWall(int x, int y) {
 		var Tile t;
-		if ((x = sizeX) & (y=sizeY)) {
+		if (y=GRID_SIZE) {
 			return true;
 		}
-		let t = tiles[(y+1) * sizeX + x];
+		let t = tiles[(y+1) * GRID_SIZE + x];
 		return t.isNorthWall();
 	}
 	/*
@@ -204,10 +206,10 @@ class Grid {
 	 */
 	method boolean hasEastWall(int x, int y) {
 		var Tile t;
-		if ((x = sizeX) & (y=sizeY)) {
+		if (x = GRID_SIZE) {
 			return true;
 		}
-		let t = tiles[y * sizeX + x + 1];
+		let t = tiles[y * GRID_SIZE + x + 1];
 		return t.isWestWall();
 	}
 	
@@ -249,7 +251,7 @@ class Grid {
 		
 		
 		//check north
-		let offset = 0;
+		let offset = 1;
 		let contin = true;
 		
 		while(contin)
@@ -272,7 +274,7 @@ class Grid {
 		}
 		
 		//check south
-		let offset = 0;
+		let offset = 1;
 		let contin = true;
 		
 		while(contin)
@@ -295,7 +297,7 @@ class Grid {
 		}
 		
 		//check east
-		let offset = 0;
+		let offset = 1;
 		let contin = true;
 		
 		while(contin)
@@ -318,7 +320,7 @@ class Grid {
 		}
 		
 		//check west
-		let offset = 0;
+		let offset = 1;
 		let contin = true;
 		
 		while(contin)
@@ -431,10 +433,10 @@ class Grid {
 	/*-------------------- GETTERS --------------------*/
 	// No setters for size since it should not change
 	method int getSizeX() {
-		return sizeX;
+		return GRID_SIZE;
 	}
 	method int getSizeY() {
-		return sizeY;
+		return GRID_SIZE;
 	}
 	method int getGoalX() {
 		return goalX;

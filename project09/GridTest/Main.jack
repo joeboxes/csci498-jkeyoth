@@ -1,0 +1,33 @@
+//Main
+class Main
+{
+	static Grid grid;
+	function void main()
+	{
+		var int x,y,i;
+		var Array seen;
+		var V2D curVis;
+		
+		
+		let grid = Grid.new();
+		
+		
+		let x = 3;
+		let y = 4;
+		let seen = grid.canSeeFrom(x,y);
+		
+		let i = 0;
+		
+		while (i < 12)
+		{
+			let curVis = seen[i];
+			do Output.printInt(curVis.getX());
+			do Output.printString(" ");
+			do Output.printInt(curVis.getY());
+			do Output.println();
+			let i = i + 1;
+		}
+		
+		return;
+	}
+}
