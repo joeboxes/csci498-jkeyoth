@@ -1,20 +1,43 @@
 //Main
 class Main{
-		static boolean b0, b1, b2;
-		static int i, j, k, addr, x, y, z, col, start, stop, arrLen, arrSeeLen;
-		static Array arrRender, arrWalls, arrSee, arrTemp;
-		static LineBuffer buffer;
-		static Float A, B, C, D, rot, pos, tilt, fl0, fl1, fl2, unitLength;
-		static V3D u, v, w;
-		static V3D v0, v1, v2, v3, v4, v5, v6, v7;
-		static M4D global;
-		static Cam3D cam;
-		static Point p, q;
-		static Display disp;
-		static Grid grid;
-		static V2D v2d0;
-		static boolean renderGoal;
-		static int goalX, goalY;
+	static boolean b0, b1, b2;
+	static int i, j, k, addr, x, y, z, col, start, stop, arrLen, arrSeeLen;
+	static Array arrRender, arrWalls, arrSee, arrTemp;
+	static LineBuffer buffer;
+	static Float A, B, C, D, rot, pos, tilt, fl0, fl1, fl2, unitLength;
+	static V3D u, v, w;
+	static V3D v0, v1, v2, v3, v4, v5, v6, v7;
+	static M4D global;
+	static Cam3D cam;
+	static Point p, q;
+	static Display disp;
+	static Grid grid;
+	static V2D v2d0;
+	static boolean renderGoal, areal;
+	static int goalX, goalY;
+	
+	function void toggleCam(){
+		if(areal){// PERSPECTIVE
+			do B.set(Float.getPos(),3,0);
+			do cam.setPosY(B);
+			do B.set(Float.getPos(),12,1);// 8E1, OVERHEAD: 1E2
+			do C.set(Float.getPos(),2,1);// 1E1, OVERHEAD: 3E0
+			do cam.setLens(B);
+			do cam.setScale(C);
+			let tilt = Float.new(Float.getNeg(),1,-2);// rotX tilt, default: +5E-1, OVERHEAD: 1570E0
+			let areal = false;
+		}else{// AREAL
+			do B.set(Float.getPos(),0,0);
+			do cam.setPosY(B);
+			do B.set(Float.getPos(),2,2);// 8E1, OVERHEAD: 1E2
+			do C.set(Float.getPos(),4,0);// 1E1, OVERHEAD: 3E0
+			do cam.setLens(B);
+			do cam.setScale(C);
+			let tilt = Float.new(Float.getNeg(),1570,0);// rotX tilt, default: +5E-1, OVERHEAD: 1570E0
+			let areal = true;
+		}
+		return;
+	}
 	function void main(){
 		/*----------------- DECLARE VARS ----------------*/
 			//ALL STATIC
@@ -57,7 +80,7 @@ class Main{
 		// global matrix
 		let global = M4D.new();
 		//let disp = Display.new(512/2,256/2,150,100);
-		let disp = Display.new(512/2,256/2,250,150);
+		let disp = Display.new(512/2,256/2,300,200);//256,150
 		//
 		let rot = Float.new(Float.getPos(),3,-1);//increment rotation
 		let pos = Float.new(Float.getPos(),3,0);//increment position
@@ -65,24 +88,55 @@ class Main{
 		let q = Point.new(0,0);// temp screen point
 		//CAMERA:
 		let cam = Cam3D.new();
-		do A.set(Float.getPos(),5,0);
-		do B.set(Float.getPos(),7,0);
-		do C.set(Float.getPos(),5,0);
+		do A.set(Float.getPos(),5,0);//5E0
+		do B.set(Float.getPos(),0,1);//0
+		do C.set(Float.getPos(),5,0);//5E0
 		do cam.setPosX(A);
 		do cam.setPosY(B);
 		do cam.setPosZ(C);
 		do A.set(Float.getPos(),0,0);// 0=+z
-		do B.set(Float.getPos(),80,1);// 100, OVERHEAD: 1E2
-		do C.set(Float.getPos(),1,1);// , OVERHEAD: 3E0
 		do cam.setRotY(A);
-		do cam.setLens(B);
-		do cam.setScale(C);
-		let tilt = Float.new(Float.getNeg(),5,-1);// rotX tilt, default: +1E-1, OVERHEAD: 1570E0
+		let areal = true;
+		do Main.toggleCam();
 		//GRID:
 		let grid = Grid.new();
-		do grid.setGoal(1,0);
+		do grid.setGoal(3,9);
 		let unitLength = Float.new(Float.getPos(),1,1);//10x10x10 cubes
-		
+		//INTRO MESSAGE:
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		do Output.printString("               M     M     A     ZZZZZZ  EEEEEE   ");
+		do Output.println();
+		do Output.printString("               MM   MM    A A        Z   E");
+		do Output.println();
+		do Output.printString("               M M M M   A   A      Z    E");
+		do Output.println();
+		do Output.printString("               M  M  M  AAAAAAA    Z     EEEE");
+		do Output.println();
+		do Output.printString("               M     M  A     A   Z      E");
+		do Output.println();
+		do Output.printString("               M     M  A     A  ZZZZZZ  EEEEEE ");
+		do Output.println();
+		do Output.println();
+		do Output.printString("   Find the magic floor X, then we'll have a party and cake");
+		do Output.println();
+		do Output.println();
+		do Output.printString("      A GAME PROGRAMMED IN THE JACK PROGRAMMING LANGUAGE");
+		do Output.println();
+		do Output.println();
+		do Output.printString("                         CREATED BY:");
+		do Output.println();
+		do Output.println();
+		do Output.printString("                     JOSH, ERIC, & RICHIE");
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		do Output.printString("                    (UP/DOWN/LEFT/RIGHT / Z)");
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		//do Output.printString(" X");
 		//MAIN LOOP:------------
 		let b0 = true;
 		while(b0){
@@ -139,6 +193,9 @@ class Main{
 				do Float.radianAlias(A,A);
 				do cam.setRotY(A);
 			}
+			if(i=90){// z
+				do Main.toggleCam();
+			}
 			if(~(i=0)){
 				
 				// ROTATE / TRANSLATE MATRIX TO CAMERA POSITION
@@ -185,7 +242,7 @@ class Main{
 				do disp.clearScreen(0);
 				do disp.drawBounding(1);
 				do buffer.drawLines(1);
-				if(renderGoal){
+				if(renderGoal & disp.inRange(goalX,goalY) ){
 					do Screen.drawCircle(goalX,goalY,4);
 				}
 			}

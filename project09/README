@@ -1,10 +1,9 @@
 Maze - An incredibly creatively named “game” - in 3D!
 
 To run, open the Maze directory in the VMEmulator.
-
 The object is to find the magic X on the floor. If you do so, there will be a party with cake.
 
 Controls:
 Left/Right: Turn in place.
 Up/Down: Move forwards/backwards.
-Enter: Redraw screen.
+z: Change camera view.

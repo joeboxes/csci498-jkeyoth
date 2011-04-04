@@ -37,6 +37,12 @@ class Display{
 		//do Screen.drawLine(posX,posY+2,posX,posY-2);
 		return;
 	}
+	method boolean inRange(int inX, int inY){
+		if( (inX>tlX) & (inX<(tlX+xLen)) & (inY>tlY) & (inY<(tlY+yLen)) ){
+			return true;
+		}
+		return false;
+	}
 	method void clearScreen(int c){
 		if(c=1){//black
 			do Display.fillScreen(c);
