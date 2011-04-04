@@ -20,14 +20,30 @@ class Display{
 		let yLen = yLen*2;
 		return this;
 	}
-	method void drawBounding(){
-		do Screen.drawLine(tlX,tlY,tlX+xLen,tlY);//top
-		do Screen.drawLine(tlX+xLen,tlY,tlX+xLen,tlY+yLen);//right
-		do Screen.drawLine(tlX+xLen,tlY+yLen,tlX,tlY+yLen);//bot
-		do Screen.drawLine(tlX,tlY+yLen,tlX,tlY);//left
+	method void drawBounding(int c){
+		if(c=1){
+			do Screen.drawLine(tlX,tlY,tlX+xLen,tlY);//top
+			do Screen.drawLine(tlX+xLen,tlY,tlX+xLen,tlY+yLen);//right
+			do Screen.drawLine(tlX+xLen,tlY+yLen,tlX,tlY+yLen);//bot
+			do Screen.drawLine(tlX,tlY+yLen,tlX,tlY);//left
+		}else{
+			do Display.singleLine(tlX,tlY,tlX+xLen,tlY,c);//top
+			do Display.singleLine(tlX+xLen,tlY,tlX+xLen,tlY+yLen,c);//right
+			do Display.singleLine(tlX+xLen,tlY+yLen,tlX,tlY+yLen,c);//bot
+			do Display.singleLine(tlX,tlY+yLen,tlX,tlY,c);//left
+		}
 		//crosshair:
-		do Screen.drawLine(posX-2,posY,posX+2,posY);
-		do Screen.drawLine(posX,posY+2,posX,posY-2);
+		//do Screen.drawLine(posX-2,posY,posX+2,posY);
+		//do Screen.drawLine(posX,posY+2,posX,posY-2);
+		return;
+	}
+	method void clearScreen(int c){
+		if(c=1){//black
+			do Display.fillScreen(c);
+			//do Display.fillRect(tlX+1,tlY+1,tlX+xLen-1,tlY+yLen-1,0);
+		}else{//white
+			do Screen.clearScreen();
+		}
 		return;
 	}
 	method void clear(){
@@ -45,10 +61,10 @@ class Display{
 	}
 	method void offsetPoint(Point p){
 		do p.setX( p.getX() + tlX + (xLen/2) );// offset to center location
-		do p.setY( -p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
+		do p.setY( p.getY() + tlY + (yLen/2) );// SHOULD be -p.getY()
 		return;
 	}
-	method void renderLine(Point a, Point b){// put projected line onto screen, with clipping
+	method void renderLine(LineBuffer buffer, Point a, Point b){// put projected line onto screen, with clipping
 		var Point p1, p2;
 		var bool inside1, inside2;
 		
@@ -58,7 +74,8 @@ class Display{
 		let inside1 = isInterrior(p1);
 		let inside2 = isInterrior(p2);
 		if(inside1 & inside2){// both interrior - usual
-			do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+			do buffer.addLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+			//do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
 		}else{
 			if( inside1 | inside2 ){// one interrior, one exterrior
 				if(inside1){
@@ -67,10 +84,11 @@ class Display{
 					let inside1 = getBorderIntersection(p1, p2, p1);// p1 = new point
 				}
 				if(inside1){
-					do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+					do buffer.addLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
+					//do Screen.drawLine(p1.getX(),p1.getY(), p2.getX(),p2.getY());
 				}else{
-					do Output.printString("INVALID RETURN - RENDER LINE");
-					do Output.println();
+					//do Output.printString("INVALID RETURN - RENDER LINE");
+					//do Output.println();
 				}
 			}
 		}//both exterrior - don't drawl

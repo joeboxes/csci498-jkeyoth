@@ -9,3 +9,26 @@ from the tools folder, run: ./VMEmulator.sh (&)
 	> open the folder .../project09/OS/
 	> if you get an error, press ok (theres an error in my M4D class as of now)
 	> move speed to fast, and set to no animation, and run doubletime.
+
+
+
+
+LINKING:
+ln -s ../Maze/Cam3D.jack
+ln -s ../Maze/Display.jack
+ln -s ../Maze/Float.jack
+ln -s ../Maze/Grid.jack
+ln -s ../Maze/M4D.jack
+
+ln -s ../Maze/Point.jack
+ln -s ../Maze/Tile.jack
+ln -s ../Maze/V2D.jack
+ln -s ../Maze/V3D.jack
+
+
+
+ln -s ../Maze/MazeGame.jack
+ln -s ../Maze/Main.jack
+
+
+

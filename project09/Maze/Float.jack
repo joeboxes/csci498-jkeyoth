@@ -467,7 +467,11 @@ class Float{
 		let t = Float.new(0,0,0);
 		if(rnd){
 			let half = Float.new(Float.getPos(),5,-1);
-			do Float.add(t,res,half);// t = res + .5 : 'round' before truncate
+			if( res.getSign()=Float.getPos() ){// t = res + .5 : 'round' before truncate	
+				do Float.add(t,res,half);
+			}else{
+				do Float.sub(t,res,half);//-.5
+			}
 			do half.dispose();
 		}else{
 			do Float.copy(t,res);
