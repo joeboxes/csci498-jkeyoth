@@ -17,6 +17,7 @@ class Main
 	{
 		var int x,y,i;
 		var Array wallArray;
+		var V2D local;
 		let x = pos.getX() - 1;
 		let y = pos.getY() - 1;
 		
@@ -47,17 +48,12 @@ class Main
 				{
 					do Screen.drawLine(X[0],Y[i],X[0],Y[i+1]);
 				}
-				if(goal.getX() = x)
+				let local = V2D.new(x,y+i);
+				
+				
+				if(V2D.equals(goal,local))
 				{
-					if(goal.getY() = y+i)
-					{
-						do Output.printInt(x);
-						do Output.printString(" ");
-						do Output.printInt(y);
-						do Output.println();
-						
-						do Screen.drawCircle(X[0]+25,Y[i]+25,2);
-					}
+					do Screen.drawCircle(X[0]+25,Y[i]+25,2);
 				}
 			}
 			let i = i + 1;
@@ -84,17 +80,13 @@ class Main
 				{
 					do Screen.drawLine(X[1],Y[i],X[1],Y[i+1]);
 				}
-				if(goal.getX() = x+1)
+				
+				let local = V2D.new(x+1,y+i);
+				
+				
+				if(V2D.equals(goal,local))
 				{
-					if(goal.getY() = y+i)
-					{
-						do Output.printInt(x+1);
-						do Output.printString(" ");
-						do Output.printInt(y);
-						do Output.println();
-						
-						do Screen.drawCircle(X[1]+25,Y[i]+25,2);
-					}
+					do Screen.drawCircle(X[1]+25,Y[i]+25,2);
 				}
 			}
 			let i = i + 1;
@@ -122,17 +114,12 @@ class Main
 				{
 					do Screen.drawLine(X[2],Y[i],X[2],Y[i+1]);
 				}
-				if(goal.getX() = x+2)
+				let local = V2D.new(x+2,y+i);
+				
+				
+				if(V2D.equals(goal,local))
 				{
-					if(goal.getY() = y+i)
-					{
-						do Output.printInt(x+2);
-						do Output.printString(" ");
-						do Output.printInt(y);
-						do Output.println();
-						
-						do Screen.drawCircle(X[2]+25,Y[i]+25,2);
-					}
+					do Screen.drawCircle(X[2]+25,Y[i]+25,2);
 				}
 				
 			}
@@ -149,7 +136,7 @@ class Main
 				do Output.println();
 				let i = i + 1;
 			}
-			do Output.printString("BY: JOSH, ERIC, & RICHIE");
+			do Output.printString("BY: RICHIE, ERIC, & JOSH");
 			do Output.println();
 			let contin = false;
 		}
@@ -231,6 +218,42 @@ class Main
 		var boolean moving;
 		
 		let contin = true;
+		
+		//intro message - stolen from richie!
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		do Output.printString("               M     M     A     ZZZZZZ  EEEEEE   ");
+		do Output.println();
+		do Output.printString("               MM   MM    A A        Z   E");
+		do Output.println();
+		do Output.printString("               M M M M   A   A      Z    E");
+		do Output.println();
+		do Output.printString("               M  M  M  AAAAAAA    Z     EEEE");
+		do Output.println();
+		do Output.printString("               M     M  A     A   Z      E");
+		do Output.println();
+		do Output.printString("               M     M  A     A  ZZZZZZ  EEEEEE ");
+		do Output.println();
+		do Output.println();
+		do Output.printString("   Find the magic floor X, then we'll have a party and cake");
+		do Output.println();
+		do Output.println();
+		do Output.printString("      A GAME PROGRAMMED IN THE JACK PROGRAMMING LANGUAGE");
+		do Output.println();
+		do Output.println();
+		do Output.printString("                         CREATED BY:");
+		do Output.println();
+		do Output.println();
+		do Output.printString("                    RICHIE, ERIC & JOSH");
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		do Output.printString("                  (UP/DOWN/LEFT/RIGHT / q)");
+		do Output.println();
+		do Output.println();
+		do Output.println();
+		
 		
 		let vel = V2D.empty();
 		

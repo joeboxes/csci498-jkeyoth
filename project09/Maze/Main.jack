@@ -128,7 +128,7 @@ class Main{
 		do Output.printString("                         CREATED BY:");
 		do Output.println();
 		do Output.println();
-		do Output.printString("                    JOSH, ERIC, & RICHIE");
+		do Output.printString("                    RICHIE, ERIC & JOSH");
 		do Output.println();
 		do Output.println();
 		do Output.println();
@@ -274,7 +274,7 @@ class Main{
 		do disp.dispose();
 		*/
 		//do Output.printString(" done ");
-		do Output.printString("BY: JOSH, ERIC, & RICHIE");
+		do Output.printString("BY: RICHIE, ERIC, & JOSH");
 		do Output.println();
 		return;
 	}
