@@ -395,21 +395,26 @@ class Grid {
 		
 			if (ymove = 1) {
 				// move forwards (North)
-				let canMove = ~world.hasNorthWall(gridNum.getX(), gridNum.getY());
+				let canMove = ~hasNorthWall(gridNum.getX(), gridNum.getY());
 			}
 			if (ymove = -1) {
 				// move backwards (South)
-				let canMove = ~world.hasSouthWall(gridNum.getX(), gridNum.getY());
+				let canMove = ~hasSouthWall(gridNum.getX(), gridNum.getY());
 			}
 			if (xmove = -1) {
 				// move counter-clockwise (West)
-				let canMove = ~world.hasWestWall(gridNum.getX(), gridNum.getY());
+				let canMove = ~hasWestWall(gridNum.getX(), gridNum.getY());
 			}
 			if (xmove = 1) {
 				// move clockwise (East)
-				let canMove = ~world.hasEastWall(gridNum.getX(), gridNum.getY());
+				let canMove = ~hasEastWall(gridNum.getX(), gridNum.getY());
 			}
 		}
+		do gridNum.dispose();
+		do pos.dispose();
+		do direction.dispose();
+		do soonToBePos.dispose();
+		do soonToBeGridNum.dispose();
 		return canMove;
 	}
 	
