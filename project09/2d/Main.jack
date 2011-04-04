@@ -1,0 +1,320 @@
+//Main
+class Main
+{
+	static Array X, Y;
+
+	static Grid grid;
+	
+	static V2D pos;
+	
+	static V2D vel;
+	
+	static V2D goal;
+	
+	static boolean contin;
+	
+	function void draw9()
+	{
+		var int x,y,i;
+		var Array wallArray;
+		let x = pos.getX() - 1;
+		let y = pos.getY() - 1;
+		
+		do Screen.clearScreen();
+		
+		let i = 0;
+		
+		let wallArray = Array.new(4);
+		
+		while(i < 3)//y
+		{
+			if( ((x+0) > (-1)) & ((x+0) < 10) & ((y+i) > -1) & ((y+i) < 10) )
+			{
+				do grid.getWalls(wallArray, x+0, y+i);
+				if(wallArray[0])//North
+				{
+					do Screen.drawLine(X[0],Y[i],X[0+1],Y[i]);
+				}
+				if(wallArray[1])//South
+				{
+					do Screen.drawLine(X[0],Y[i+1],X[0+1],Y[i+1]);
+				}
+				if(wallArray[2])//East
+				{
+					do Screen.drawLine(X[0+1],Y[i],X[0+1],Y[i+1]);
+				}
+				if(wallArray[3])//West
+				{
+					do Screen.drawLine(X[0],Y[i],X[0],Y[i+1]);
+				}
+				if(goal.getX() = x)
+				{
+					if(goal.getY() = y+i)
+					{
+						do Output.printInt(x);
+						do Output.printString(" ");
+						do Output.printInt(y);
+						do Output.println();
+						
+						do Screen.drawCircle(X[0]+25,Y[i]+25,2);
+					}
+				}
+			}
+			let i = i + 1;
+		}
+		let i = 0;
+		while(i < 3)//y
+		{
+			if( ((x+1) > (-1)) & ((x+1) < 10) & ((y+i) > -1) & ((y+i) < 10) )
+			{
+				do grid.getWalls(wallArray, x+1, y+i);
+				if(wallArray[0])//North
+				{
+					do Screen.drawLine(X[1],Y[i],X[1+1],Y[i]);
+				}
+				if(wallArray[1])//South
+				{
+					do Screen.drawLine(X[1],Y[i+1],X[1+1],Y[i+1]);
+				}
+				if(wallArray[2])//East
+				{
+					do Screen.drawLine(X[1+1],Y[i],X[1+1],Y[i+1]);
+				}
+				if(wallArray[3])//West
+				{
+					do Screen.drawLine(X[1],Y[i],X[1],Y[i+1]);
+				}
+				if(goal.getX() = x+1)
+				{
+					if(goal.getY() = y+i)
+					{
+						do Output.printInt(x+1);
+						do Output.printString(" ");
+						do Output.printInt(y);
+						do Output.println();
+						
+						do Screen.drawCircle(X[1]+25,Y[i]+25,2);
+					}
+				}
+			}
+			let i = i + 1;
+		}
+		
+		let i = 0;
+		while(i < 3)//y
+		{
+			if( ((x+2) > (-1)) & ((x+2) < 10) & ((y+i) > -1) & ((y+i) < 10) )
+			{
+				do grid.getWalls(wallArray, x+2, y+i);
+				if(wallArray[0])//North
+				{
+					do Screen.drawLine(X[2],Y[i],X[2+1],Y[i]);
+				}
+				if(wallArray[1])//South
+				{
+					do Screen.drawLine(X[2],Y[i+1],X[2+1],Y[i+1]);
+				}
+				if(wallArray[2])//East
+				{
+					do Screen.drawLine(X[2+1],Y[i],X[2+1],Y[i+1]);
+				}
+				if(wallArray[3])//West
+				{
+					do Screen.drawLine(X[2],Y[i],X[2],Y[i+1]);
+				}
+				if(goal.getX() = x+2)
+				{
+					if(goal.getY() = y+i)
+					{
+						do Output.printInt(x+2);
+						do Output.printString(" ");
+						do Output.printInt(y);
+						do Output.println();
+						
+						do Screen.drawCircle(X[2]+25,Y[i]+25,2);
+					}
+				}
+				
+			}
+			let i = i + 1;
+		}
+		
+		do Screen.drawCircle(125,125,5);
+		
+		if(V2D.equals(pos,goal))
+		{
+			let i = 0;
+			while(i<21){
+				do Output.printString("THE CAKE IS A LIE");
+				do Output.println();
+				let i = i + 1;
+			}
+			do Output.printString("BY: JOSH, ERIC, & RICHIE");
+			do Output.println();
+			let contin = false;
+		}
+		
+		do wallArray.dispose();
+		return;
+	}
+	
+	function void move()
+	{
+		var V2D temp;
+		var int i;
+		var boolean canMove;
+		
+		let temp = V2D.copy(pos);
+		
+		let canMove = true;
+		
+		if(vel.getX() = 1)
+		{
+			if(grid.hasEastWall(pos.getX(), pos.getY()))
+			{
+				let canMove = false;
+			}
+		}
+		if(vel.getX() = -1)
+		{
+			if(grid.hasWestWall(pos.getX(), pos.getY()))
+			{
+				let canMove = false;
+			}
+		}
+		if(vel.getY() = 1)
+		{
+			if(grid.hasSouthWall(pos.getX(), pos.getY()))
+			{
+				let canMove = false;
+			}
+		}
+		if(vel.getY() = -1)
+		{
+			if(grid.hasNorthWall(pos.getX(), pos.getY()))
+			{
+				let canMove = false;
+			}
+		}
+		
+		if(canMove)
+		{
+			do pos.set(pos.getX() + vel.getX(), pos.getY() + vel.getY());
+		}
+		
+		if(pos.getX() < 0)
+		{
+			do pos.setX(0);
+		}
+		if(pos.getX() > 9)
+		{
+			do pos.setX(9);
+		}
+		if(pos.getY() < 0)
+		{
+			do pos.setY(0);
+		}
+		if(pos.getY() > 9)
+		{
+			do pos.setY(9);
+		}
+		
+		do Main.draw9();
+		
+		do temp.dispose();
+		return;
+	}
+	
+	function void main()
+	{
+		var int key;
+		var boolean moving;
+		
+		let contin = true;
+		
+		let vel = V2D.empty();
+		
+		let X = Array.new(4);
+		let Y = Array.new(4);
+		/*
+		let Y[0] = 8;
+		let Y[1] = 88;
+		let Y[2] = 168;
+		let Y[3] = 248;
+		
+		let X[0] = 136;
+		let X[1] = 216;
+		let X[2] = 296;
+		let X[3] = 376;*/
+		
+		
+		let Y[0] = 50;
+		let Y[1] = 100;
+		let Y[2] = 150;
+		let Y[3] = 200;
+		
+		let X[0] = 50;
+		let X[1] = 100;
+		let X[2] = 150;
+		let X[3] = 200;
+		
+		let grid = Grid.new();
+		
+		do grid.setGoal(7,8);
+		
+		let goal = V2D.new(7,8);
+		
+		let pos = V2D.new(1,1);
+		let vel = V2D.empty();
+		
+		while (contin)
+		{
+			let moving = false;
+			
+			let key = Keyboard.readChar();
+			
+			do Output.printInt(pos.getX());
+			
+			if(key = 131)//up
+			{
+				do vel.set(0,-1);
+				let moving = true;
+			}
+			if(key = 133)//down
+			{
+				do vel.set(0,1);
+				let moving = true;
+			}
+			if(key = 130)//left
+			{
+				do vel.set(-1,0);
+				let moving = true;
+			}
+			if(key = 132)//right
+			{
+				do vel.set(1,0);
+				let moving = true;
+			}
+			
+			if(key = 81)//q
+			{
+				let contin = false;
+			}
+			
+			
+			if(moving)
+			{
+				do Main.move();
+			}
+			else
+			{
+				if(~key = 0)
+				{
+					do Main.draw9();
+				}
+			}
+		}
+		
+		return;
+	}
+}
