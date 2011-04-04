@@ -128,11 +128,11 @@ class Main{
 		do Output.printString("                         CREATED BY:");
 		do Output.println();
 		do Output.println();
-		do Output.printString("                     JOSH, ERIC, & RICHIE");
+		do Output.printString("                    JOSH, ERIC, & RICHIE");
 		do Output.println();
 		do Output.println();
 		do Output.println();
-		do Output.printString("                    (UP/DOWN/LEFT/RIGHT / Z)");
+		do Output.printString("                  (UP/DOWN/LEFT/RIGHT / Z)");
 		do Output.println();
 		do Output.println();
 		do Output.println();
