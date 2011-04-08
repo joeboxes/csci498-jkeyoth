@@ -12,6 +12,9 @@ class JackTokenizer < Verbose
 		super(v)
 		@fileJack = nil
 		@fileXML = nil
+		@line = ""
+		@multiComment = false
+		@fileObjects = nil
 	end
 	def openFile(name)
 		if name.length<1
@@ -24,6 +27,7 @@ class JackTokenizer < Verbose
 		@fileJack = open(jackName,"r")
 		@fileXML = open(xmlName,"w+")
 		if @fileJack != nil && @fileXML != nil
+			parseJack()
 			return true
 		end
 		return false
@@ -40,11 +44,55 @@ class JackTokenizer < Verbose
 			printV("closed XML file handle\n")
 		end
 	end
+	def parseJack()
+		if @fileJack == nil
+			return
+		end
+		inComment = false
+		@fileObjects = Array.new()
+		@fileJack.each do |line|
+			line = line.gsub("\n","") # remove all newlines
+			line = line.gsub("\r","") # remove all returns
+			line = line.gsub("\t","") # remove all tabs
+			line = line.gsub(/\/\/.*/,"") # remove all single-line comments
+			line = line.rstrip # remove trailing white space
+			line = line.lstrip # remove leading white space
+			line = line.squeeze(" ") # set spacing between words to single space
+			if line.length>0 # reject blank lines
+				a = Array.new()
+				a = line.split(" ")
+				a.each do |obj| # push to global array
+					if inComment # look for comment end /* .. */
+						ind = obj.index(/\*\//)
+						if ind == nil
+							#@fileObjects.push(obj)
+						else
+							inComment = false
+						end
+					else # look for comment beginning
+						ind = obj.index(/\/\*/)
+						if ind == nil
+							@fileObjects.push(obj)
+						else
+							inComment = true
+						end
+					end
+					
+				end
+			end
+		end
+		@fileObjects.each do |obj| # push to global array
+			printV("'#{obj}'")
+			printV("\n")
+		end
+		
+	end
 	def hasMoreTokens()
 		return false
 	end
 	def advance()
-		#
+		@line = @fileJack.gets()
+		return @line
 	end
 	def tokenType()
 		#
@@ -75,11 +123,15 @@ class JackTokenizer < Verbose
 				fHandle = File.new(name, "w+")
 			end
 		elsif opt == "r"
-			fHandle = File.open(name,"r")
-			if fHandle == nil
-				printV("could not open #{name} for reading\n")
+			if File.exists?(name)
+				fHandle = File.open(name,"r")
+				if fHandle == nil
+					printV("could not open #{name} for reading\n")
+				else
+					printV("opened #{name} for reading...\n")
+				end
 			else
-				printV("opened #{name} for reading...\n")
+				printV("file #{name} does not exist");
 			end
 		end
 		return fHandle;

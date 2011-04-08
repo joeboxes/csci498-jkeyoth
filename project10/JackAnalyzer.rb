@@ -32,6 +32,9 @@ if __FILE__ == $0 # this file was called from command line
 		if (ARGV[0] =~ /.*.jack/) # ends in ".jack" => file
 			analyzer.printV("single file translation\n")
 			tokenizer.openFile(ARGV[0])
+			#while (s = tokenizer.advance())
+			#	analyzer.printV("'#{s}'\n")
+			#end
 			tokenizer.closeFile()
 		else # ending not ".jack" => directory of files
 			analyzer.printV("directory translation\n")

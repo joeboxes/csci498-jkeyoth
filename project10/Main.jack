@@ -2,7 +2,6 @@
 // "The Elements of Computing Systems" by Nisan and Schocken, 
 // MIT Press. Book site: www.idc.ac.il/tecs
 // File name: projects/10/ArrayTest/Main.jack
-
 /** Computes the average of a sequence of integers. */
 class Main {
     function void main() {
