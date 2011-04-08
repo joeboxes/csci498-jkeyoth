@@ -3,8 +3,8 @@
 #provides the ability to choose verbose
 
 class Verbose
-	def initialize
-		@verbose=false
+	def initialize(v=false)
+		@verbose=v
 	end
 	def setVerbose(v)
 		@verbose=v
