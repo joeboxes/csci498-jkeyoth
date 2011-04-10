@@ -5,7 +5,12 @@ require "Verbose.rb"
 class JackTokenizer < Verbose
 # class vars
 
-
+	KEYWORDS=["class", "method", "function", "constructor", "int",\
+			"boolean", "char", "void", "var", "static", "field",\
+			"let", "do", "if", "else", "while", "return", "true",\
+			"false", "null", "this"]
+			
+	
 
 # instance vars
 	def initialize(v=false)
@@ -15,6 +20,8 @@ class JackTokenizer < Verbose
 		@line = ""
 		@multiComment = false
 		@fileObjects = nil
+		@curTokenNum = -1
+		@curToken = nil
 	end
 	def openFile(name)
 		if name.length<1
@@ -51,13 +58,7 @@ class JackTokenizer < Verbose
 		inComment = false
 		@fileObjects = Array.new()
 		@fileJack.each do |line|
-			line = line.gsub("\n","") # remove all newlines
-			line = line.gsub("\r","") # remove all returns
-			line = line.gsub("\t","") # remove all tabs
-			line = line.gsub(/\/\/.*/,"") # remove all single-line comments
-			line = line.rstrip # remove trailing white space
-			line = line.lstrip # remove leading white space
-			line = line.squeeze(" ") # set spacing between words to single space
+			line = cleanUpInputLine(line)
 			if line.length>0 # reject blank lines
 				a = Array.new()
 				a = line.split(" ")
@@ -86,19 +87,37 @@ class JackTokenizer < Verbose
 			printV("\n")
 		end
 		
+		
+		
 	end
+	
+	def cleanUpInputLine(line)
+		line.chomp!
+		line.gsub!("\t","") # remove all tabs
+		line.gsub!(/\/\/.*/,"")
+		line.strip!
+		line.squeeze!(" ") # set spacing between words to single space
+		return line
+	end
+	
 	def hasMoreTokens()
-		return false
+		return @curTokenNum < fileObjects.length
 	end
 	def advance()
-		@line = @fileJack.gets()
-		return @line
+		curTokenNum++
+		if hasMoreTokens()
+			curToken = fileObjects[curTokenNum]
+		end
 	end
 	def tokenType()
-		#
+		if KEYWORDS.count(curToken) > 0
+			return "KEYWORD"
+		end
 	end
 	def keyWord()
-		#
+		if tokenType() == "KEYWORD"
+			return curToken
+		end
 	end
 	def symbol()
 		#
