@@ -9,7 +9,10 @@ class JackTokenizer < Verbose
 			"boolean", "char", "void", "var", "static", "field",\
 			"let", "do", "if", "else", "while", "return", "true",\
 			"false", "null", "this"]
-			
+	
+	SYMBOLS="{([])}.,;+-*/&|<>=~"
+	
+	
 	
 
 # instance vars
@@ -112,10 +115,12 @@ class JackTokenizer < Verbose
 	def tokenType()
 		if KEYWORDS.count(curToken) > 0
 			return "KEYWORD"
+		elsif SYMBOLS.count(curToken) > 0
+			return "SYMBOL"
 		end
 	end
 	def keyWord()
-		if tokenType() == "KEYWORD"
+		if tokenType() == "KEYWORD" || tokenType == "SYMBOL"
 			return curToken
 		end
 	end
