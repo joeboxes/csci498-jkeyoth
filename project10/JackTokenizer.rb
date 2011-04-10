@@ -117,24 +117,38 @@ class JackTokenizer < Verbose
 			return "KEYWORD"
 		elsif SYMBOLS.count(curToken) > 0
 			return "SYMBOL"
+		elsif curToken =~ /^[0-9]+$/
+			return "INT_CONST"
+		elsif curToken[0] == "\"" and curToken[-1] == "\""
+			return "STRING_CONST"
+		else
+			return "IDENTIFIER"
 		end
 	end
 	def keyWord()
-		if tokenType() == "KEYWORD" || tokenType == "SYMBOL"
+		if tokenType() == "KEYWORD"
 			return curToken
 		end
 	end
 	def symbol()
-		#
+		if tokenType() == "SYMBOL"
+			return curToken
+		end
 	end
 	def identifier()
-		#
+		if tokenType() == "IDENTIFIER"
+			return curToken
+		end
 	end
 	def intVal()
-		#
+		if tokenType() == "INT_CONST"
+			return Integer(curToken)
+		end
 	end
 	def stringVal()
-		#
+		if tokenType() == "STRING_CONST"
+			return curToken[1..-2]
+		end
 	end
 	def open(name,opt)
 		fHandle = nil
