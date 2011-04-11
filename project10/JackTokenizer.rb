@@ -33,7 +33,7 @@ class JackTokenizer < Verbose
 		end
 		closeFile()# finish last job before starting new one
 		jackName = name
-		xmlName = getBase(name)+".xml"
+		@xmlName = getBase(name)+".xml"
 		@fileJack = open(jackName,"r")
 		@fileXML = open(xmlName,"w+")
 		if @fileJack != nil && @fileXML != nil
@@ -56,7 +56,7 @@ class JackTokenizer < Verbose
 	end
 	
 	def getOutFile()
-		return @fileXML
+		return @xmlname
 	end
 	
 	def parseJack()
