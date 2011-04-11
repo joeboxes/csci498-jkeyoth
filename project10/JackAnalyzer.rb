@@ -7,35 +7,62 @@ require "CompilationEngine.rb"
 class JackAnalyzer < Verbose
 	def initialize(v=false)
 		super(v)
+		
+		@tokenizer = JackTokenizer.new()
+		@engine = CompilationEngine.new()
+		
+		@tokenizer.setVerbose(v)
+		@engine.setVerbose(v)
+		
 	end
-	def hasMoreTokens()
-		return false
+	
+	def doFile(inFile)
+		@tokenizer.openFile(inFile)
+		@fileXML = @tokenizer.getOutFile
+		#while (s = tokenizer.advance())
+		#	analyzer.printV("'#{s}'\n")
+		#end
+		@tokenizer.closeFile()
+		printXML
+	end
+	
+	def printXML()
+		while @tokenizer.hasMoreTokens
+			@tokenizer.advance
+			type = @tokenizer.tokenType
+			if type == "KEYWORD"
+				
+			elsif type == "SYMBOL"
+			
+			elsif type == "IDENTIFIER"
+			
+			elsif type == "STRING_CONST"
+			
+			elsif type == "INT_CONST"
+			
+			end
+		end
 	end
 	
 end
 
 if __FILE__ == $0 # this file was called from command line
-	analyzer = JackAnalyzer.new()
-	tokenizer = JackTokenizer.new()
-	engine = CompilationEngine.new()
 	
+	analyzer = JackAnalyzer.new()
 	if ARGV.length < 1 # only accept with arguments
 		puts "usage:\n#{$0} file_name.jack [-v]\n#{$0} directory_to_jack_files [-v]\n[-v for verbose]"
 	else # at least single argument
 		if ARGV.length>1 # 2nd argument =?= verbose
 			if ARGV[1].downcase == "-v" # be verbose about everything
 				analyzer.setVerbose(true)
-				tokenizer.setVerbose(true)
-				engine.setVerbose(true)
 			end
 		end
 		if (ARGV[0] =~ /.*.jack/) # ends in ".jack" => file
 			analyzer.printV("single file translation\n")
-			tokenizer.openFile(ARGV[0])
-			#while (s = tokenizer.advance())
-			#	analyzer.printV("'#{s}'\n")
-			#end
-			tokenizer.closeFile()
+			
+			analyzer.doFile(ARGV[0])
+			
+			
 		else # ending not ".jack" => directory of files
 			analyzer.printV("directory translation\n")
 			if File.directory?(ARGV[0]) # directory exists
@@ -46,8 +73,7 @@ if __FILE__ == $0 # this file was called from command line
 				if entries.length > 0 # at least one entry
 					entries.each do |e| # files with .vm extension
 						analyzer.printV("#{e}: \n")
-						tokenizer.openFile(e)
-						tokenizer.closeFile()
+						analyzer.doFile(e)
 					end
 					#cW.close()
 					analyzer.printV("\n")

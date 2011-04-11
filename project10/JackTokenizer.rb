@@ -54,6 +54,11 @@ class JackTokenizer < Verbose
 			printV("closed XML file handle\n")
 		end
 	end
+	
+	def getOutFile()
+		return @fileXML
+	end
+	
 	def parseJack()
 		if @fileJack == nil
 			return
@@ -111,22 +116,22 @@ class JackTokenizer < Verbose
 	end
 	
 	def hasMoreTokens()
-		return @curTokenNum < fileObjects.length
+		return @curTokenNum < @fileObjects.length
 	end
 	def advance()
-		curTokenNum++
+		@curTokenNum = @curTokenNum + 1
 		if hasMoreTokens()
-			curToken = fileObjects[curTokenNum]
+			@curToken = @fileObjects[@curTokenNum]
 		end
 	end
 	def tokenType()
-		if KEYWORDS.count(curToken) > 0
+		if KEYWORDS.count(@curToken) > 0
 			return "KEYWORD"
-		elsif SYMBOLS.count(curToken) > 0
+		elsif SYMBOLS.count(@curToken) > 0
 			return "SYMBOL"
-		elsif curToken =~ /^[0-9]+$/
+		elsif @curToken =~ /^[0-9]+$/
 			return "INT_CONST"
-		elsif curToken[0] == "\"" and curToken[-1] == "\""
+		elsif @curToken[0] == "\"" and @curToken[-1] == "\""
 			return "STRING_CONST"
 		else
 			return "IDENTIFIER"
@@ -134,27 +139,27 @@ class JackTokenizer < Verbose
 	end
 	def keyWord()
 		if tokenType() == "KEYWORD"
-			return curToken
+			return @curToken
 		end
 	end
 	def symbol()
 		if tokenType() == "SYMBOL"
-			return curToken
+			return @curToken
 		end
 	end
 	def identifier()
 		if tokenType() == "IDENTIFIER"
-			return curToken
+			return @curToken
 		end
 	end
 	def intVal()
 		if tokenType() == "INT_CONST"
-			return Integer(curToken)
+			return Integer(@curToken)
 		end
 	end
 	def stringVal()
 		if tokenType() == "STRING_CONST"
-			return curToken[1..-2]
+			return @curToken[1..-2]
 		end
 	end
 	def open(name,opt)
