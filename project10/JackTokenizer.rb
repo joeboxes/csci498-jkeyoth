@@ -67,32 +67,21 @@ class JackTokenizer < Verbose
 		@fileObjects = Array.new()
 		@fileJack.each do |line|
 			line = cleanUpInputLine(line)
-			if line.length>0 # reject blank lines
-				a = Array.new()
-				a = line.split(/[\s]/)
-				a.each do |obj| # push to global array
-					if inComment # look for comment end /* .. */
-						ind = obj.index(/\*\//)
-						if ind == nil
-							#@fileObjects.push(obj)
-						else
-							inComment = false
-						end
-					else # look for comment beginning
-						ind = obj.index(/\/\*/)
-						if ind == nil
-							b = Array.new()
-							b = obj.split(/([\s{}()\[\].,;+*\/&|<>=~"-])/)
-							b.each do |obj2| # push to global array
-								if obj2.length>0 # reject blank lines
-									if obj2 != ' '
-										@fileObjects.push(obj2)
-									end
-								end
-							end
-						else
-							inComment = true
-						end
+			
+			line.each do |obj| # push to global array
+				if inComment # look for comment end /* .. */
+					ind = obj.index(/\*\//)
+					if ind == nil
+						#@fileObjects.push(obj)
+					else
+						inComment = false
+					end
+				else # look for comment beginning
+					ind = obj.index(/\/\*/)
+					if ind == nil
+						@fileObjects.push(obj)
+					else
+						inComment = true
 					end
 				end
 			end
@@ -106,13 +95,39 @@ class JackTokenizer < Verbose
 		
 	end
 	
+	def squeezeAndSplitButKeepStringConsts(line)
+		splited = line.split(/([\"])/)
+		putTogether = Array.new()
+		curSpot = 0
+		while curSpot < splited.length
+			if splited[curSpot] == "\""
+				putTogether.push(String(splited[curSpot,curSpot+2]))
+				curSpot += 3
+			else
+				symbolSplit = splited[curSpot].split(/([\s{}()\[\].,;+*\/&|<>=~"-])/)
+				symbolSplit.each do |toke|
+					if toke.length > 0
+						putTogether.push(toke.split)
+					end
+				end
+				curSpot += 1
+			end
+		end
+		
+		
+		printV(splited)
+		printV(putTogether)
+		return putTogether
+	end
+	
 	def cleanUpInputLine(line)
 		line.chomp!
 		line.gsub!("\t","") # remove all tabs
 		line.gsub!(/\/\/.*/,"")
 		line.strip!
-		line.squeeze!(" ") # set spacing between words to single space
-		return line
+		#line.squeeze!(" ") # set spacing between words to single space
+		splitLine = squeezeAndSplitButKeepStringConsts(line);
+		return splitLine
 	end
 	
 	def hasMoreTokens()

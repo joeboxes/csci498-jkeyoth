@@ -1,44 +1,81 @@
 <tokens>
+  <symbol>/</symbol>
+  <symbol>*</symbol>
+  <symbol>*</symbol>
+  <identifier> </identifier>
+  <identifier>Computes</identifier>
+  <identifier> </identifier>
+  <identifier>the</identifier>
+  <identifier> </identifier>
+  <identifier>average</identifier>
+  <identifier> </identifier>
+  <identifier>of</identifier>
+  <identifier> </identifier>
+  <identifier>a</identifier>
+  <identifier> </identifier>
+  <identifier>sequence</identifier>
+  <identifier> </identifier>
+  <identifier>of</identifier>
+  <identifier> </identifier>
+  <identifier>integers</identifier>
+  <symbol>.</symbol>
+  <identifier> </identifier>
+  <symbol>*</symbol>
+  <symbol>/</symbol>
   <keyword>class</keyword>
+  <identifier> </identifier>
   <identifier>Main</identifier>
+  <identifier> </identifier>
   <symbol>{</symbol>
   <keyword>function</keyword>
+  <identifier> </identifier>
   <keyword>void</keyword>
+  <identifier> </identifier>
   <identifier>main</identifier>
   <symbol>(</symbol>
   <symbol>)</symbol>
+  <identifier> </identifier>
   <symbol>{</symbol>
   <keyword>var</keyword>
+  <identifier> </identifier>
   <identifier>Array</identifier>
+  <identifier> </identifier>
   <identifier>a</identifier>
   <symbol>;</symbol>
   <keyword>var</keyword>
+  <identifier> </identifier>
   <keyword>int</keyword>
+  <identifier> </identifier>
   <identifier>length</identifier>
   <symbol>;</symbol>
   <keyword>var</keyword>
+  <identifier> </identifier>
   <keyword>int</keyword>
+  <identifier> </identifier>
   <identifier>i</identifier>
   <symbol>,</symbol>
+  <identifier> </identifier>
   <identifier>sum</identifier>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>length</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>Keyboard</identifier>
   <symbol>.</symbol>
   <identifier>readInt</identifier>
   <symbol>(</symbol>
-  <identifier>"</identifier>
-  <identifier>HOW</identifier>
-  <identifier>MANY</identifier>
-  <identifier>NUMBERS?</identifier>
-  <identifier>"</identifier>
+  <identifier>"HOW MANY NUMBERS? "</identifier>
   <symbol>)</symbol>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>a</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>Array</identifier>
   <symbol>.</symbol>
   <identifier>new</identifier>
@@ -47,101 +84,132 @@
   <symbol>)</symbol>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <int_const>0</int_const>
   <symbol>;</symbol>
   <keyword>while</keyword>
+  <identifier> </identifier>
   <symbol>(</symbol>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>&lt;</symbol>
+  <identifier> </identifier>
   <identifier>length</identifier>
   <symbol>)</symbol>
+  <identifier> </identifier>
   <symbol>{</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>a</identifier>
   <symbol>[</symbol>
   <identifier>i</identifier>
   <symbol>]</symbol>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>Keyboard</identifier>
   <symbol>.</symbol>
   <identifier>readInt</identifier>
   <symbol>(</symbol>
-  <identifier>"</identifier>
-  <identifier>ENTER</identifier>
-  <identifier>THE</identifier>
-  <identifier>NEXT</identifier>
-  <identifier>NUMBER:</identifier>
-  <identifier>"</identifier>
+  <identifier>"ENTER THE NEXT NUMBER: "</identifier>
   <symbol>)</symbol>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>+</symbol>
+  <identifier> </identifier>
   <int_const>1</int_const>
   <symbol>;</symbol>
   <symbol>}</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <int_const>0</int_const>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>sum</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <int_const>0</int_const>
   <symbol>;</symbol>
   <keyword>while</keyword>
+  <identifier> </identifier>
   <symbol>(</symbol>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>&lt;</symbol>
+  <identifier> </identifier>
   <identifier>length</identifier>
   <symbol>)</symbol>
+  <identifier> </identifier>
   <symbol>{</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>sum</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>sum</identifier>
+  <identifier> </identifier>
   <symbol>+</symbol>
+  <identifier> </identifier>
   <identifier>a</identifier>
   <symbol>[</symbol>
   <identifier>i</identifier>
   <symbol>]</symbol>
   <symbol>;</symbol>
   <keyword>let</keyword>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>=</symbol>
+  <identifier> </identifier>
   <identifier>i</identifier>
+  <identifier> </identifier>
   <symbol>+</symbol>
+  <identifier> </identifier>
   <int_const>1</int_const>
   <symbol>;</symbol>
   <symbol>}</symbol>
   <keyword>do</keyword>
+  <identifier> </identifier>
   <identifier>Output</identifier>
   <symbol>.</symbol>
   <identifier>printString</identifier>
   <symbol>(</symbol>
-  <identifier>"</identifier>
-  <identifier>THE</identifier>
-  <identifier>AVERAGE</identifier>
-  <identifier>IS:</identifier>
-  <identifier>"</identifier>
+  <identifier>"THE AVERAGE IS: "</identifier>
   <symbol>)</symbol>
   <symbol>;</symbol>
   <keyword>do</keyword>
+  <identifier> </identifier>
   <identifier>Output</identifier>
   <symbol>.</symbol>
   <identifier>printInt</identifier>
   <symbol>(</symbol>
   <identifier>sum</identifier>
+  <identifier> </identifier>
   <symbol>/</symbol>
+  <identifier> </identifier>
   <identifier>length</identifier>
   <symbol>)</symbol>
   <symbol>;</symbol>
   <keyword>do</keyword>
+  <identifier> </identifier>
   <identifier>Output</identifier>
   <symbol>.</symbol>
   <identifier>println</identifier>

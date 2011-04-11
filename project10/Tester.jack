@@ -1,0 +1,6 @@
+class Tester
+{
+	var String a;
+	let a = "this  is  a test";
+	do  a.test();
+}
