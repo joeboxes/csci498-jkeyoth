@@ -3,6 +3,8 @@
 require "Verbose.rb"
 require "JackTokenizer.rb"
 require "CompilationEngine.rb"
+require "rubygems"
+require "builder"
 
 class JackAnalyzer < Verbose
 	def initialize(v=false)
@@ -22,26 +24,44 @@ class JackAnalyzer < Verbose
 		#while (s = tokenizer.advance())
 		#	analyzer.printV("'#{s}'\n")
 		#end
-		@tokenizer.closeFile()
-		printXML
+		
+		@fileXML = @tokenizer.getOutFile
+		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
+		
+		printXml
+		
+		@tokenizer.closeFile
 	end
 	
-	def printXML()
-		while @tokenizer.hasMoreTokens
-			@tokenizer.advance
-			type = @tokenizer.tokenType
-			if type == "KEYWORD"
-				
-			elsif type == "SYMBOL"
-			
-			elsif type == "IDENTIFIER"
-			
-			elsif type == "STRING_CONST"
-			
-			elsif type == "INT_CONST"
+	def printXmlToken(type)
+		if type == "KEYWORD"
+			val = @tokenizer.keyword
+			@xmlBuilder.keyword val
+		elsif type == "SYMBOL"
+			val = @tokenizer.symbol
+			@xmlBuilder.symbol val
+		elsif type == "IDENTIFIER"
+			val = @tokenizer.identifier
+			@xmlBuilder.identifier val
+		elsif type == "STRING_CONST"
+			val = @tokenizer.stringVal
+			@xmlBuilder.string_const val
+		elsif type == "INT_CONST"
+			val = @tokenizer.intVal
+			@xmlBuilder.int_const val
+		end
+		
+	end
+	
+	def printXml()
+		@xmlBuilder.tokens {
+			while @tokenizer.hasMoreTokens
+				@tokenizer.advance
+				type = @tokenizer.tokenType
+				printXmlToken type
 			
 			end
-		end
+		}
 	end
 	
 end
