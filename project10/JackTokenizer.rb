@@ -67,19 +67,21 @@ class JackTokenizer < Verbose
 				a = line.split(/([\s{}()\[\].,;+*\/&|<>=~"-])/)
 				a.each do |obj| # push to global array
 					if obj.length>0 # reject blank lines
-						if inComment # look for comment end /* .. */
-							ind = obj.index(/\*\//)
-							if ind == nil
-								#@fileObjects.push(obj)
-							else
-								inComment = false
-							end
-						else # look for comment beginning
-							ind = obj.index(/\/\*/)
-							if ind == nil
-								@fileObjects.push(obj)
-							else
-								inComment = true
+						if obj != ' '
+							if inComment # look for comment end /* .. */
+								ind = obj.index(/\*\//)
+								if ind == nil
+									#@fileObjects.push(obj)
+								else
+									inComment = false
+								end
+							else # look for comment beginning
+								ind = obj.index(/\/\*/)
+								if ind == nil
+									@fileObjects.push(obj)
+								else
+									inComment = true
+								end
 							end
 						end
 					end
