@@ -33,18 +33,23 @@ class JackAnalyzer < Verbose
 		if type == "KEYWORD"
 			val = @tokenizer.keyword
 			@xmlBuilder.keyword val
+			printV(val + "\n")
 		elsif type == "SYMBOL"
 			val = @tokenizer.symbol
 			@xmlBuilder.symbol val
+			printV(val + "\n")
 		elsif type == "IDENTIFIER"
 			val = @tokenizer.identifier
 			@xmlBuilder.identifier val
+			printV(val + "\n")
 		elsif type == "STRING_CONST"
 			val = @tokenizer.stringVal
 			@xmlBuilder.string_const val
+			printV(val + "\n")
 		elsif type == "INT_CONST"
 			val = @tokenizer.intVal
 			@xmlBuilder.int_const val
+			printV(val + "\n")
 		end
 		
 	end
