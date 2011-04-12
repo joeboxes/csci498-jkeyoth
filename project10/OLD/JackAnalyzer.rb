@@ -9,12 +9,13 @@ require "builder"
 class JackAnalyzer < Verbose
 	def initialize(v=false)
 		super(v)
+		
 		@tokenizer = JackTokenizer.new()
 		@engine = CompilationEngine.new()
+		
 		@tokenizer.setVerbose(v)
 		@engine.setVerbose(v)
-		@fileXML = nil
-		@xmlBuilder = nil
+		
 	end
 	
 	def doFile(inFile)
@@ -23,9 +24,12 @@ class JackAnalyzer < Verbose
 		#while (s = tokenizer.advance())
 		#	analyzer.printV("'#{s}'\n")
 		#end
+		
 		@fileXML = @tokenizer.getOutFile
 		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
+		
 		printXml
+		
 		@tokenizer.closeFile
 	end
 	

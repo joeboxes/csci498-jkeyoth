@@ -4,12 +4,17 @@ require "Verbose.rb"
 
 class JackTokenizer < Verbose
 # class vars
+
 	KEYWORDS=["class", "method", "function", "constructor", "int",\
 			"boolean", "char", "void", "var", "static", "field",\
 			"let", "do", "if", "else", "while", "return", "true",\
 			"false", "null", "this"]
 	
 	SYMBOLS="{([])}.,;+-*/&|<>=~"
+	
+	
+	
+
 # instance vars
 	def initialize(v=false)
 		super(v)
