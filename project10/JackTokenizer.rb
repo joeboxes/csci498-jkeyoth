@@ -66,9 +66,9 @@ class JackTokenizer < Verbose
 		inComment = false
 		@fileObjects = Array.new()
 		@fileJack.each do |line|
-			line = cleanUpInputLine(line)
+			splitLine = cleanUpInputLine(line)
 			
-			line.each do |obj| # push to global array
+			splitLine.each do |obj| # push to global array
 				if inComment # look for comment end /* .. */
 					ind = obj.index(/\*\//)
 					if ind == nil
@@ -79,7 +79,7 @@ class JackTokenizer < Verbose
 				else # look for comment beginning
 					ind = obj.index(/\/\*/)
 					if ind == nil
-						@fileObjects.push(obj)
+						@fileObjects.push(String(obj))
 					else
 						inComment = true
 					end
@@ -107,7 +107,11 @@ class JackTokenizer < Verbose
 				symbolSplit = splited[curSpot].split(/([\s{}()\[\].,;+*\/&|<>=~"-])/)
 				symbolSplit.each do |toke|
 					if toke.length > 0
-						putTogether.push(toke.split)
+						tokeArray = toke.split
+						tokeArray.each do |toker|
+							putTogether.push(toker.strip)
+						end
+						
 					end
 				end
 				curSpot += 1
