@@ -1,6 +1,6 @@
 class Tester
 {
 	var int a;
-	let a = "this  is  a test";
+	let a = 0;
 	do  a.test();
 }
