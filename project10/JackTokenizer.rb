@@ -64,27 +64,30 @@ class JackTokenizer < Verbose
 			return
 		end
 		inComment = false
+		skipNext = false
+		counter = 0
 		@fileObjects = Array.new()
 		@fileJack.each do |line|
 			splitLine = cleanUpInputLine(line)
-			
 			splitLine.each do |obj| # push to global array
-				if inComment # look for comment end /* .. */
-					ind = obj.index(/\*\//)
-					if ind == nil
-						#@fileObjects.push(obj)
-					else
+				
+				if inComment
+					puts "Test"
+					if obj == "*" && splitLine[counter+1] == "/"
 						inComment = false
+						skipNext = true
 					end
-				else # look for comment beginning
-					ind = obj.index(/\/\*/)
-					if ind == nil
-						@fileObjects.push(String(obj))
-					else
+				else
+					if obj == "/" && splitLine[counter+1] == "*"
 						inComment = true
+					elsif !skipNext
+						puts obj
+						@fileObjects.push(String(obj))
 					end
 				end
+				
 			end
+			
 		end
 		@fileObjects.each do |obj| # push to global array
 			printV("'#{obj}'")
