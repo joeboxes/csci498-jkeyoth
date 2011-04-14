@@ -17,58 +17,76 @@ class JackAnalyzer < Verbose
 		@xmlBuilder = nil
 	end
 	
+	def setVerbose(v)
+		@verbose = v
+		@tokenizer.setVerbose(v)
+		@engine.setVerbose(v)
+	end
+	
 	def doFile(inFile)
+		# parse input to array
 		@tokenizer.openFile(inFile)
-		@fileXML = @tokenizer.getOutFile
-		#while (s = tokenizer.advance())
-		#	analyzer.printV("'#{s}'\n")
-		#end
-		@fileXML = @tokenizer.getOutFile
-		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
-		printXml
-		@tokenizer.closeFile
+		@tokenizer.closeFile()
+		#printXml(inFile)# only for checking
+		# compile tokenizer array
+		@engine.setTokenizer(@tokenizer)
+		ret = @engine.compileClass()
+		if ret
+			printV("successful compilation\n")
+		else
+			puts "error occurred compiling file\n"
+		end
 	end
 	
 	def printXmlToken(type)
-		if type == "KEYWORD"
+		if type == JackTokenizer.TYPE_KEYWORD
 			val = @tokenizer.keyword
-			@xmlBuilder.keyword val
-			printV(val + "\n")
-		elsif type == "SYMBOL"
+			@xmlBuilder.keyword " #{val} "
+			printV("keyword: '#{val}'\n")
+		elsif type == JackTokenizer.TYPE_SYMBOL
 			val = @tokenizer.symbol
-			@xmlBuilder.symbol val
-			printV(val + "\n")
-		elsif type == "IDENTIFIER"
+			@xmlBuilder.symbol " #{val} "
+			printV("symbol: '#{val}'\n")
+		elsif type == JackTokenizer.TYPE_IDENTIFIER
 			val = @tokenizer.identifier
-			@xmlBuilder.identifier val
-			printV(val + "\n")
-		elsif type == "STRING_CONST"
-			val = @tokenizer.stringVal
-			@xmlBuilder.string_const val
-			printV(val + "\n")
-		elsif type == "INT_CONST"
+			@xmlBuilder.identifier " #{val} "
+			printV("identifier: '#{val}'\n")
+		elsif type == JackTokenizer.TYPE_STRING
+			val = @tokenizer.stringVal()
+			@xmlBuilder.stringConstant " #{val} "
+			printV("string: '#{val}'\n")
+		elsif type == JackTokenizer.TYPE_INT
 			val = @tokenizer.intVal
-			@xmlBuilder.int_const val.to_s
-			printV(val.to_s + "\n")
+			@xmlBuilder.integerConstant " #{val} " #.to_s
+			printV("int: '#{val}'\n")
+		else
+			printV("unknown type'\n")
 		end
 		
 	end
 	
-	def printXml()
+	def printXml(jackFileName)
+		@fileXML = @tokenizer.getXMLFile(jackFileName)
+		if @fileXML != nil
+		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
 		@xmlBuilder.tokens {
-			while @tokenizer.hasMoreTokens
-				@tokenizer.advance
-				type = @tokenizer.tokenType
+			@tokenizer.resetIndex
+			@tokenizer.advance # go to first
+			while @tokenizer.hasMoreTokens()
+				type = @tokenizer.tokenType()
 				printXmlToken type
-			
+				@tokenizer.advance
 			end
 		}
+			@fileXML.close()
+			@fileXML = nil
+			printV("closed XML file handle\n")
+		end
 	end
 	
 end
 
 if __FILE__ == $0 # this file was called from command line
-	
 	analyzer = JackAnalyzer.new()
 	if ARGV.length < 1 # only accept with arguments
 		puts "usage:\n#{$0} file_name.jack [-v]\n#{$0} directory_to_jack_files [-v]\n[-v for verbose]"
@@ -80,34 +98,21 @@ if __FILE__ == $0 # this file was called from command line
 		end
 		if (ARGV[0] =~ /.*.jack/) # ends in ".jack" => file
 			analyzer.printV("single file translation\n")
-			
 			analyzer.doFile(ARGV[0])
-			
-			
 		else # ending not ".jack" => directory of files
 			analyzer.printV("directory translation\n")
 			if File.directory?(ARGV[0]) # directory exists
-				analyzer.printV("---------------------------------------\n")
-				analyzer.printV("list of files matching .jack extension:\n")
 				Dir.chdir(ARGV[0])
 				entries = Dir.glob("*.jack")
 				if entries.length > 0 # at least one entry
 					entries.each do |e| # files with .vm extension
-						analyzer.printV("#{e}: \n")
 						analyzer.doFile(e)
 					end
-					#cW.close()
-					analyzer.printV("\n")
 				end
 			else #directory does not exist
 				puts "#{ARGV[0]} is not a directory"
 			end
 		end
 	end
-	
-	
-	
 end
-
-# http://ruby-doc.org/core/
 

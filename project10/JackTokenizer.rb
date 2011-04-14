@@ -4,17 +4,48 @@ require "Verbose.rb"
 
 class JackTokenizer < Verbose
 # class vars
-	KEYWORDS=["class", "method", "function", "constructor", "int",\
+	@@KEYWORDS=["class", "method", "function", "constructor", "int",\
 			"boolean", "char", "void", "var", "static", "field",\
 			"let", "do", "if", "else", "while", "return", "true",\
 			"false", "null", "this"]
+	@@SYMBOLS="{([])}.,;+-*/&|<>=~"
+
+	@@TYPE_KEYWORD = "KEYWORD"
+	@@TYPE_SYMBOL = "SYMBOL"
+	@@TYPE_IDENTIFIER = "IDENTIFIER"
+	@@TYPE_INT = "INT_CONST"
+	@@TYPE_STRING = "STRING_CONST"
+	@@TYPE_UNKNOWN = "TYPE_UNKNOWN"
 	
-	SYMBOLS="{([])}.,;+-*/&|<>=~"
+	def self.KEYWORDS
+		@@KEYWORDS
+	end
+	def self.SYMBOLS
+		@@SYMBOLS
+	end
+	def self.TYPE_KEYWORD
+		@@TYPE_KEYWORD
+	end
+	def self.TYPE_SYMBOL
+		@@TYPE_SYMBOL
+	end
+	def self.TYPE_IDENTIFIER
+		@@TYPE_IDENTIFIER
+	end
+	def self.TYPE_INT
+		@@TYPE_INT
+	end
+	def self.TYPE_STRING
+		@@TYPE_STRING
+	end
+	def self.TYPE_UNKNOWN
+		@@TYPE_UNKNOWN
+	end
 # instance vars
 	def initialize(v=false)
 		super(v)
 		@fileJack = nil
-		@fileXML = nil
+#		@fileXML = nil
 		@line = ""
 		@multiComment = false
 		@fileObjects = nil
@@ -24,16 +55,13 @@ class JackTokenizer < Verbose
 	def openFile(name)
 		if name.length<1
 			printV("file name length: #{name.length}\n")
-			return
+			return false
 		end
 		closeFile()# finish last job before starting new one
 		jackName = name
-		xmlName = getBase(name)+".xml"
 		@fileJack = open(jackName,"r")
-		@fileXML = open(xmlName,"w+")
-		if @fileJack != nil && @fileXML != nil
-			parseJack()
-			return true
+		if @fileJack != nil
+			return parseJack()
 		end
 		return false
 	end
@@ -43,57 +71,65 @@ class JackTokenizer < Verbose
 			@fileJack = nil
 			printV("closed jack file handle\n")
 		end
-		if @fileXML != nil
-			@fileXML.close()
-			@fileXML = nil
-			printV("closed XML file handle\n")
-		end
 	end
 	
-	def getOutFile()
-		return @fileXML
+	def getJackFile()
+		return @fileJack
+	end
+	
+	def getXMLFile(fName)
+		xmlName = getBase(fName)+".xml"
+		fileXML = open(xmlName,"w+")
+		return fileXML
 	end
 	
 	def parseJack()
 		if @fileJack == nil
-			return
+			return false
 		end
-		inComment = false
-		skipNext = false
-		counter = 0
-		@fileObjects = Array.new()
+		singleObjects = Array.new()
 		@fileJack.each do |line|
 			splitLine = cleanUpInputLine(line)
-			splitLine.each do |obj| # push to global array
-				
+			splitLine.each do |obj| # push to temporary array
+				singleObjects.push(String(obj))
+			end
+		end
+		
+		inComment = false
+		skipNext = 0
+		@fileObjects = Array.new()
+		i = 0
+		while i < singleObjects.length # push to global array
+			obj = singleObjects[i]
+			if skipNext > 0
+				skipNext = skipNext - 1
+			else
 				if inComment
-					puts "Test"
-					if obj == "*" && splitLine[counter+1] == "/"
-						inComment = false
-						skipNext = true
+					if obj == "*" # look ahead
+						if singleObjects[i+1] == "/"
+							inComment = false
+							skipNext = 1
+						end
 					end
-				else
-					if obj == "/" && splitLine[counter+1] == "*"
-						inComment = true
-					elsif !skipNext
-						puts obj
-						@fileObjects.push(String(obj))
+				else # not in comment
+					if obj == "/" # look ahead
+						if singleObjects[i+1] == "*"
+							inComment = true
+							skipNext = 1
+						else
+							@fileObjects.push(obj)
+						end
+					else
+						@fileObjects.push(obj)
 					end
 				end
-				
 			end
-			
+			i = i + 1
 		end
-		@fileObjects.each do |obj| # push to global array
-			printV("'#{obj}'")
-			printV("\n")
-		end
-		
-		
-		
+		return true
 	end
 	
-	def squeezeAndSplitButKeepStringConsts(line)
+	def splitButKeepStringConsts(line)
 		splited = line.split(/([\"])/)
 		putTogether = Array.new()
 		curSpot = 0
@@ -115,70 +151,110 @@ class JackTokenizer < Verbose
 				curSpot += 1
 			end
 		end
-		
-		
-		printV(splited)
-		printV(putTogether)
 		return putTogether
 	end
 	
 	def cleanUpInputLine(line)
-		line.chomp!
+		line.chomp! # remove end-of-line \n and \r
 		line.gsub!("\t","") # remove all tabs
-		line.gsub!(/\/\/.*/,"")
-		line.strip!
-		#line.squeeze!(" ") # set spacing between words to single space
-		splitLine = squeezeAndSplitButKeepStringConsts(line);
+		line.gsub!(/\/\/.*/,"") # remove single line comments
+		line.strip! # remove leading & trailing white space
+#		line.squeeze!(" ") # set spacing between words to single space - not for STRINGS
+		splitLine = splitButKeepStringConsts(line);
 		return splitLine
 	end
 	
 	def hasMoreTokens()
 		return @curTokenNum < @fileObjects.length
 	end
+	
+	def resetIndex()
+		@curTokenNum = -1
+	end
+	
 	def advance()
 		@curTokenNum = @curTokenNum + 1
 		if hasMoreTokens()
 			@curToken = @fileObjects[@curTokenNum]
 		end
 	end
-	def tokenType()
-		if KEYWORDS.count(@curToken) > 0
-			return "KEYWORD"
-		elsif SYMBOLS.count(@curToken) > 0
-			return "SYMBOL"
+	
+	def getItem(type)
+		if type == JackTokenizer.TYPE_KEYWORD
+			return keyword
+		elsif type == JackTokenizer.TYPE_SYMBOL
+			return symbol
+		elsif type == JackTokenizer.TYPE_IDENTIFIER
+			return identifier
+		elsif type == JackTokenizer.TYPE_STRING
+			return stringVal
+		elsif type == JackTokenizer.TYPE_INT
+			return intVal
+		end
+		return nil
+	end
+	
+	def getCurrItem()
+		return getItem(tokenType())
+	end
+	
+	def getType(obj)
+		strVal = obj.to_str
+		beginning = strVal[0..0]
+		ending = strVal[-1..-1]
+		if beginning == "\"" && ending == "\""
+			return @@TYPE_STRING
+		elsif @@KEYWORDS.count(@curToken) > 0
+			return @@TYPE_KEYWORD
+		elsif @@SYMBOLS.count(@curToken) > 0
+			return @@TYPE_SYMBOL
 		elsif @curToken =~ /^[0-9]+$/
-			return "INT_CONST"
-		elsif @curToken[0] == "\"" and @curToken[-1] == "\""
-			return "STRING_CONST"
+			return @@TYPE_INT
 		else
-			return "IDENTIFIER"
+			return @@TYPE_IDENTIFIER
 		end
 	end
+	
+	def tokenType()
+		return getType(@curToken)
+	end
+	
 	def keyword()
-		if tokenType() == "KEYWORD"
+		if tokenType() == @@TYPE_KEYWORD
 			return @curToken
 		end
+		return @@TYPE_UNKNOWN
 	end
+	
 	def symbol()
-		if tokenType() == "SYMBOL"
+		if tokenType() == @@TYPE_SYMBOL
 			return @curToken
 		end
+		return @@TYPE_UNKNOWN
 	end
+	
 	def identifier()
-		if tokenType() == "IDENTIFIER"
+		if tokenType() == @@TYPE_IDENTIFIER
 			return @curToken
 		end
+		return @@TYPE_UNKNOWN
 	end
+	
 	def intVal()
-		if tokenType() == "INT_CONST"
+		if tokenType() == @@TYPE_INT
 			return Integer(@curToken)
 		end
+		return @@TYPE_UNKNOWN
 	end
+	
 	def stringVal()
-		if tokenType() == "STRING_CONST"
-			return @curToken[1..-2]
+		if tokenType() == @@TYPE_STRING
+			str = @curToken[1...-2]
+			return str
 		end
+		return @@TYPE_UNKNOWN
 	end
+	
 	def open(name,opt)
 		fHandle = nil
 		if opt == "w" || opt == "w+"
@@ -203,6 +279,7 @@ class JackTokenizer < Verbose
 		end
 		return fHandle;
 	end
+	
 	def getBase(name)
 		rev = (name.reverse)[/[^.]*/] # find location of '.' from end
 		len = rev.length+1
@@ -223,13 +300,6 @@ if __FILE__ == $0 # this file was called for main
 	else
 		puts "problem opening files"
 	end
-	# do shit
-	
-	
-	
-	
-	
-	
 end
 
 
