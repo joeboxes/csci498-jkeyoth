@@ -48,8 +48,8 @@ class JackAnalyzer < Verbose
 			printV(val + "\n")
 		elsif type == "INT_CONST"
 			val = @tokenizer.intVal
-			@xmlBuilder.int_const val
-			printV(val + "\n")
+			@xmlBuilder.int_const val.to_s
+			printV(val.to_s + "\n")
 		end
 		
 	end

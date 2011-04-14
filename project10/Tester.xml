@@ -9,7 +9,7 @@
   <keyword>let</keyword>
   <identifier>a</identifier>
   <symbol>=</symbol>
-  <identifier>"this  is  a test"</identifier>
+  <int_const>0</int_const>
   <symbol>;</symbol>
   <keyword>do</keyword>
   <identifier>a</identifier>
