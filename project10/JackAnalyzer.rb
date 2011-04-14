@@ -70,8 +70,7 @@ class JackAnalyzer < Verbose
 		if @fileXML != nil
 		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
 		@xmlBuilder.tokens {
-			@tokenizer.resetIndex
-			@tokenizer.advance # go to first
+			@tokenizer.resetIndex # go to first
 			while @tokenizer.hasMoreTokens()
 				type = @tokenizer.tokenType()
 				printXmlToken type

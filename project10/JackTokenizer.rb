@@ -170,10 +170,21 @@ class JackTokenizer < Verbose
 	
 	def resetIndex()
 		@curTokenNum = -1
+		advance
 	end
 	
 	def advance()
 		@curTokenNum = @curTokenNum + 1
+		if hasMoreTokens()
+			@curToken = @fileObjects[@curTokenNum]
+		end
+	end
+	
+	def retract()
+		@curTokenNum = @curTokenNum - 1
+		if @curTokenNum < 0
+			@curTokenNum = 0
+		end
 		if hasMoreTokens()
 			@curToken = @fileObjects[@curTokenNum]
 		end
