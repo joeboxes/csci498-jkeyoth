@@ -54,12 +54,12 @@ printV("compile class\n")
 		@tokenizer.resetIndex # go to first
 		if checkSameValue("class")
 			@tokenizer.advance
-			if checkSameType("id")
-				@tokenizer.advance
+			if compileClassName()
 				if checkSameValue("{")
 					@tokenizer.advance
-					if compileClassVarDec() && compileSubroutineDec()
+					if compileClassVarDec() && compileSubroutineDec() # change these to LISTs
 						if checkSameValue("}")
+							@tokenizer.advance
 							return true
 						end
 					end
@@ -69,38 +69,41 @@ printV("compile class\n")
 printV("AT: '#{@tokenizer.getCurrItem()}'\n")
 		return false
 	end
+	def compileVarDecEnd() # type varName (',' varName)* ';'
+printV("compileVarDecEnd\n")
+		if compileType()
+			if compileVarName()
+				ret = checkSameValue(",")
+				while ret
+					@tokenizer.advance
+					ret = compileVarName()
+					if ret 
+						ret = checkSameValue(",")
+					else
+						return false
+					end
+				end
+				if checkSameValue(";")
+					@tokenizer.advance
+					return true
+				end
+			end
+		end
+		return false
+	end
 	def compileClassVarDec() # ('static' | 'field') type varName (',' varName)* ';'
 printV("compileClassVarDec\n")
 		if checkSameValue("static") || checkSameValue("field")
 			@tokenizer.advance
-			return true
+			return compileVarDecEnd()
 		end
-		return false
+		return true
 	end
 	def compileVarDec() # 'var' type varName (',' varName)* ';'
 printV("compileVarDec\n")
 		if checkSameValue("var")
 			@tokenizer.advance
-			if checkSameType("type")
-				@tokenizer.advance
-				if checkSameType("varName")
-					@tokenizer.advance
-					ret = checkSameValue(",")
-					while ret
-						@tokenizer.advance
-						ret = checkSameType("varName")
-						if ret 
-							@tokenizer.advance
-							ret = checkSameValue(",")
-						else
-							return false
-						end
-					end
-					if checkSameValue(";")
-						return true
-					end
-				end
-			end
+			return compileVarDecEnd()
 		end
 		return false
 	end
@@ -113,23 +116,32 @@ printV("compileSubroutineDec\n")
 		return false
 	end
 	def compileSubroutine() # ('constructor' | 'function' | 'method') ('void' | type) subName '(' parameterList ')' subroutineBody
+printV("compileSubRoutine\n")
 		if checkSameValue("constructor") || checkSameValue("function") || checkSameValue("method")
 			@tokenizer.advance
-			if checkSameValue("void") || checkSameType("type")
+			if checkSameValue("void")
 				@tokenizer.advance
-				if checkSameType("subName")
+			elsif compileType
+				#
+			else
+				return false
+			end
+			if compileSubroutineName()
+				if checkSameValue("(")
 					@tokenizer.advance
-					if checkSameValue("(")
-						@tokenizer.advance
-						#param list goes here
+					if compileParameterList()
 						if checkSameValue(")")
-							return compileSubroutineBody(true)
+							return compileSubroutineBody()
 						end
 					end
 				end
 			end
 		end
 		#
+		return false
+	end
+	def compileParameterList()
+printV("compileParameterList\n")
 		return false
 	end
 	def compileSubroutineBody() # '{' varDec* statements '}'
@@ -139,7 +151,7 @@ printV("compileSubroutineBody\n")
 			while ret
 				ret = compileVarDec(ret)
 			end
-			ret = compileStatements(false) # statements
+			ret = compileStatements() # statements
 			while ret
 				ret = compileStatements(ret)
 			end
@@ -147,9 +159,6 @@ printV("compileSubroutineBody\n")
 				return true;
 			end
 		end
-		return false
-	end
-	def compileParameterList()
 		return false
 	end
 	def compileStatements() # statement*
@@ -232,6 +241,9 @@ printV("compileExpression\n")
 		end
 		return false
 	end
+	def compileExpressionList(adv)
+		#
+	end
 	def compileTerm() # integerConstant | stringConstant | keywordConst | varName ('[' expression ']')?
 					# | subroutineCall | ('(' expression ')') | unaryOp term
 printV("compileTerm\n")
@@ -293,6 +305,32 @@ printV("compileTerm\n")
 	def compileIntConstant() # anything int
 		return checkSameTypeBoolean(JackTokenizer.TYPE_INT)
 	end
+	def compileClassName() # identifier
+		return compileIdentifier()
+	end
+	def compileSubroutineName() # identifier
+		return compileIdentifier()
+	end
+	def compilevarName() # identifier
+		return compileIdentifier()
+	end
+	def compileIdentifier() # -
+		if checkSameType("id")
+			@tokenizer.advance
+			return true
+		end
+		return false
+	end
+	def compileType() # 'int' | 'char' | 'boolean' | className
+		arr = ["int","char","boolean"]
+		if inList(arr)
+			@tokenizer.advance
+			return true
+		elsif compileClassName()
+			return true
+		end
+		return false
+	end
 	def inList(arr)
 		arr.each do |op|
 			if checkSameValue(op)
@@ -301,9 +339,7 @@ printV("compileTerm\n")
 		end
 		return false
 	end
-	def compileExpressionList(adv)
-		#
-	end
+	
 end
 
 if __FILE__ == $0 # this file was called for main
