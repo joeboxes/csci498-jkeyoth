@@ -178,6 +178,7 @@ class JackTokenizer < Verbose
 		if hasMoreTokens()
 			@curToken = @fileObjects[@curTokenNum]
 		end
+printV("new token: #{@curToken}\n")
 	end
 	
 	def retract()
@@ -210,16 +211,17 @@ class JackTokenizer < Verbose
 	end
 	
 	def getType(obj)
+#printV("#{@obj}:#{@@SYMBOLS.count(@obj)}\n")
 		strVal = obj.to_str
 		beginning = strVal[0..0]
 		ending = strVal[-1..-1]
 		if beginning == "\"" && ending == "\""
 			return @@TYPE_STRING
-		elsif @@KEYWORDS.count(@curToken) > 0
+		elsif @@KEYWORDS.count(obj) > 0
 			return @@TYPE_KEYWORD
-		elsif @@SYMBOLS.count(@curToken) > 0
+		elsif @@SYMBOLS.count(obj) > 0
 			return @@TYPE_SYMBOL
-		elsif @curToken =~ /^[0-9]+$/
+		elsif obj =~ /^[0-9]+$/
 			return @@TYPE_INT
 		else
 			return @@TYPE_IDENTIFIER

@@ -16,7 +16,7 @@ class CompilationEngine < Verbose
 		if type == expected
 			return @tokenizer.getCurrItem()
 		end
-		printCompileError(str)#puts "unexpected type: #{type} != expected type: #{expected}"
+		#printCompileError(str)#puts "unexpected type: #{type} != expected type: #{expected}"
 		return nil
 	end
 	
@@ -109,11 +109,9 @@ printV("compileVarDec\n")
 	end
 	def compileSubroutineDec() # subroutine*
 printV("compileSubroutineDec\n")
-		ret = true
-		while ret
-			ret = compileSubroutine()
+		while compileSubroutine()
 		end
-		return false
+		return true
 	end
 	def compileSubroutine() # ('constructor' | 'function' | 'method') ('void' | type) subName '(' parameterList ')' subroutineBody
 printV("compileSubRoutine\n")
@@ -131,6 +129,7 @@ printV("compileSubRoutine\n")
 					@tokenizer.advance
 					if compileParameterList()
 						if checkSameValue(")")
+							@tokenizer.advance
 							return compileSubroutineBody()
 						end
 					end
@@ -142,19 +141,29 @@ printV("compileSubRoutine\n")
 	end
 	def compileParameterList()
 printV("compileParameterList\n")
-		return false
+		ret = true
+		while ret
+			ret = false
+			if compileType()
+printV("type=yep\n")
+				if compileVarName()
+					if checkSameValue(",")
+						@tokenizer.advance
+						ret = true
+					end
+				end
+			end
+		end
+		return true
 	end
 	def compileSubroutineBody() # '{' varDec* statements '}'
 printV("compileSubroutineBody\n")
 		if checkSameValue("{")
-			ret = compileVarDec(adv) # varDecs
-			while ret
-				ret = compileVarDec(ret)
+			@tokenizer.advance
+			ret = compileVarDec() # varDecs
+			while compileVarDec()
 			end
-			ret = compileStatements() # statements
-			while ret
-				ret = compileStatements(ret)
-			end
+			compileStatements()
 			if checkSameValue("}")
 				return true;
 			end
@@ -163,20 +172,18 @@ printV("compileSubroutineBody\n")
 	end
 	def compileStatements() # statement*
 printV("compileStatements\n")
-		ret = true
-		while ret
-			ret = compileStatement()
+		while compileStatement()
 		end
-		return false
+		return true
 	end
 	def compileStatement() # letStatement | ifStatement | whileStatement | doStatement | returnStatement
 printV("compileStatement\n")
 		if checkSameValue("let")
-			compileLet(false)
+			compileLet()
 		elsif checkSameValue("do")
-			compileDo(false)
+			compileDo()
 		elsif checkSameValue("return")
-			compileReturn(false)
+			compileReturn()
 		end
 		return false
 	end
@@ -191,7 +198,7 @@ printV("compileLet\n")
 			if checkSameType("varName")
 				@tokenizer.advance
 				if checkSameValue("[")
-					ret = compileExpression(true)
+					ret = compileExpression()
 					if ret 
 						if checkSameValue("]")
 							@tokenizer.advance
@@ -203,7 +210,7 @@ printV("compileLet\n")
 					end
 				end
 				if checkSameValue("=")
-					ret = compileExpression(true)
+					ret = compileExpression()
 					if true
 						@tokenizer.advance
 						if checkSameValue(";")
@@ -311,11 +318,15 @@ printV("compileTerm\n")
 	def compileSubroutineName() # identifier
 		return compileIdentifier()
 	end
-	def compilevarName() # identifier
+	def compileVarName() # identifier
 		return compileIdentifier()
 	end
 	def compileIdentifier() # -
 		if checkSameType("id")
+#printV("'id'=?='#{@tokenizer.getCurrItem()}'\n")
+#typeID = @tokenizer.getType("id")
+#typeCurl = @tokenizer.getType("{")
+#printV("#{typeID}=====================#{typeCurl}\n")
 			@tokenizer.advance
 			return true
 		end
@@ -327,12 +338,14 @@ printV("compileTerm\n")
 			@tokenizer.advance
 			return true
 		elsif compileClassName()
+printV("IN CLASS\n")
 			return true
 		end
 		return false
 	end
 	def inList(arr)
 		arr.each do |op|
+#printV("'#{op}'=?='#{@tokenizer.getCurrItem()}'\n")
 			if checkSameValue(op)
 				return true
 			end
