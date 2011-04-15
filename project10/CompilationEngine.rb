@@ -57,7 +57,7 @@ printV("compile class\n")
 			if compileClassName()
 				if checkSameValue("{")
 					@tokenizer.advance
-					if compileClassVarDec() && compileSubroutineDec() # change these to LISTs
+					if compileClassVarDecList() && compileSubroutineDec() # change these to LISTs
 						if checkSameValue("}")
 							@tokenizer.advance
 							return true
@@ -91,13 +91,18 @@ printV("compileVarDecEnd\n")
 		end
 		return false
 	end
+	def compileClassVarDecList()
+		while compileClassVarDec()
+		end
+		return true
+	end
 	def compileClassVarDec() # ('static' | 'field') type varName (',' varName)* ';'
 printV("compileClassVarDec\n")
 		if checkSameValue("static") || checkSameValue("field")
 			@tokenizer.advance
 			return compileVarDecEnd()
 		end
-		return true
+		return false
 	end
 	def compileVarDec() # 'var' type varName (',' varName)* ';'
 printV("compileVarDec\n")
@@ -107,6 +112,7 @@ printV("compileVarDec\n")
 		end
 		return false
 	end
+	
 	def compileSubroutineDec() # subroutine*
 printV("compileSubroutineDec\n")
 		while compileSubroutine()
@@ -283,6 +289,7 @@ printV("endEL\n")
 					# | subroutineCall | ('(' expression ')') | unaryOp term
 printV("compileTerm\n")
 		if compileIntConstant()
+printV("int-------\n")
 			return true
 		elsif compileStringConstant()
 			return true
@@ -380,7 +387,11 @@ printV("found ) \n")
 		return checkSameTypeBoolean(JackTokenizer.TYPE_STRING)
 	end
 	def compileIntConstant() # anything int
-		return checkSameTypeBoolean(JackTokenizer.TYPE_INT)
+		if checkSameTypeBoolean(JackTokenizer.TYPE_INT)
+			@tokenizer.advance
+			return true
+		end
+		return false
 	end
 	def compileClassName() # identifier
 		return compileIdentifier()

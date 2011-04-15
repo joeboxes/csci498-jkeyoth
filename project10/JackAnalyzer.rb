@@ -97,7 +97,11 @@ if __FILE__ == $0 # this file was called from command line
 		end
 		if (ARGV[0] =~ /.*.jack/) # ends in ".jack" => file
 			analyzer.printV("single file translation\n")
-			analyzer.doFile(ARGV[0])
+			if File.exists?(ARGV[0])
+				analyzer.doFile(ARGV[0])
+			else
+				puts "file #{ARGV[0]} does not exist\n"
+			end
 		else # ending not ".jack" => directory of files
 			analyzer.printV("directory translation\n")
 			if File.directory?(ARGV[0]) # directory exists
