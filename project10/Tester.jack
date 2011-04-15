@@ -1,6 +1,0 @@
-class Tester
-{
-	var int a;
-	let a = 0;
-	do  a.test();
-}
