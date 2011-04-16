@@ -2,25 +2,26 @@
 #JackAnalyzer.rb Verbose
 require "Verbose.rb"
 require "JackTokenizer.rb"
-require "CompilationEngine.rb"
+require "CompilationEngine2.rb"
 require "rubygems"
 require "builder"
 require "ruby-debug"
+require "tree"
 
 class JackAnalyzer < Verbose
 	def initialize(v=false)
-		super(true)
+		super(false)
 		@tokenizer = JackTokenizer.new()
-		@engine = CompilationEngine.new()
+		@engine = CompilationEngine2.new()
 		@tokenizer.setVerbose(false)
-		@engine.setVerbose(v)
+		@engine.setVerbose(true)
 		@fileXML = nil
 		@xmlBuilder = nil
 	end
 	
 	def setVerbose(v)
-		@verbose = v
-		@tokenizer.setVerbose(v)
+		@verbose = false
+		@tokenizer.setVerbose(false)
 		@engine.setVerbose(v)
 	end
 	

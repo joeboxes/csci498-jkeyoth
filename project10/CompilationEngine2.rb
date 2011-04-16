@@ -2,6 +2,8 @@
 require "Verbose.rb"
 require "JackTokenizer.rb"
 require "rubygems"
+require "ruby-debug"
+require "ParseNode.rb"
 require "tree"
 
 class CompilationEngine2 < Verbose
@@ -19,8 +21,6 @@ class CompilationEngine2 < Verbose
 	def initialize(v=false)
 		@tokenizer = nil
 		super(v)
-		@rootNode
-		@curNode
 		@nodeNameCounter = -1
 	end
 	
@@ -35,12 +35,13 @@ class CompilationEngine2 < Verbose
 	
 	def compileClass() # 'class' className '{' classVarDec* subroutineDec* '}'
 		@tokenizer.resetIndex # go to first
-		@tokenizer.advance#do class keyword
+		#@tokenizer.advance#do class keyword #the hell?
 		if checkSameValue(@tokenizer.getCurrItem,"class")
 			@rootNode = getNewNode("class")
 			@rootNode << getNewNode("keyword", "class")
 		else
-			#errror here - first non comment word must be class
+			#error here - first non comment word must be class
+			puts "Need class"
 			exit
 		end
 		@tokenizer.advance#do class name
@@ -62,7 +63,9 @@ class CompilationEngine2 < Verbose
 		end
 		
 		@tokenizer.advance
-		@rootNode << compileSymbol("}")
+		@rootNode << compileSymbol("}","compileClass")
+		
+		return @rootNode
 	end
 	
 	#compile higher level things--------------------------------------------
@@ -110,17 +113,19 @@ class CompilationEngine2 < Verbose
 		while checkSameValue(@tokenizer.getCurrItem, "var")
 			subBodyNode << compileSubroutineVars()
 		end
-		#}
-		@tokenizer.advance
-		subBodyNode << compileSymbol("}")
-		
-		
-		r << subBodyNode
 		
 		@tokenizer.advance
 		#now the horifying part: statements!
+		subBodyNode << compileStatements()
 		
-		r << compileStatements()
+		
+		@tokenizer.advance
+		subBodyNode << compileSymbol("}", "compileSubroutineDec")
+		
+		r << subBodyNode
+		
+		
+		
 		
 		
 		return r
@@ -128,11 +133,11 @@ class CompilationEngine2 < Verbose
 	
 	#recursive time! do some statements!
 	#warning, this is recursive, but the recursive calls are in the methods this one calls
-	#i.e. compileStatements calls compileIf, which calls compileStatements, which could call compileIf....
+	#i.e compileStatements calls compileIf, which calls compileStatements, which could call compileIf....
 	#if a painting of that painting is normal recursion, this is like two mirrors facing each other
 	def compileStatements()
 		r = getNewNode("statements")
-		while constains(STATE_STARTS, @tokenizer.getCurrItem)
+		while contains(STATE_STARTS, @tokenizer.getCurrItem)
 			case @tokenizer.getCurrItem
 				when "let"
 				r << compileLet()
@@ -169,43 +174,31 @@ class CompilationEngine2 < Verbose
 		
 		toke = @tokenizer.getCurrItem
 		
-		if checkSameType(toke, Tokenizer.TYPE_INT)
+		if checkSameType(toke, JackTokenizer.TYPE_INT)
 			r << compileConstant("integerConstan", toke)
-		elsif checkSameType(toke, Tokenizer.TYPE_STRING)
+			
+		elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
 			r << compileConstant("stringConstant", toke)
+			
 		elsif contains(KEYWORD_CONSTANTS, toke)
 			r << compileKeyword(toke)
+			
 		elsif contains(UNIARY_OPS, toke)
 			r << compileSymbol(toke)
 			@tokenizer.advance
 			r << compileTerm
 			
 		elsif isSubCall?
-			r << compileIdentifier(toke)
-			@tokenizer.advance
-			if checkSameValue(@tokenizer.getCurrItem, ".")
-				r << compileSymbol(".")
-				@tokenizer.advance
-				r << compileIdentifier(@tokenizer.getCurrItem)
-				@tokenizer.advance
-			end
+			compileSubroutineCall(r)
 			
-			r << compileSymbol("(")
-			
-			@tokenizer.advance
-			r << compileExpressionList()
-			
-			@tokenizer.advance
-			r << compileSymbol(")")
-			
-		elsif checkSameValue(toke, "(")
+		elsif checkSameValue(toke, "(")#in parenths
 			r << compileSymbol("(")
 			@tokenizer.advance
 			r << compileExpression()
 			@tokenizer.advance
 			r << compileExpression(")")
 			
-		elsif isArrayThinger?
+		elsif isArrayThinger?#varName[expression]
 			r << compileIdentifier()
 			@tokenizer.advance
 			r << compileSymbol("[")
@@ -214,7 +207,7 @@ class CompilationEngine2 < Verbose
 			@tokenizer.advance
 			r << compileSymbol("]")
 			
-		else
+		else#is a varName
 			r << compileIdentifier()
 		end
 		
@@ -224,7 +217,7 @@ class CompilationEngine2 < Verbose
 	
 	
 	def isSubCall?
-		if checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER)
+		if checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			peeked = @tokenizer.peek
 			return (checkSameValue(peeked, ".") or checkSameValue(peeked, "("))
 		end
@@ -232,7 +225,7 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def isArrayThinger?
-		if checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER)
+		if checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			peeked = @tokenizer.peek
 			return checkSameValue(peeked, "[")
 		end
@@ -240,9 +233,19 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileExpressionList()
+		r = getNewNode("expressionList")
 		
+		@tokenizer.advance
+		while !checkSameValue(@tokenizer.getCurrItem, ")")
+			r << compileExpression()
+			@tokenizer.advance
+			r << compileSymbol(",")
+			@tokenizer.advance
+		end
+		
+		@tokenizer.retract
+		return r
 	end
-	
 	def compileLet()
 		r = getNewNode("letStatement")
 		r << compileKeyword("let")
@@ -335,7 +338,7 @@ class CompilationEngine2 < Verbose
 		r = getNewNode("doStatment")
 		r << compileKeyword("do")
 		@tokenizer.advance
-		r << compileSubroutineCall(r)
+		compileSubroutineCall(r)
 		@tokenizer.advance
 		r << compileSymbol(";")
 		
@@ -358,7 +361,22 @@ class CompilationEngine2 < Verbose
 	
 	#why doesnt this have a surrounding tag? grrr
 	def compileSubroutineCall(r)
+		r << compileIdentifier(toke)
+		@tokenizer.advance
+		if checkSameValue(@tokenizer.getCurrItem, ".")
+			r << compileSymbol(".")
+			@tokenizer.advance
+			r << compileIdentifier(@tokenizer.getCurrItem)
+			@tokenizer.advance
+		end
 		
+		r << compileSymbol("(")
+		
+		@tokenizer.advance
+		r << compileExpressionList()
+		
+		@tokenizer.advance
+		r << compileSymbol(")")
 	end
 	
 	def compileSubroutineVars()
@@ -368,7 +386,7 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		
 		#type
-		if contains(VAR_TYPES, @tokenizer,getCurrItem)
+		if contains(VAR_TYPES, @tokenizer.getCurrItem)
 			r << compileKeyword(@tokenizer.getCurrItem)
 		else
 			r << compileIdentifier(@tokenizer.getCurrItem)
@@ -376,7 +394,7 @@ class CompilationEngine2 < Verbose
 		
 		@tokenizer.advance
 		hitOne = false
-		while checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER)
+		while checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			hitOne = true
 			r << compileIdentifier(@tokenizer.getCurrItem)
 			@tokenizer.advance
@@ -385,6 +403,7 @@ class CompilationEngine2 < Verbose
 				r << compileSymbol(@tokenizer.getCurrItem)
 			else
 				#error here - not a ; or ,
+				puts "No comma or semicolon found in subroutine vars"
 				exit
 			end
 			@tokenizer.advance
@@ -396,6 +415,7 @@ class CompilationEngine2 < Verbose
 		end
 		
 		#error here - found something like "var int" but no identifier
+		puts "No identifier found in subroutine vars"
 		exit
 	end
 	
@@ -403,7 +423,7 @@ class CompilationEngine2 < Verbose
 		r = getNewNode("parameterList")
 		
 		#do multiple parameters
-		while contains(VAR_TYPES, @tokenizer,getCurrItem) or checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER) 
+		while (contains(VAR_TYPES, @tokenizer.getCurrItem) or checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)) 
 			#do type
 			if contains(VAR_TYPES, @tokenizer,getCurrItem)
 				r << compileKeyword(@tokenizer.getCurrItem)
@@ -431,7 +451,7 @@ class CompilationEngine2 < Verbose
 		
 		hitOne = false#make sure there is at least one identifier
 		@tokenizer.advance
-		while checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER)
+		while checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			hitOne = true
 			r << compileIdentifier(@tokenizer.getCurrItem)
 			@tokenizer.advance
@@ -440,6 +460,7 @@ class CompilationEngine2 < Verbose
 				r << compileSymbol(@tokenizer.getCurrItem)
 			else
 				#error here - not a ; or ,
+				puts "No comma or semicolon found in class vars"
 				exit
 			end
 			@tokenizer.advance
@@ -451,6 +472,7 @@ class CompilationEngine2 < Verbose
 		end     
 		
 		#error here - something alone the lines of "field int" found, but no identifiers found
+		puts "No identifier found in class vars"
 		exit
 		
 	end
@@ -461,13 +483,14 @@ class CompilationEngine2 < Verbose
 	#All of these return a subtree (usually 2 nodes, xml tag and value to go in that tag)
 	#these methods will not advance tokenizer
 	
-	def compileSymbol(symbol=nil)
+	def compileSymbol(symbol=nil, whereAmICalled=nil)
 		if checkSameValue(@tokenizer.getCurrItem, symbol)
 			symNode = getNewNode("symbol", symbol)
 		elsif symbol == nil
 			symNode = getNewNode("symbol", @tokenizer.getCurrItem)
 		else
 			#error here - symbol not what was expected
+			puts "Wrong symbol found, looking for a " + symbol + (whereAmICalled == nil ? "" : " in " +whereAmICalled)
 			exit
 		end
 		return symNode
@@ -477,12 +500,14 @@ class CompilationEngine2 < Verbose
 		if ident == nil
 			ident = @tokenizer.getCurrItem
 		end
-		if checkSameType(@tokenizer.getCurrItem, Tokenizer.TYPE_IDENTIFIER)
+		if checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			idNode = getNewNode("identifier", ident)
 		else
 			#error here - expected an identifier
-			return idNode
+			puts "Expected an identifier"
 		end
+		return idNode
+		
 	end
 	
 	def compileKeyword(key)
@@ -502,7 +527,7 @@ class CompilationEngine2 < Verbose
 	def checkSameValue(str, expected)
 		
 		return (str != nil and expected != nil and 
-				checkSameType(str,@tokenizer.getType(expected)) and str == expected)
+			checkSameType(str,@tokenizer.getType(expected)) and str == expected)
 		
 	end
 	
@@ -519,7 +544,8 @@ class CompilationEngine2 < Verbose
 	
 	#helper function to get a new tree node typing all that out over and over sucks
 	def getNewNode(name, parseVal = nil)
-		return Tree::TreeNode(name + getNextName, ParseNode.new(name, parseVal))
+		printV("creating node: #{name} #{parseVal}")
+		return Tree::TreeNode.new(name + getNextName, ParseNode.new(name, parseVal))
 	end
 	
 end

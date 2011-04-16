@@ -14,7 +14,7 @@ class Verbose
 	end
 	def printV(s)
 		if @verbose
-			print(s)
+			puts s
 		end
 	end
 end
