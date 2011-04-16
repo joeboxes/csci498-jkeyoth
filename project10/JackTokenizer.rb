@@ -3,13 +3,13 @@
 require "Verbose.rb"
 
 class JackTokenizer < Verbose
-# class vars
+	# class vars
 	@@KEYWORDS=["class", "method", "function", "constructor", "int",\
 			"boolean", "char", "void", "var", "static", "field",\
 			"let", "do", "if", "else", "while", "return", "true",\
 			"false", "null", "this"]
 	@@SYMBOLS="{([])}.,;+-*/&|<>=~"
-
+	
 	@@TYPE_KEYWORD = "KEYWORD"
 	@@TYPE_SYMBOL = "SYMBOL"
 	@@TYPE_IDENTIFIER = "IDENTIFIER"
@@ -41,11 +41,11 @@ class JackTokenizer < Verbose
 	def self.TYPE_UNKNOWN
 		@@TYPE_UNKNOWN
 	end
-# instance vars
+	# instance vars
 	def initialize(v=false)
 		super(v)
 		@fileJack = nil
-#		@fileXML = nil
+		#		@fileXML = nil
 		@line = ""
 		@multiComment = false
 		@fileObjects = nil
@@ -159,7 +159,7 @@ class JackTokenizer < Verbose
 		line.gsub!("\t","") # remove all tabs
 		line.gsub!(/\/\/.*/,"") # remove single line comments
 		line.strip! # remove leading & trailing white space
-#		line.squeeze!(" ") # set spacing between words to single space - not for STRINGS
+		#		line.squeeze!(" ") # set spacing between words to single space - not for STRINGS
 		splitLine = splitButKeepStringConsts(line);
 		return splitLine
 	end
@@ -178,7 +178,14 @@ class JackTokenizer < Verbose
 		if hasMoreTokens()
 			@curToken = @fileObjects[@curTokenNum]
 		end
-printV("new token: #{@curToken}\n")
+		printV("new token: #{@curToken}\n")
+	end
+	
+	def peek()
+		advance
+		violated = getCurrItem
+		retract
+		return violated
 	end
 	
 	def retract()
@@ -211,7 +218,7 @@ printV("new token: #{@curToken}\n")
 	end
 	
 	def getType(obj)
-#printV("#{@obj}:#{@@SYMBOLS.count(@obj)}\n")
+		#printV("#{@obj}:#{@@SYMBOLS.count(@obj)}\n")
 		strVal = obj.to_str
 		beginning = strVal[0..0]
 		ending = strVal[-1..-1]
@@ -314,6 +321,3 @@ if __FILE__ == $0 # this file was called for main
 		puts "problem opening files"
 	end
 end
-
-
-

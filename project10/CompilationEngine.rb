@@ -2,12 +2,24 @@
 #CompilationEngine.rb Verbose
 require "Verbose.rb"
 require "JackTokenizer.rb"
+require "ParseNode.rb"
+require "rubygems"
+require "ruby-debug"
 
 class CompilationEngine < Verbose
 	def initialize(v=false)
 		@tokenizer = nil
+		@rootNode = nil
+		@addToNode = nil
+		@nameCounter = 0
 		super(v)
 	end
+	
+	def getNextTreeName()
+		@nameCounter += 1
+		return String(@nameCounter)
+	end
+	
 	def setTokenizer(t)
 		@tokenizer = t
 	end
@@ -44,18 +56,21 @@ class CompilationEngine < Verbose
 		unexp = @tokenizer.getItem(@tokenizer.tokenType)
 		puts "expected '#{expected}', given '#{unexp}'\n"
 	end
-
-# COMPILE FORMAT: coming in: point to first string needed by function
-#				coming out: point to last string needed by function + 1
-
+	
+	# COMPILE FORMAT: coming in: point to first string needed by function
+	#				coming out: point to last string needed by function + 1
+	
 	
 	def compileClass() # 'class' className '{' classVarDec* subroutineDec* '}'
-printV("compile class\n")
+		printV("compile class\n")
 		@tokenizer.resetIndex # go to first
 		if checkSameValue("class")
+			@rootNode = getNewNode("class")
+			@addToNode = @rootNode
 			@tokenizer.advance
 			if compileClassName()
 				if checkSameValue("{")
+					addNode("symbol", "{")
 					@tokenizer.advance
 					if compileClassVarDecList() && compileSubroutineDec() # change these to LISTs
 						if checkSameValue("}")
@@ -66,11 +81,11 @@ printV("compile class\n")
 				end
 			end
 		end
-printV("AT: '#{@tokenizer.getCurrItem()}'\n")
+		printV("AT: '#{@tokenizer.getCurrItem()}'\n")
 		return false
 	end
 	def compileVarDecEnd() # type varName (',' varName)* ';'
-printV("compileVarDecEnd\n")
+		printV("compileVarDecEnd\n")
 		if compileType()
 			if compileVarName()
 				ret = checkSameValue(",")
@@ -97,7 +112,7 @@ printV("compileVarDecEnd\n")
 		return true
 	end
 	def compileClassVarDec() # ('static' | 'field') type varName (',' varName)* ';'
-printV("compileClassVarDec\n")
+		printV("compileClassVarDec\n")
 		if checkSameValue("static") || checkSameValue("field")
 			@tokenizer.advance
 			return compileVarDecEnd()
@@ -105,7 +120,7 @@ printV("compileClassVarDec\n")
 		return false
 	end
 	def compileVarDec() # 'var' type varName (',' varName)* ';'
-printV("compileVarDec\n")
+		printV("compileVarDec\n")
 		if checkSameValue("var")
 			@tokenizer.advance
 			return compileVarDecEnd()
@@ -114,13 +129,13 @@ printV("compileVarDec\n")
 	end
 	
 	def compileSubroutineDec() # subroutine*
-printV("compileSubroutineDec\n")
+		printV("compileSubroutineDec\n")
 		while compileSubroutine()
 		end
 		return true
 	end
 	def compileSubroutine() # ('constructor' | 'function' | 'method') ('void' | type) subName '(' parameterList ')' subroutineBody
-printV("compileSubRoutine\n")
+		printV("compileSubRoutine\n")
 		if checkSameValue("constructor") || checkSameValue("function") || checkSameValue("method")
 			@tokenizer.advance
 			if checkSameValue("void")
@@ -146,12 +161,12 @@ printV("compileSubRoutine\n")
 		return false
 	end
 	def compileParameterList()
-printV("compileParameterList\n")
+		printV("compileParameterList\n")
 		ret = true
 		while ret
 			ret = false
 			if compileType()
-printV("type=yep\n")
+				printV("type=yep\n")
 				if compileVarName()
 					if checkSameValue(",")
 						@tokenizer.advance
@@ -163,7 +178,7 @@ printV("type=yep\n")
 		return true
 	end
 	def compileSubroutineBody() # '{' varDec* statements '}'
-printV("compileSubroutineBody\n")
+		printV("compileSubroutineBody\n")
 		if checkSameValue("{")
 			@tokenizer.advance
 			ret = compileVarDec() # varDecs
@@ -177,13 +192,13 @@ printV("compileSubroutineBody\n")
 		return false
 	end
 	def compileStatements() # statement*
-printV("compileStatements\n")
+		printV("compileStatements\n")
 		while compileStatement()
 		end
 		return true
 	end
 	def compileStatement() # letStatement | ifStatement | whileStatement | doStatement | returnStatement
-printV("compileStatement---\n")
+		printV("compileStatement---\n")
 		if checkSameValue("let")
 			return compileLet()
 		elsif checkSameValue("do")
@@ -194,7 +209,7 @@ printV("compileStatement---\n")
 		return false
 	end
 	def compileDo()
-printV("compileDo\n")
+		printV("compileDo\n")
 		if checkSameValue("do")
 			@tokenizer.advance
 			if compileSubroutineCall()
@@ -207,7 +222,7 @@ printV("compileDo\n")
 		return false
 	end
 	def compileLet() # 'let' varName ('[' expression ']') '=' expression ';'
-printV("compileLet\n")
+		printV("compileLet\n")
 		if checkSameValue("let")
 			@tokenizer.advance
 			if checkSameType("varName")
@@ -229,7 +244,7 @@ printV("compileLet\n")
 					ret = compileExpression()
 					if checkSameValue(";")
 						@tokenizer.advance
-printV("--------------let successful\n")
+						printV("--------------let successful\n")
 						return true
 					end
 				end
@@ -242,7 +257,7 @@ printV("--------------let successful\n")
 		return false
 	end
 	def compileReturn()
-printV("compileReturn\n")
+		printV("compileReturn\n")
 		if checkSameValue("return")
 			@tokenizer.advance
 			compileExpression()
@@ -258,7 +273,7 @@ printV("compileReturn\n")
 		return false
 	end
 	def compileExpression() # term (op term)*
-printV("compileExpression\n")
+		printV("compileExpression\n")
 		if compileTerm()
 			ret = compileTerm()
 			while ret
@@ -273,7 +288,7 @@ printV("compileExpression\n")
 		return false
 	end
 	def compileExpressionList() # ( expression , (',' expression)* )?
-printV("compileExpressionList\n")
+		printV("compileExpressionList\n")
 		ret = compileExpression()
 		while ret
 			ret = false
@@ -282,21 +297,21 @@ printV("compileExpressionList\n")
 				ret = compileExpression()
 			end 
 		end
-printV("endEL\n")
+		printV("endEL\n")
 		return true
 	end
 	def compileTerm() # integerConstant | stringConstant | keywordConst | varName ('[' expression ']')?
-					# | subroutineCall | ('(' expression ')') | unaryOp term
-printV("compileTerm\n")
+		# | subroutineCall | ('(' expression ')') | unaryOp term
+		printV("compileTerm\n")
 		if compileIntConstant()
-printV("int-------\n")
+			printV("int-------\n")
 			return true
 		elsif compileStringConstant()
 			return true
 		elsif compilekeyWordConstant()
 			return true
 		elsif compileSubroutineCall()
-printV("sub success \n")
+			printV("sub success \n")
 			return true
 		elsif checkSameValue("(")
 			@tokenizer.advance
@@ -324,17 +339,17 @@ printV("sub success \n")
 			end
 			return true
 		end
-printV("no match\n")
+		printV("no match\n")
 		return false
 	end
 	def compileSubroutineCall() # ((className | varName) '.')? subroutineName '(' expressionList ')'
-printV("compileSubroutineCall\n")
+		printV("compileSubroutineCall\n")
 		ret = compileClassName()
-printV("ret=#{ret}\n")
+		printV("ret=#{ret}\n")
 		if !ret
 			ret = compileVarName()
 		end
-printV("ret=#{ret}\n")
+		printV("ret=#{ret}\n")
 		if ret
 			if checkSameValue(".")
 				@tokenizer.advance
@@ -346,11 +361,11 @@ printV("ret=#{ret}\n")
 		if compileSubroutineName()
 			if checkSameValue("(")
 				@tokenizer.advance
-printV("found ( \n")
+				printV("found ( \n")
 				if compileExpressionList()
-printV("found expr \n")
+					printV("found expr \n")
 					if checkSameValue(")")
-printV("found ) \n")
+						printV("found ) \n")
 						@tokenizer.advance
 						return true
 					end
@@ -404,10 +419,11 @@ printV("found ) \n")
 	end
 	def compileIdentifier() # -
 		if checkSameType("id")
-#printV("'id'=?='#{@tokenizer.getCurrItem()}'\n")
-#typeID = @tokenizer.getType("id")
-#typeCurl = @tokenizer.getType("{")
-#printV("#{typeID}=====================#{typeCurl}\n")
+			#printV("'id'=?='#{@tokenizer.getCurrItem()}'\n")
+			#typeID = @tokenizer.getType("id")
+			#typeCurl = @tokenizer.getType("{")
+			#printV("#{typeID}=====================#{typeCurl}\n")
+			addNode("identifier", @tokenizer.getCurrItem)
 			@tokenizer.advance
 			return true
 		end
@@ -419,14 +435,14 @@ printV("found ) \n")
 			@tokenizer.advance
 			return true
 		elsif compileClassName()
-printV("IN CLASS\n")
+			printV("IN CLASS\n")
 			return true
 		end
 		return false
 	end
 	def inList(arr)
 		arr.each do |op|
-#printV("'#{op}'=?='#{@tokenizer.getCurrItem()}'\n")
+			#printV("'#{op}'=?='#{@tokenizer.getCurrItem()}'\n")
 			if checkSameValue(op)
 				return true
 			end
@@ -434,6 +450,16 @@ printV("IN CLASS\n")
 		return false
 	end
 	
+	
+	#helper function to get a new tree node. typing all that out over and over sucks
+	def getNewNode(name, parseVal = nil)
+		return Tree::TreeNode(name + getNextName, ParseNode.new(name, parseVal))
+	end
+	
+	def addNode(name, val=nil)
+		@addToNode << getNewNode(name, val)
+		
+	end
 end
 
 if __FILE__ == $0 # this file was called for main

@@ -5,13 +5,14 @@ require "JackTokenizer.rb"
 require "CompilationEngine.rb"
 require "rubygems"
 require "builder"
+require "ruby-debug"
 
 class JackAnalyzer < Verbose
 	def initialize(v=false)
-		super(v)
+		super(true)
 		@tokenizer = JackTokenizer.new()
 		@engine = CompilationEngine.new()
-		@tokenizer.setVerbose(v)
+		@tokenizer.setVerbose(false)
 		@engine.setVerbose(v)
 		@fileXML = nil
 		@xmlBuilder = nil
