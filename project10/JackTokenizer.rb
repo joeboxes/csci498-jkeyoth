@@ -8,7 +8,8 @@ class JackTokenizer < Verbose
 			"boolean", "char", "void", "var", "static", "field",\
 			"let", "do", "if", "else", "while", "return", "true",\
 			"false", "null", "this"]
-	@@SYMBOLS="{([])}.,;+-*/&|<>=~"
+	@@SYMBOLS= ["{", "(", "[", "]", ")", "}", ".", ",", ";", "+", "-", "*", "/", "&", "|", "<", ">", "=", "~"]
+	
 	
 	@@TYPE_KEYWORD = "KEYWORD"
 	@@TYPE_SYMBOL = "SYMBOL"
@@ -219,7 +220,7 @@ class JackTokenizer < Verbose
 	
 	def getType(obj)
 		#printV("#{@obj}:#{@@SYMBOLS.count(@obj)}\n")
-		strVal = obj.to_str
+		strVal = String(obj)
 		beginning = strVal[0..0]
 		ending = strVal[-1..-1]
 		if beginning == "\"" && ending == "\""
@@ -229,6 +230,8 @@ class JackTokenizer < Verbose
 		elsif @@SYMBOLS.count(obj) > 0
 			return @@TYPE_SYMBOL
 		elsif obj =~ /^[0-9]+$/
+			return @@TYPE_INT
+		elsif obj.class == Fixnum
 			return @@TYPE_INT
 		else
 			return @@TYPE_IDENTIFIER

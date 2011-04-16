@@ -32,6 +32,7 @@ class JackAnalyzer < Verbose
 		#printXml(inFile)# only for checking
 		# compile tokenizer array
 		@engine.setTokenizer(@tokenizer)
+		puts "Compiling #{inFile}"
 		ret = @engine.compileClass()
 		if ret
 			printV("successful compilation\n")
