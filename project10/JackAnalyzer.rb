@@ -9,19 +9,21 @@ require "ruby-debug"
 require "tree"
 
 class JackAnalyzer < Verbose
+	
+	XMLTabChar = "  "
+	
 	def initialize(v=false)
-		super(false)
+		super(v)
 		@tokenizer = JackTokenizer.new()
 		@engine = CompilationEngine2.new()
-		@tokenizer.setVerbose(false)
-		@engine.setVerbose(true)
-		@fileXML = nil
+		@tokenizer.setVerbose(v)
+		@engine.setVerbose(v)
 		@xmlBuilder = nil
 	end
 	
 	def setVerbose(v)
-		@verbose = false
-		@tokenizer.setVerbose(false)
+		@verbose = v
+		@tokenizer.setVerbose(v)
 		@engine.setVerbose(v)
 	end
 	
@@ -29,15 +31,16 @@ class JackAnalyzer < Verbose
 		# parse input to array
 		@tokenizer.openFile(inFile)
 		@tokenizer.closeFile()
-		#printXml(inFile)# only for checking
+		printTokens(inFile)# only for checking
 		# compile tokenizer array
 		@engine.setTokenizer(@tokenizer)
 		puts "Compiling #{inFile}"
-		ret = @engine.compileClass()
-		if ret
-			printV("successful compilation\n")
+		@ret = @engine.compileClass()
+		if @ret
+			puts "successful compilation"
+			printTreeAsXML(@ret, inFile)
 		else
-			puts "error occurred compiling file\n"
+			puts "error occurred compiling file"
 		end
 	end
 	
@@ -68,22 +71,56 @@ class JackAnalyzer < Verbose
 		
 	end
 	
-	def printXml(jackFileName)
-		@fileXML = @tokenizer.getXMLFile(jackFileName)
-		if @fileXML != nil
-		@xmlBuilder = Builder::XmlMarkup.new(:target => @fileXML, :indent => 2)
-		@xmlBuilder.tokens {
-			@tokenizer.resetIndex # go to first
-			while @tokenizer.hasMoreTokens()
-				type = @tokenizer.tokenType()
-				printXmlToken type
-				@tokenizer.advance
-			end
-		}
-			@fileXML.close()
-			@fileXML = nil
-			printV("closed XML file handle\n")
+	def printTokens(jackFileName)
+		tokenFile = File.open(File.basename(jackFileName, ".jack") + "T.xml", "w")
+		
+		if tokenFile != nil
+			@xmlBuilder = Builder::XmlMarkup.new(:target => tokenFile, :indent => 2)
+			@xmlBuilder.tokens {
+				@tokenizer.resetIndex # go to first
+				while @tokenizer.hasMoreTokens()
+					type = @tokenizer.tokenType()
+					printXmlToken type
+					@tokenizer.advance
+				end
+			}
+			
+			
 		end
+		tokenFile.close()
+	end
+	
+	def printTreeAsXML(root, jackFileName)
+		#builder = Builder::XmlMarkup.new()
+		xmlFile = File.open(File.basename(jackFileName, ".jack") + ".xml", "w")
+		
+		printNodeXML(root, xmlFile)
+		
+		xmlFile.close
+	end
+	
+	def printNodeXML(node, file)
+		tabs = node.node_depth
+		(1..tabs).each do
+			file.write(XMLTabChar)
+		end
+		file.write("<#{node.content.name}>")
+		if node.content.hasVal? #terminal, print val and go back up
+			file.write(" #{node.content.value} ")
+			file.write("</#{node.content.name}>\n")
+			
+		else #non terminal, keep going
+			file.write("\n") #put a newline after the >
+			kids = node.children
+			for kid in kids
+				printNodeXML(kid,file)
+			end
+			(1..tabs).each do
+				file.write(XMLTabChar)
+			end
+			file.write("</#{node.content.name}>\n")
+		end
+		
 	end
 	
 end
@@ -121,4 +158,3 @@ if __FILE__ == $0 # this file was called from command line
 		end
 	end
 end
-

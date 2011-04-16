@@ -342,7 +342,7 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileDo()
-		r = getNewNode("doStatment")
+		r = getNewNode("doStatement")
 		r << compileKeyword("do")
 		@tokenizer.advance
 		compileSubroutineCall(r)
