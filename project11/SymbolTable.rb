@@ -41,7 +41,7 @@ class SymbolTable < Verbose
 		else
 			printV("SYMBOL-TABLE: '\n")
 			@hsh.each do |k,v|
-				printV("  KEY: '#{k}' => VALUE: '#{v}'\n")
+				printV("  '#{k}' => '#{v[0]}' '#{v[1]}'\n")
 			end
 		end
 	end

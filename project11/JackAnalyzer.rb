@@ -3,6 +3,7 @@
 require "Verbose.rb"
 require "JackTokenizer.rb"
 require "CompilationEngine2.rb"
+require "VMWriter.rb"
 require "rubygems"
 require "builder"
 require "ruby-debug"
@@ -18,6 +19,7 @@ class JackAnalyzer < Verbose
 		@engine = CompilationEngine2.new()
 		@tokenizer.setVerbose(v)
 		@engine.setVerbose(v)
+		@vmW = VMWriter.new(v)
 		@xmlBuilder = nil
 	end
 	
@@ -25,6 +27,7 @@ class JackAnalyzer < Verbose
 		@verbose = v
 		@tokenizer.setVerbose(v)
 		@engine.setVerbose(v)
+		@vmW.setVerbose(v)
 	end
 	
 	def doFile(inFile)
@@ -35,10 +38,12 @@ class JackAnalyzer < Verbose
 		# compile tokenizer array
 		@engine.setTokenizer(@tokenizer)
 		puts "Compiling #{inFile}"
-		@ret = @engine.compileClass()
-		if @ret
+		ret = @engine.compileClass()
+		if ret!=nil
 			puts "successful compilation"
-			printTreeAsXML(@ret, inFile)
+#			printTreeAsXML(ret, inFile)
+			@vmW.setRoot(ret)
+			@vmW.writeCode(inFile)
 		else
 			puts "error occurred compiling file"
 		end
@@ -48,23 +53,23 @@ class JackAnalyzer < Verbose
 		if type == JackTokenizer.TYPE_KEYWORD
 			val = @tokenizer.keyword
 			@xmlBuilder.keyword " #{val} "
-			printV("keyword: '#{val}'\n")
+#			printV("keyword: '#{val}'\n")
 		elsif type == JackTokenizer.TYPE_SYMBOL
 			val = @tokenizer.symbol
 			@xmlBuilder.symbol " #{val} "
-			printV("symbol: '#{val}'\n")
+#			printV("symbol: '#{val}'\n")
 		elsif type == JackTokenizer.TYPE_IDENTIFIER
 			val = @tokenizer.identifier
 			@xmlBuilder.identifier " #{val} "
-			printV("identifier: '#{val}'\n")
+#			printV("identifier: '#{val}'\n")
 		elsif type == JackTokenizer.TYPE_STRING
 			val = @tokenizer.stringVal()
 			@xmlBuilder.stringConstant " #{val} "
-			printV("string: '#{val}'\n")
+#			printV("string: '#{val}'\n")
 		elsif type == JackTokenizer.TYPE_INT
 			val = @tokenizer.intVal
 			@xmlBuilder.integerConstant " #{val} " #.to_s
-			printV("int: '#{val}'\n")
+#			printV("int: '#{val}'\n")
 		else
 			printV("unknown type'\n")
 		end

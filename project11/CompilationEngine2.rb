@@ -560,7 +560,7 @@ class CompilationEngine2 < Verbose
 	
 	#helper function to get a new tree node typing all that out over and over sucks
 	def getNewNode(name, parseVal = nil)
-		printV("creating node: #{name}\t#{(name=="identifier" or name=="integerConstant") ? "" : "\t"}#{parseVal}")
+#		printV("creating node: #{name}\t#{(name=="identifier" or name=="integerConstant") ? "" : "\t"}#{parseVal}")
 		return Tree::TreeNode.new(name + getNextName, ParseNode.new(name, parseVal))
 	end
 	

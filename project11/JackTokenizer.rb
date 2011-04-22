@@ -179,7 +179,7 @@ class JackTokenizer < Verbose
 		if hasMoreTokens()
 			@curToken = @fileObjects[@curTokenNum]
 		end
-		printV("new token: #{@curToken}\n")
+#		printV("new token: #{@curToken}\n")
 	end
 	
 	def peek()
