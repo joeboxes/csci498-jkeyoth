@@ -33,7 +33,7 @@ class SymbolTable < Verbose
 		return @hsh[k][0]
 	end
 	def getLength
-		return index
+		return @index
 	end
 	def printTable
 		if @hsh.length==0
