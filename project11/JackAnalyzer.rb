@@ -41,7 +41,7 @@ class JackAnalyzer < Verbose
 		ret = @engine.compileClass()
 		if ret!=nil
 			puts "successful compilation"
-#			printTreeAsXML(ret, inFile)
+			printTreeAsXML(ret, inFile)
 			@vmW.setRoot(ret)
 			@vmW.writeCode(inFile)
 		else
