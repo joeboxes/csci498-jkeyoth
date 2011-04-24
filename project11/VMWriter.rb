@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 require "Verbose.rb"
 require "SymbolTable.rb"
+require "rubygems"
+require "ruby-debug"
 require "tree"
 
 class VMWriter < Verbose
@@ -16,9 +18,10 @@ class VMWriter < Verbose
 		
 		@firstStatements = true
 		
-		@curFunctName
+		@curFunctNode
 		@curFunctType
 		@curFunctNumVars
+		
 		
 	end
 	
@@ -76,32 +79,36 @@ class VMWriter < Verbose
 	
 	
 	def iterateNode(node)
-		#puts "#{node.content.name}\n"
-		if node.content.name == "class"
+		name = node.content.name
+		
+		if name == "class"
 			handleClass(node)
-		elsif node.content.name == "classVarDec"
+		elsif name == "classVarDec"
 			handleClassVarDec(node)
-		elsif node.content.name == "subroutineDec"
+		elsif name == "subroutineDec"
 			handleSubDec(node)
-		elsif node.content.name == "parameterList"
+		elsif name == "parameterList"
 			handleParamList(node)
-		elsif node.content.name == "varDec"
+		elsif name == "varDec"
 			handleVarDec(node)
-		elsif node.content.name == "statements"
+		elsif name == "statements"
 			handleStatements(node)
+		elsif name == "letStatement"
+			handleLet(node)
+		elsif name == "ifStatement"
+			handleIf(node)
+		elsif name == "whileStatement"
+			handleWhile(node)
+		elsif name == "doStatement"
+			handleDo(name)
+		elsif name == "returnStatement"
+			handleReturn(name)
 		end
-		#puts "<#{node.content.name}>"
-		if node.content.hasVal? #terminal, print val and go back up
-			#puts " #{node.content.value} "
-			#puts "</#{node.content.name}>\n"
-			
-		else #non terminal, keep going
-			#puts "\n" 
+		if not node.content.hasVal? #non terminal, keep going down the rabit hole
 			kids = node.children
 			for kid in kids
 				iterateNode(kid)
 			end
-			#puts "</#{node.content.name}>\n"
 		end
 	end
 	
@@ -150,7 +157,7 @@ class VMWriter < Verbose
 		
 		@firstStatements = true
 		
-		@curFunctName = name
+		@curFunctNode = node
 		@curFunctType = type
 		
 		@functionTable.printTable
@@ -187,18 +194,58 @@ class VMWriter < Verbose
 	
 	def handleStatements(node)
 		if @firstStatements
+			
 			if @curFunctType == "constructor"
-				writeConstructor
+				writeConstructor(@curFunctNode)
+			elsif @curFunctType == "method"
+				writeMethodDef()
+			else
+				writeFunctionDef()
 			end
 			@firstStatements = false
 		end
-		#continue with handling the statements
 	end
 	
 	
+	def handleLet(node)
+		arr = node.children
+		dest = arr[1].content.value
+		
+		
+	end
+	
+	def handleIf(node)
+		
+	end
+	
+	def handleWhile(node)
+		
+	end
+	
+	def handleDo(node)
+		
+	end
+	
+	def handleReturn(node)
+		
+	end
+	
+	
+	def writeFunctionDef()
+		numVars = @fieldTable.getLength
+		@vmFile.write("function #{@className}.#{@curFunctNode.content.name} #{numVars}\n")
+	end
+	
+	def writeMethodDef()
+		numVars = @fieldTable.getLength
+		@vmFile.write("function #{@className}.#{@curFunctNode.content.name} #{numVars}\n")
+		writePush("argument", 0)
+		writePop("pointer", 0)
+	end
+	
 	def writeConstructor()
 		numVars = @fieldTable.getLength
-		@vmFile.write("function #{@className}.#{@curFunctName} #{numVars}\n")
+		@vmFile.write("function #{@className}.#{@curFunctNode.content.name} #{numVars}\n")
 		writePush("constant", @curFunctNumVars)
 		writeCall("Memory", "alloc", 1)
 		writePop("pointer", 0)

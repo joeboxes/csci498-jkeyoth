@@ -17,4 +17,8 @@ class ParseNode
 	def hasVal?
 		return @value != nil
 	end
+	
+	def to_s()
+		return "#{name}:#{value}"
+	end
 end

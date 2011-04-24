@@ -5,6 +5,7 @@ require "rubygems"
 require "ruby-debug"
 require "ParseNode.rb"
 require "tree"
+require "VMWriter2"
 
 class CompilationEngine2 < Verbose
 	
@@ -18,10 +19,20 @@ class CompilationEngine2 < Verbose
 	OPS = ["+", "-", "*", "/", "&", "|", "<", ">", "="]
 	UNIARY_OPS = ["-", "~"]
 	
+	
+	
 	def initialize(v=false)
 		@tokenizer = nil
 		super(v)
+		@verbose = v
 		@nodeNameCounter = -1
+		
+		@staticTable = SymbolTable.new(v)#class scope
+		@fieldTable = SymbolTable.new(v)#class scope
+		@argumentTable = SymbolTable.new(v)#method scope
+		@varTable = SymbolTable.new(v)#method scope
+		@functionTable = SymbolTable.new(v)#class scope
+		
 	end
 	
 	def getNextName()
@@ -33,12 +44,17 @@ class CompilationEngine2 < Verbose
 		@tokenizer = t
 	end
 	
+	def setFileName(fname)
+		@writer = VMWriter2.new(fname, @verbose)
+	end
+	
 	def compileClass() # 'class' className '{' classVarDec* subroutineDec* '}'
 		@tokenizer.resetIndex # go to first
 		#@tokenizer.advance#do class keyword #the hell?
 		if checkSameValue(@tokenizer.getCurrItem,"class")
 			@rootNode = getNewNode("class")
 			@rootNode << getNewNode("keyword", "class")
+			
 		else
 			#error here - first non comment word must be class
 			raise "Need class"
@@ -46,6 +62,8 @@ class CompilationEngine2 < Verbose
 		end
 		@tokenizer.advance#do class name
 		@rootNode << compileIdentifier(@tokenizer.getCurrItem)
+		
+		@className = @tokenizer.getCurrItem
 		
 		@tokenizer.advance#{
 		@rootNode << compileSymbol("{")
@@ -64,6 +82,7 @@ class CompilationEngine2 < Verbose
 			@tokenizer.advance
 		end
 		
+		
 		@tokenizer.advance
 		@rootNode << compileSymbol("}")
 		
@@ -74,8 +93,13 @@ class CompilationEngine2 < Verbose
 	#these will call the token type compilers, return subtree of many nodes
 	#these methods will advance tokenizer
 	def compileSubroutineDec()
+		
+		@argumentTable.clearTable
+		@varTable.clearTable
+		
 		r = getNewNode("subroutineDec")
 		r << compileKeyword(@tokenizer.getCurrItem)
+		subType = @tokenizer.getCurrItem
 		
 		@tokenizer.advance
 		#get return type
@@ -88,6 +112,10 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		#get name of sub
 		r << compileIdentifier(@tokenizer.getCurrItem)
+		
+		subName = @tokenizer.getCurrItem
+		
+		@functionTable.addEntry(subName, subType)
 		
 		#open parenth
 		@tokenizer.advance
@@ -115,6 +143,17 @@ class CompilationEngine2 < Verbose
 		while checkSameValue(@tokenizer.getCurrItem, "var")
 			subBodyNode << compileSubroutineVars()
 			@tokenizer.advance
+		end
+		
+		@writer.writeFunction(@className, subName, @varTable.getLength)
+		
+		if subType == "constructor"
+			@writer.writePush("constant", @curFunctNumVars)
+			@writer.writeCall("Memory", "alloc", 1)
+			@writer.writePop("pointer", 0)
+		elsif subType == "method"
+			@writer.writePush("argument", 0)
+			@writer.writePop("pointer", 0)
 		end
 		
 		#now the horifying part: statements!
@@ -400,11 +439,16 @@ class CompilationEngine2 < Verbose
 			r << compileIdentifier(@tokenizer.getCurrItem)
 		end
 		
+		type = @tokenizer.getCurrItem
+		
 		@tokenizer.advance
 		hitOne = false
 		while checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			hitOne = true
 			r << compileIdentifier(@tokenizer.getCurrItem)
+			
+			@varTable.addEntry(@tokenizer.getCurrItem, type)
+			
 			@tokenizer.advance
 			
 			if checkSameValue(@tokenizer.getCurrItem, ",") or checkSameValue(@tokenizer.getCurrItem, ";")
@@ -438,9 +482,13 @@ class CompilationEngine2 < Verbose
 			else
 				r << compileIdentifier(@tokenizer.getCurrItem)
 			end
+			type = @tokenizer.getCurrItem
+			
 			#do name of parameter
 			@tokenizer.advance
 			r << compileIdentifier(@tokenizer.getCurrItem)
+			
+			@argumentTable.addEntry(@tokenizer.getCurrItem, type)
 			
 			@tokenizer.advance
 			if checkSameValue(@tokenizer.getCurrItem, ")")
@@ -457,6 +505,8 @@ class CompilationEngine2 < Verbose
 		r = getNewNode("classVarDec")
 		r << compileKeyword(@tokenizer.getCurrItem)
 		
+		varType = @tokenizer.getCurrItem
+		
 		@tokenizer.advance
 		if contains(VAR_TYPES, @tokenizer.getCurrItem)
 			r << compileKeyword(@tokenizer.getCurrItem)
@@ -464,11 +514,19 @@ class CompilationEngine2 < Verbose
 			r << compileIdentifier(@tokenizer.getCurrItem)
 		end
 		
+		type = @tokenizer.getCurrItem
+		
 		hitOne = false#make sure there is at least one identifier
 		@tokenizer.advance
 		while checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)
 			hitOne = true
 			r << compileIdentifier(@tokenizer.getCurrItem)
+			
+			if(varType == "field")
+				@fieldTable.addEntry(@tokenizer.getCurrItem, type)
+			else
+				@staticTable.addEntry(@tokenizer.getCurrItem, type)
+			end
 			@tokenizer.advance
 			
 			if checkSameValue(@tokenizer.getCurrItem, ",") or checkSameValue(@tokenizer.getCurrItem, ";")
@@ -560,8 +618,38 @@ class CompilationEngine2 < Verbose
 	
 	#helper function to get a new tree node typing all that out over and over sucks
 	def getNewNode(name, parseVal = nil)
-#		printV("creating node: #{name}\t#{(name=="identifier" or name=="integerConstant") ? "" : "\t"}#{parseVal}")
+		#		printV("creating node: #{name}\t#{(name=="identifier" or name=="integerConstant") ? "" : "\t"}#{parseVal}")
 		return Tree::TreeNode.new(name + getNextName, ParseNode.new(name, parseVal))
 	end
 	
+	
+	
+	def printAllTables()
+		setVerbose(true)
+		puts "Static table:"
+		@staticTable.printTable
+		puts "\nField table:"
+		@fieldTable.printTable
+		puts "\nArguments table:"
+		@argumentTable.printTable
+		puts "\nVar table:"
+		@varTable.printTable
+		puts "\nFunction table:"
+		@functionTable.printTable
+		
+		setVerbose(@verb)
+	end
+	
+	def setVerbose(v)
+		@verbose=v
+		@staticTable.setVerbose(v)
+		@fieldTable.setVerbose(v)
+		@argumentTable.setVerbose(v)
+		@varTable.setVerbose(v)
+		@functionTable.setVerbose(v)
+	end
+	
+	def close()
+		@writer.close
+	end
 end

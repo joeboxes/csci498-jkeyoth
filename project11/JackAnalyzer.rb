@@ -3,7 +3,7 @@
 require "Verbose.rb"
 require "JackTokenizer.rb"
 require "CompilationEngine2.rb"
-require "VMWriter.rb"
+require "VMWriter2.rb"
 require "rubygems"
 require "builder"
 require "ruby-debug"
@@ -19,7 +19,6 @@ class JackAnalyzer < Verbose
 		@engine = CompilationEngine2.new()
 		@tokenizer.setVerbose(v)
 		@engine.setVerbose(v)
-		@vmW = VMWriter.new(v)
 		@xmlBuilder = nil
 	end
 	
@@ -37,13 +36,12 @@ class JackAnalyzer < Verbose
 		printTokens(inFile)# only for checking
 		# compile tokenizer array
 		@engine.setTokenizer(@tokenizer)
+		@engine.setFileName(inFile)
 		puts "Compiling #{inFile}"
 		ret = @engine.compileClass()
 		if ret!=nil
 			puts "successful compilation"
 			printTreeAsXML(ret, inFile)
-			@vmW.setRoot(ret)
-			@vmW.writeCode(inFile)
 		else
 			puts "error occurred compiling file"
 		end
