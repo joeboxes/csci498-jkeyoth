@@ -1,0 +1,4 @@
+function SquareGame.new 2
+push constant 1
+call Memory.alloc 1
+pop pointer 0
