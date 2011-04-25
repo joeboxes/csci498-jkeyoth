@@ -195,6 +195,8 @@ class CompilationEngine2 < Verbose
 	def compileExpression() # term (op term)*
 		r = getNewNode("expression")
 		
+		@expRoot
+		@curNode
 		r << compileTerm()
 		
 		while contains(OPS, @tokenizer.peek)
@@ -203,6 +205,8 @@ class CompilationEngine2 < Verbose
 			@tokenizer.advance
 			r << compileTerm()
 		end
+		
+		
 		
 		return r
 	end
@@ -214,33 +218,34 @@ class CompilationEngine2 < Verbose
 		
 		if checkSameType(toke, JackTokenizer.TYPE_INT)
 			r << compileConstant("integerConstant", toke)
-			@writer.writePush("constant", toke)
+			#@writer.writePush("constant", toke)
+			
 			
 		elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
 			r << compileConstant("stringConstant", toke)
 			con = toke[1..-2]
 			len = con.length
-			@writer.writePush("constant", len)
-			@writer.writeCall("String", "new", 1)
-			(0..len-1).each do |i|
-				@writer.writePush("constant", con[i])
-				@writer.writeCall("String", "new", 2)
-			end
+			#@writer.writePush("constant", len)
+			#@writer.writeCall("String", "new", 1)
+			#(0..len-1).each do |i|
+			#	@writer.writePush("constant", con[i])
+			#	@writer.writeCall("String", "new", 2)
+			#end
 			
 		elsif contains(KEYWORD_CONSTANTS, toke)
 			r << compileKeyword(toke)
-			case toke
-				when "true"
-					@writer.writePush("constant", 1)
-					@writer.writeArithmetic("neg")
-				when "false"
-					@writer.writePush("constant", 0)
-				when "null"
-					@writer.writePush("constant", 0)
-				else
-					raise "Keyword constant #{toke} not recognized (should be true, false, null)"
-					exit
-			end
+			#case toke
+			#	when "true"
+			#		@writer.writePush("constant", 1)
+			#		@writer.writeArithmetic("neg")
+			#	when "false"
+			#		@writer.writePush("constant", 0)
+			#	when "null"
+			#		@writer.writePush("constant", 0)
+			#	else
+			#		raise "Keyword constant #{toke} not recognized (should be true, false, null)"
+			#		exit
+			#end
 			
 		elsif contains(UNIARY_OPS, toke)
 			r << compileSymbol(toke)
@@ -248,15 +253,15 @@ class CompilationEngine2 < Verbose
 			@tokenizer.advance
 			r << compileTerm
 			
-			case op
-				when "-"
-					@writer.writeArithmetic("neg")
-				when "~"
-					@writer.writeArithmetic("not")
-				else
-					raise "Uniary op #{op} not recognized"
-					exit
-			end	
+			#case op
+			#	when "-"
+			#		@writer.writeArithmetic("neg")
+			#	when "~"
+			#		@writer.writeArithmetic("not")
+			#	else
+			#		raise "Uniary op #{op} not recognized"
+			#		exit
+			#end	
 			
 		elsif isSubCall?
 			compileSubroutineCall(r)
@@ -483,11 +488,11 @@ class CompilationEngine2 < Verbose
 		
 		#todo: push params
 		
-		if subName == nil
-			@writer.writeCall(nil, maybeClassMaybeSub, @numPasParam)
-		else
-			@writer.writeCall(maybeClassMaybeSub, subName, @numPasParam)
-		end
+		#if subName == nil
+		#	@writer.writeCall(nil, maybeClassMaybeSub, @numPasParam)
+		#else
+		#	@writer.writeCall(maybeClassMaybeSub, subName, @numPasParam)
+		#end
 		
 		@tokenizer.advance
 		r << compileSymbol(")")
