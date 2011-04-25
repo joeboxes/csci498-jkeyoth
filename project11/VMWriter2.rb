@@ -22,6 +22,9 @@ class VMWriter2 < Verbose
 	end
 	
 	def writeCall(cls, sub, params)
+		if cls == nil
+			@vmFile.write("call #{sub} #{params}\n")
+		end
 		@vmFile.write("call #{cls}.#{sub} #{params}\n")
 	end
 	

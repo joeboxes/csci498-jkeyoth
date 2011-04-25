@@ -303,6 +303,7 @@ class CompilationEngine2 < Verbose
 	def compileExpressionList()
 		r = getNewNode("expressionList")
 		
+		@numPassParam = 1
 		
 		if not checkSameValue(@tokenizer.getCurrItem, ")")
 			r << compileExpression()
@@ -316,6 +317,7 @@ class CompilationEngine2 < Verbose
 			@tokenizer.advance
 			r << compileExpression()
 			@tokenizer.advance
+			@numPasParam += 1
 		end
 		
 		@tokenizer.retract
@@ -463,11 +465,14 @@ class CompilationEngine2 < Verbose
 	#why doesnt this have a surrounding tag? grrr
 	def compileSubroutineCall(r)
 		r << compileIdentifier(@tokenizer.getCurrItem)
+		maybeClassMaybeSub = @tokenizer.getCurrItem
+		subName = nil
 		@tokenizer.advance
 		if checkSameValue(@tokenizer.getCurrItem, ".")
 			r << compileSymbol(".")
 			@tokenizer.advance
 			r << compileIdentifier(@tokenizer.getCurrItem)
+			subName = @tokenizer.getCurrItem
 			@tokenizer.advance
 		end
 		
@@ -475,6 +480,14 @@ class CompilationEngine2 < Verbose
 		
 		@tokenizer.advance
 		r << compileExpressionList()
+		
+		#todo: push params
+		
+		if subName == nil
+			@writer.writeCall(nil, maybeClassMaybeSub, @numPasParam)
+		else
+			@writer.writeCall(maybeClassMaybeSub, subName, @numPasParam)
+		end
 		
 		@tokenizer.advance
 		r << compileSymbol(")")
