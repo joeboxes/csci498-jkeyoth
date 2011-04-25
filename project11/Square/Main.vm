@@ -1,1 +1,2 @@
 function Main.main 1
+pop local 0

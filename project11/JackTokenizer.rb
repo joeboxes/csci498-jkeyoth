@@ -223,7 +223,7 @@ class JackTokenizer < Verbose
 		strVal = String(obj)
 		beginning = strVal[0..0]
 		ending = strVal[-1..-1]
-		if beginning == "\"" && ending == "\""
+		if beginning == "\"" && ending == "\"" || String(obj).count(" ") > 0
 			return @@TYPE_STRING
 		elsif @@KEYWORDS.count(obj) > 0
 			return @@TYPE_KEYWORD
@@ -272,7 +272,7 @@ class JackTokenizer < Verbose
 	
 	def stringVal()
 		if tokenType() == @@TYPE_STRING
-			str = @curToken[1...-2]
+			str = @curToken
 			return str
 		end
 		return @@TYPE_UNKNOWN

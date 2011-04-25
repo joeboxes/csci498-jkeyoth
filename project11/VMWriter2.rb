@@ -30,23 +30,23 @@ class VMWriter2 < Verbose
 	end
 	
 	def writeArithmetic(com)
-		@vmFile.write(com)
+		@vmFile.write(com + "\n")
 	end
 	
 	def writeLabel(label)
-		@vmFile.write("label #{label}")
+		@vmFile.write("label #{label}\n")
 	end
 	
 	def writeGoto(label)
-		@vmFile.write("goto #{label}")
+		@vmFile.write("goto #{label}\n")
 	end
 	
 	def writeIf(label)
-		@vmFile.write("if-goto #{label}")
+		@vmFile.write("if-goto #{label}\n")
 	end
 	
 	def writeReturn()
-		@vmFile.write("return")
+		@vmFile.write("return\n")
 	end
 
 	

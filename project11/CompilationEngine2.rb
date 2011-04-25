@@ -214,17 +214,49 @@ class CompilationEngine2 < Verbose
 		
 		if checkSameType(toke, JackTokenizer.TYPE_INT)
 			r << compileConstant("integerConstant", toke)
+			@writer.writePush("constant", toke)
 			
 		elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
 			r << compileConstant("stringConstant", toke)
+			con = toke[1..-2]
+			len = con.length
+			@writer.writePush("constant", len)
+			@writer.writeCall("String", "new", 1)
+			(0..len-1).each do |i|
+				@writer.writePush("constant", con[i])
+				@writer.writeCall("String", "new", 2)
+			end
 			
 		elsif contains(KEYWORD_CONSTANTS, toke)
 			r << compileKeyword(toke)
+			case toke
+				when "true"
+					@writer.writePush("constant", 1)
+					@writer.writeArithmetic("neg")
+				when "false"
+					@writer.writePush("constant", 0)
+				when "null"
+					@writer.writePush("constant", 0)
+				else
+					raise "Keyword constant #{toke} not recognized (should be true, false, null)"
+					exit
+			end
 			
 		elsif contains(UNIARY_OPS, toke)
 			r << compileSymbol(toke)
+			op = toke
 			@tokenizer.advance
 			r << compileTerm
+			
+			case op
+				when "-"
+					@writer.writeArithmetic("neg")
+				when "~"
+					@writer.writeArithmetic("not")
+				else
+					raise "Uniary op #{op} not recognized"
+					exit
+			end	
 			
 		elsif isSubCall?
 			compileSubroutineCall(r)
@@ -298,12 +330,25 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		r << compileIdentifier(@tokenizer.getCurrItem)
 		
+		destName = @tokenizer.getCurrItem
+		
+		segment, index = getSegmentIndex(destName)
+		
+		arrayThing = false
+		
 		@tokenizer.advance
 		#check if this is an array thing
 		if checkSameValue(@tokenizer.getCurrItem, "[")#array thinger
+			arrayThing = true
 			r << compileSymbol("[")
+			
+			@writer.writePush(segment, index)#push array addr
+			
 			@tokenizer.advance
 			r << compileExpression()
+			
+			@writer.writeArithmetic("add")#add array addr and result of [expression]
+			
 			@tokenizer.advance
 			r << compileSymbol("]")
 			@tokenizer.advance
@@ -314,6 +359,15 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		
 		r << compileExpression()
+		
+		if arrayThing
+			@writer.writePop("temp", 0)#pop result of right side expression to temp
+			@writer.writePop("pointer", 1) #pop array addr (a[3]) to pointer 1, i.e. set that = a[3]
+			@writer.writePush("temp", 0)#push result of ride side
+			@writer.writePop("that", 0)#set the array location to result of right side
+		else
+			@writer.writePop(segment, index)#right side was pushed in compileExpression
+		end
 		
 		@tokenizer.advance
 		r << compileSymbol(";")
@@ -623,6 +677,18 @@ class CompilationEngine2 < Verbose
 	end
 	
 	
+	
+	def getSegmentIndex(k)
+		if @staticTable.has_key?(k)
+			return ["static", @staticTable.getIndex(k)]
+		elsif @fieldTable.has_key?(k)
+			return ["this", @fieldTable.getIndex(k)]
+		elsif @argumentTable.has_key?(k)
+			return ["argument", @argumentTable.getIndex(k)]
+		elsif @varTable.has_key?(k)
+			return ["local", @varTable.getIndex(k)]
+		end
+	end
 	
 	def printAllTables()
 		setVerbose(true)

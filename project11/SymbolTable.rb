@@ -35,6 +35,11 @@ class SymbolTable < Verbose
 	def getLength
 		return @index
 	end
+	
+	def has_key?(k)
+		return @hsh.has_key? k 
+	end
+	
 	def printTable
 		if @hsh.length==0
 			printV("SYMBOL TABLE: {EMPTY}")
