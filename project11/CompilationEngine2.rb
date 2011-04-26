@@ -192,18 +192,27 @@ class CompilationEngine2 < Verbose
 		return r
 	end
 	
-	def compileExpression() # term (op term)*
-		r = getNewNode("expression")
+	#no longer generate xml tree
+	def compileExpression()
+		arr = genExpTreeArr
 		
-		@expRoot
-		@curNode
-		r << compileTerm()
+		puts arr
+		
+	end
+	def genExpTreeArr()
+		#r = getNewNode("expression")
+		
+		r = []
+		
+		r += compileTerm()
 		
 		while contains(OPS, @tokenizer.peek)
 			@tokenizer.advance
-			r << compileSymbol()
+			
+			#r <<compileSymbol()
+			r += [@tokenizer.getCurrItem]
 			@tokenizer.advance
-			r << compileTerm()
+			r += compileTerm()
 		end
 		
 		
@@ -212,19 +221,20 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileTerm()
-		r = getNewNode("term")
+		#r = getNewNode("term")
 		
 		toke = @tokenizer.getCurrItem
 		
 		if checkSameType(toke, JackTokenizer.TYPE_INT)
-			r << compileConstant("integerConstant", toke)
-			#@writer.writePush("constant", toke)
+			#r << compileConstant("integerConstant", toke)
+			return [toke]
 			
 			
 		elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
-			r << compileConstant("stringConstant", toke)
-			con = toke[1..-2]
-			len = con.length
+			#r << compileConstant("stringConstant", toke)
+			return [toke[1..-2]]
+			#con = toke[1..-2]
+			#len = con.length
 			#@writer.writePush("constant", len)
 			#@writer.writeCall("String", "new", 1)
 			#(0..len-1).each do |i|
@@ -232,8 +242,10 @@ class CompilationEngine2 < Verbose
 			#	@writer.writeCall("String", "new", 2)
 			#end
 			
+			
 		elsif contains(KEYWORD_CONSTANTS, toke)
-			r << compileKeyword(toke)
+			#r << compileKeyword(toke)
+			return [toke]
 			#case toke
 			#	when "true"
 			#		@writer.writePush("constant", 1)
@@ -248,11 +260,11 @@ class CompilationEngine2 < Verbose
 			#end
 			
 		elsif contains(UNIARY_OPS, toke)
-			r << compileSymbol(toke)
-			op = toke
-			@tokenizer.advance
-			r << compileTerm
+			#r << compileSymbol(toke)
 			
+			@tokenizer.advance
+			other = compileTerm
+			return [toke, other]
 			#case op
 			#	when "-"
 			#		@writer.writeArithmetic("neg")
@@ -264,29 +276,33 @@ class CompilationEngine2 < Verbose
 			#end	
 			
 		elsif isSubCall?
-			compileSubroutineCall(r)
+			return compileSubroutineCall()
 			
 		elsif checkSameValue(toke, "(")#in parenths
-			r << compileSymbol("(")
+			#TODO: make this work for reals
+			#r << compileSymbol("(")
 			@tokenizer.advance
-			r << compileExpression()
+			a = genExpTreeArr()
 			@tokenizer.advance
-			r << compileSymbol(")")
+			#r << compileSymbol(")")
+			return a
 			
 		elsif isArrayThinger?#varName[expression]
-			r << compileIdentifier()
+			#r << compileIdentifier()
+			a = [toke]
 			@tokenizer.advance
-			r << compileSymbol("[")
+			#r << compileSymbol("[")
 			@tokenizer.advance
-			r << compileExpression()
+			a += genExpTreeArr()
 			@tokenizer.advance
-			r << compileSymbol("]")
+			#r << compileSymbol("]")
+			return a
 			
 		else#is a varName
-			r << compileIdentifier()
+			#r << compileIdentifier()
+			return [toke]
 		end
 		
-		return r
 	end
 	
 	def isSubCall?
@@ -306,28 +322,26 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileExpressionList()
-		r = getNewNode("expressionList")
-		
-		@numPassParam = 1
+		#r = getNewNode("expressionList")
 		
 		if not checkSameValue(@tokenizer.getCurrItem, ")")
-			r << compileExpression()
+			#r << compileExpression()
+			ret = [genExpTreeArr]
 		else#is empty, go back one
 			@tokenizer.retract
 			return r
 		end
 		@tokenizer.advance
 		while not checkSameValue(@tokenizer.getCurrItem, ")")
-			r << compileSymbol(",")
+			#r << compileSymbol(",")
 			@tokenizer.advance
-			r << compileExpression()
+			r += [genExpTreeArr]
 			@tokenizer.advance
-			@numPasParam += 1
 		end
 		
 		@tokenizer.retract
 		
-		return r
+		return ret
 	end
 	def compileLet()
 		r = getNewNode("letStatement")
@@ -445,7 +459,7 @@ class CompilationEngine2 < Verbose
 		r = getNewNode("doStatement")
 		r << compileKeyword("do")
 		@tokenizer.advance
-		compileSubroutineCall(r)
+		compileSubroutineCall()
 		@tokenizer.advance
 		r << compileSymbol(";")
 		
@@ -468,34 +482,32 @@ class CompilationEngine2 < Verbose
 	end
 	
 	#why doesnt this have a surrounding tag? grrr
-	def compileSubroutineCall(r)
-		r << compileIdentifier(@tokenizer.getCurrItem)
+	def compileSubroutineCall()
+		#r << compileIdentifier(@tokenizer.getCurrItem)
 		maybeClassMaybeSub = @tokenizer.getCurrItem
 		subName = nil
 		@tokenizer.advance
 		if checkSameValue(@tokenizer.getCurrItem, ".")
-			r << compileSymbol(".")
+			#r << compileSymbol(".")
 			@tokenizer.advance
-			r << compileIdentifier(@tokenizer.getCurrItem)
+			#r << compileIdentifier(@tokenizer.getCurrItem)
 			subName = @tokenizer.getCurrItem
 			@tokenizer.advance
 		end
-		
-		r << compileSymbol("(")
-		
-		@tokenizer.advance
-		r << compileExpressionList()
-		
-		#todo: push params
-		
-		#if subName == nil
-		#	@writer.writeCall(nil, maybeClassMaybeSub, @numPasParam)
-		#else
-		#	@writer.writeCall(maybeClassMaybeSub, subName, @numPasParam)
-		#end
+		if subName == nil
+			ret = [maybeClassMaybeSub, "("]
+		else
+			ret = [maybeClassMaybeSub + "." + subName, "("]
+		end
+		#r << compileSymbol("(")
 		
 		@tokenizer.advance
-		r << compileSymbol(")")
+		ret += compileExpressionList()
+		
+		@tokenizer.advance
+		ret += [")"]
+		#r << compileSymbol(")")
+		return [ret]
 	end
 	
 	def compileSubroutineVars()
@@ -694,7 +706,11 @@ class CompilationEngine2 < Verbose
 		return Tree::TreeNode.new(name + getNextName, ParseNode.new(name, parseVal))
 	end
 	
-	
+	def getTranslatedOperator()
+		toke = @tokenizer.getCurrItem
+		#OPS = ["+", "-", "*", "/", "&", "|", "<", ">", "="]
+		
+	end
 	
 	def getSegmentIndex(k)
 		if @staticTable.has_key?(k)

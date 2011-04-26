@@ -1,0 +1,25 @@
+token	queue	localStack	stack		<top
+x		x						
++							+			
+g(							g+
+2		x2
+,		
+y		x2y
+,
+-				-	
+z		x2yz
+,		x2yz-				g+	
+)		x2yz-g				+
+*							*+
+5		x2yz-g5*+
+
+
+keep a local stack for parameters 
+	-z: add neg to stack,add z to queue then pop local stack on comma or )
+	3+5: 3->q, +->s, 5->q, pop stack on comma or )==> 3 5 +
+
+var or num goes to queue
+ops and function calls go to stack
+on close parenth, pop stack once
+
+at end of expression, pop entire stack to queue, queue is in RPN!
