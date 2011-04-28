@@ -1,0 +1,113 @@
+/*
+Math.jack
+*/
+class Math{
+	/** Initializes the library. */
+	function void init(){
+		return;
+	}
+	/** Returns the absolute value of x. */
+	function int abs(int x) {
+		if(x<0){
+			return -x;
+		}
+		return x;
+	}
+	/** Returns x logical shifted left. */
+	function int shiftLeft(int x) {
+		return x+x;
+	}
+	/** Returns x logical shifted right. */
+	function int shiftRight(int x) {
+		var int m, n, res;
+		let m = 2;
+		let n = 1;
+		let res = 0;
+		while(m>0){
+			if( ~((m&x)=0) ){
+				let res = res + n;
+			}
+			let n = m;
+			let m = m + m;
+		}
+		return res;
+	}
+	/** Returns the product of x and y. */
+	function int multiply(int x, int y){
+		var int m, n, res;
+		let m = 1;
+		let n = x;
+		let res = 0;
+		while(m>0){
+			if( ~((m&y)=0) ){
+				let res = res + n;
+			}
+			let n = n + n;
+			let m = m + m;
+		}
+		return res;
+	}
+	/** Returns the integer part of x/y. */
+	function int divide(int x, int y){
+		var int res;
+		let res = Math.div(Math.abs(x),Math.abs(y));
+		if( (x<0) & (y>0) ){
+				let res = -res;
+		}else{
+			if( (x>0) & (y<0) ){
+				let res = -res;
+			}
+		}
+		return res;
+	}
+	function int div(int x,int y){
+		var int q, m, n;
+		if(x<y){
+			return 0;
+		}
+		let q = Math.divide(x,y+y);
+		let m = Math.multiply(q,y);
+		let m = m+m;
+		let m = x-m;
+		if(m<y){
+			return q+q;
+		}		
+		return q+q+1;
+	}
+	/** Returns remainder (modulus) of x/y. */
+	function int mod(int x, int y){
+		var int d;
+		let d = Math.divide(x,y);
+		let d = Math.multiply(d,y);
+		return x-d;
+	}
+    /** Returns the integer part of the square root of x. */
+	function int sqrt(int x){
+		var int y, j, n;
+		let y = 0;
+		let j = 16384;//32768/2
+		while(j>0){
+			let n = y+j;
+			let n = Math.multiply(n,n);
+			if( ~(n>x) ){
+				let y = y + j;
+			}
+			let j = Math.shiftRight(j);
+		}
+		return y;
+	}
+    /** Returns the greater number. */
+	function int max(int a, int b){
+		if(a>b){
+			return a;
+		}
+		return b;
+	}
+	/** Returns the smaller number. */
+	function int min(int a, int b){
+		if(a<b){
+			return a;
+		}
+		return b;
+	}
+}

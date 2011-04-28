@@ -1,0 +1,21 @@
+/*
+Array.jack
+*/
+class Array{
+	field int length;
+	/** Constructs a new Array of the given size. */
+	/*function Array new(int size) {
+		return res;
+	}*/
+	constructor Array new(int size){
+		var int res;
+		let res = Memory.alloc(length);
+		let length = size;
+		return this;
+	}
+	/** De-allocates the array and frees its space. */
+	method void dispose(){
+		do Memory.deAlloc(this);
+		return;
+	}
+}
