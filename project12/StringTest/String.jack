@@ -1,0 +1,185 @@
+/*
+String.jack
+*/
+class String{
+	field int len;
+	field int cur;
+	field Array s;
+	/** Constructs a new empty String with a maximum length of
+	*  maxLength. */
+	constructor String new(int maxLength){
+		let len = maxLength;
+		let cur = 0;
+		if(len=0){
+			let s = 0;
+		}else{
+			let s = Array.new(len);
+		}
+		return this;
+	}
+	/** De-allocates the string and frees its space. */
+	method void dispose(){
+		if(len>0){
+			do s.dispose();
+		}
+		do Memory.deAlloc(this);
+		return;
+	}
+	/** Returns the current length of this String. */
+	method int length(){
+		return cur;
+	}
+	method int maxLength(){
+		return len;
+	}
+	method void setLength(int l){
+		let cur = l;
+		if( cur>len ){//cur>=len
+			let cur = len;
+		}
+		if(cur<0){
+			let cur = 0;
+		}
+		return;
+	}
+	/** Returns the character at location j. */
+	method char charAt(int j){
+		if(len=0){
+			return 0;
+		}
+		if(j<0){
+			let j=0;
+		}
+		if(~(j<len)){
+			let j = len-1;
+		}
+		return s[j];
+	}
+	/** Sets the j'th character of this string to be c. */
+	method void setCharAt(int j, char c){
+		if(len<1){
+			return;
+		}
+		if(j<0){
+			let j=0;
+		}
+		if(~(j<len)){// j>=len
+			let j = len-1;
+		}
+		let s[j] = c;
+		return;
+	}
+	/** Appends the character c to the end of this String.
+	*  Returns this string as the return value. */
+	method String appendChar(char c) {
+		if(~(cur<len)){
+			return this;
+		}
+		let s[cur] = c;
+		let cur = cur + 1;
+		return this;
+	}
+	/** Erases the last character from this String. */
+	method void eraseLastChar() {
+		if(len=0){
+			return;
+		}
+		let s[cur] = 0;
+		let cur = cur - 1;
+		if(cur<0){
+			let cur = 0;
+		}
+		return;
+	}
+	/** Returns the integer value of this String until the first non
+	*  numeric character. */
+	method int intValue(){
+		var int num, i, len, ch, sign;
+		let i = 0;
+		let len = length();
+		let num = 0;
+		let sign = 0;
+		while( (i<len) ){
+			let num = num*10;
+			let ch = charAt(i);
+			if((ch=45) & (i=0)){
+				let sign = 1;
+			}else{
+				let num = num + (ch-48);
+				if( (ch<48) | (ch>57) ){
+					let i = len;
+				}	
+			}
+			let i = i + 1;
+		}
+		if(sign=1){
+			let num = -num;
+		}
+		return num;
+	}
+	/** Sets this String to hold a representation of the given
+	*  number. */
+	method void setInt(int number){
+		var int index, l;
+		var String str;
+		let str = String.int2String(number);
+		let index = 0;
+		let l = str.length();//Math.min(maxLength(),str.length());
+		let cur = Math.min(maxLength(),str.length());
+		while(index<l){
+			do setCharAt(index,str.charAt(index));//do appendChar(str.charAt(index));
+			let index = index + 1;
+		}
+		do str.dispose();
+		return;
+	}
+	/** Returns the new line character. */
+	function char newLine() {
+		return 128;
+	}
+	/** Returns the backspace character. */
+	function char backSpace() {
+		return 129;
+	}
+	/** Returns the double quote (") character. */
+	function char doubleQuote() {
+		return 34;
+	}
+	function String int2String(int i){// if negative, just need to len+1, and add "-" char
+		var int numLen, lastDigit, num, num2, index, offset;
+		var String str;
+		let offset = 0;
+		if(i<0){
+			let i = -i;
+			let offset = 1;
+		}
+		let num = i;
+		let numLen = offset;
+		while(num>0){
+			let num = num/10;
+			let numLen = numLen + 1;
+		}
+		if(numLen=0){//i==0
+			let numLen=1;
+		}
+		let str = String.new(numLen);
+		if(offset=1){
+			do str.setCharAt(0,45);// - 
+		}
+		let num = i;
+		let index = offset;
+		while(index<numLen){
+			let num2 = num/10;
+			let num2 = num2*10;
+			let lastDigit = num - num2;
+			let lastDigit = lastDigit + 48;
+			let num = num/10;
+			let index = index + 1;
+			let num2 = numLen-index+offset;
+			do str.setCharAt(num2,lastDigit);
+		}
+		do str.setLength(str.maxLength());
+		return str;
+	}
+}
+
