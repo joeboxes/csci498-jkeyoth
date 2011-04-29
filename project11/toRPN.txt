@@ -1,7 +1,8 @@
 token	queue	localStack	stack		<top
 x		x						
 +							+			
-g(							g+
+g							g+
+(
 2		x2
 ,		
 y		x2y
@@ -23,3 +24,14 @@ ops and function calls go to stack
 on close parenth, pop stack once
 
 at end of expression, pop entire stack to queue, queue is in RPN!
+
+possible expression tokens
+int val
+string val
+var name
+
+
+check when sub call
+	if thing before . is in one of the tables, push the variable (this 0, argument 1...)
+	if not, assume function or constructor
+	if no . , assume local method

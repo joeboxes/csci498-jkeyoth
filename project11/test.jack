@@ -1,0 +1,8 @@
+
+
+class test {
+	
+	function void main() {
+		let i = a[4+4];
+	}
+}

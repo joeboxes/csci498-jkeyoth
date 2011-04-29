@@ -196,9 +196,59 @@ class CompilationEngine2 < Verbose
 	def compileExpression()
 		arr = genExpTreeArr
 		
-		puts arr
+		#		for toke in arr
+		#			
+		#		end
+		
+		rpn = toRPN(arr)
+		
+		debugger
+		
+		puts "hide"
+	end
+	
+	def toRPN(arr)
+		kwayway = []
+		stack = []
+		for toke in arr
+			if toke.class == Array
+				if toke[0] == "%SUB%"
+					kwayway += callToRPN(toke[1..-1])
+				else
+					kwayway += toRPN(toke)
+				end
+				
+			elsif contains(OPS, toke) || toke == "%" || toke == "~"
+				stack.push toke
+				
+			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER) \
+				|| checkSameType(toke, JackTokenizer.TYPE_INT)
+				kwayway.push toke
+			end
+			
+		end
+		
+		while stack[-1] != nil
+			kwayway.push stack.pop
+		end
+		
+		return kwayway
 		
 	end
+	
+	def callToRPN(callArr)
+		sub = callArr[0]
+		params = callArr[2..-2]
+		que = []
+		for p in params
+			que += toRPN(p)
+		end
+		
+		que.push sub
+		
+		return que	
+	end
+	
 	def genExpTreeArr()
 		#r = getNewNode("expression")
 		
@@ -224,7 +274,6 @@ class CompilationEngine2 < Verbose
 		#r = getNewNode("term")
 		
 		toke = @tokenizer.getCurrItem
-		
 		if checkSameType(toke, JackTokenizer.TYPE_INT)
 			#r << compileConstant("integerConstant", toke)
 			return [toke]
@@ -261,28 +310,22 @@ class CompilationEngine2 < Verbose
 			
 		elsif contains(UNIARY_OPS, toke)
 			#r << compileSymbol(toke)
-			
 			@tokenizer.advance
 			other = compileTerm
-			return [toke, other]
-			#case op
-			#	when "-"
-			#		@writer.writeArithmetic("neg")
-			#	when "~"
-			#		@writer.writeArithmetic("not")
-			#	else
-			#		raise "Uniary op #{op} not recognized"
-			#		exit
-			#end	
 			
+			if (toke == "-")
+				return ["%"] + other #to get rid of the minus or neg confussion
+			else
+				return [toke] + other
+			end
 		elsif isSubCall?
-			return compileSubroutineCall()
+			return [["%SUB%"] + compileSubroutineCall()]
 			
 		elsif checkSameValue(toke, "(")#in parenths
 			#TODO: make this work for reals
 			#r << compileSymbol("(")
 			@tokenizer.advance
-			a = genExpTreeArr()
+			a = [genExpTreeArr()]
 			@tokenizer.advance
 			#r << compileSymbol(")")
 			return a
@@ -329,13 +372,13 @@ class CompilationEngine2 < Verbose
 			ret = [genExpTreeArr]
 		else#is empty, go back one
 			@tokenizer.retract
-			return r
+			return
 		end
 		@tokenizer.advance
 		while not checkSameValue(@tokenizer.getCurrItem, ")")
-			#r << compileSymbol(",")
+			compileSymbol(",")
 			@tokenizer.advance
-			r += [genExpTreeArr]
+			ret += [genExpTreeArr]
 			@tokenizer.advance
 		end
 		
@@ -366,7 +409,7 @@ class CompilationEngine2 < Verbose
 			@writer.writePush(segment, index)#push array addr
 			
 			@tokenizer.advance
-			r << compileExpression()
+			compileExpression()
 			
 			@writer.writeArithmetic("add")#add array addr and result of [expression]
 			
@@ -379,11 +422,11 @@ class CompilationEngine2 < Verbose
 		
 		@tokenizer.advance
 		
-		r << compileExpression()
+		compileExpression()
 		
 		if arrayThing
 			@writer.writePop("temp", 0)#pop result of right side expression to temp
-			@writer.writePop("pointer", 1) #pop array addr (a[3]) to pointer 1, i.e. set that = a[3]
+			@writer.writePop("pointer", 1) #pop array addr (a[3]) to pointer 1, i.e set that = a[3]
 			@writer.writePush("temp", 0)#push result of ride side
 			@writer.writePop("that", 0)#set the array location to result of right side
 		else
@@ -502,12 +545,14 @@ class CompilationEngine2 < Verbose
 		#r << compileSymbol("(")
 		
 		@tokenizer.advance
-		ret += compileExpressionList()
-		
+		expListR = compileExpressionList()
+		if expListR != nil
+			ret += expListR
+		end
 		@tokenizer.advance
 		ret += [")"]
 		#r << compileSymbol(")")
-		return [ret]
+		return ret
 	end
 	
 	def compileSubroutineVars()
