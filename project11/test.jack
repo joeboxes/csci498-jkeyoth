@@ -3,6 +3,11 @@
 class test {
 	
 	function void main() {
-		let i = a[4+4];
+		do test.g();
+		return;
+	}
+	
+	function void g() {
+		return;
 	}
 }

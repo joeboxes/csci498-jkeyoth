@@ -97,21 +97,20 @@ class CompilationEngine2 < Verbose
 		@argumentTable.clearTable
 		@varTable.clearTable
 		
-		r = getNewNode("subroutineDec")
-		r << compileKeyword(@tokenizer.getCurrItem)
+		compileKeyword(@tokenizer.getCurrItem)
 		subType = @tokenizer.getCurrItem
 		
 		@tokenizer.advance
 		#get return type
 		if contains(SUB_TYPES, @tokenizer.getCurrItem)
-			r << compileKeyword(@tokenizer.getCurrItem)
+			compileKeyword(@tokenizer.getCurrItem)
 		else
-			r << compileIdentifier(@tokenizer.getCurrItem)
+			compileIdentifier(@tokenizer.getCurrItem)
 		end
 		
 		@tokenizer.advance
 		#get name of sub
-		r << compileIdentifier(@tokenizer.getCurrItem)
+		compileIdentifier(@tokenizer.getCurrItem)
 		
 		subName = @tokenizer.getCurrItem
 		
@@ -119,29 +118,25 @@ class CompilationEngine2 < Verbose
 		
 		#open parenth
 		@tokenizer.advance
-		r << compileSymbol("(")
+		compileSymbol("(")
 		
 		
 		@tokenizer.advance
-		r << compileParamList()
+		compileParamList()
 		
 		#close parenth
 		@tokenizer.advance
-		r << compileSymbol(")")
-		
-		
-		subBodyNode = getNewNode("subroutineBody")
-		
+		compileSymbol(")")
 		
 		#{
 		@tokenizer.advance
-		subBodyNode << compileSymbol("{")
+		compileSymbol("{")
 		
 		
 		#do subroutine vars
 		@tokenizer.advance
 		while checkSameValue(@tokenizer.getCurrItem, "var")
-			subBodyNode << compileSubroutineVars()
+			compileSubroutineVars()
 			@tokenizer.advance
 		end
 		
@@ -157,14 +152,12 @@ class CompilationEngine2 < Verbose
 		end
 		
 		#now the horifying part: statements!
-		subBodyNode << compileStatements()
+		compileStatements()
 		
 		
 		@tokenizer.advance
-		subBodyNode << compileSymbol("}")
-		r << subBodyNode
+		compileSymbol("}")
 		
-		return r
 	end
 	
 	#recursive time! do some statements!
@@ -172,41 +165,79 @@ class CompilationEngine2 < Verbose
 	#i.e compileStatements calls compileIf, which calls compileStatements, which could call compileIf....
 	#if a painting of that painting is normal recursion, this is like two mirrors facing each other
 	def compileStatements()
-		r = getNewNode("statements")
 		while contains(STATE_STARTS, @tokenizer.getCurrItem)
 			case @tokenizer.getCurrItem
 				when "let"
-				r << compileLet()
+				compileLet()
 				when "if"
-				r << compileIf()
+				compileIf()
 				when "while"
-				r << compileWhile()
+				compileWhile()
 				when "do"
-				r << compileDo()
+				compileDo()
 				when "return"
-				r << compileReturn()
+				compileReturn()
 			end
 			@tokenizer.advance
 		end
 		@tokenizer.retract
-		return r
 	end
 	
 	#no longer generate xml tree
 	def compileExpression()
 		arr = genExpTreeArr
 		
-		#		for toke in arr
-		#			
-		#		end
-		
 		rpn = toRPN(arr)
 		
-		debugger
-		
-		puts "hide"
+		for toke in rpn
+			if contains(OPS, toke) || toke == "%" || toke == "~"
+				@writer.writeArithmetic(symbolToVM(toke))
+			elsif toke.class == Array
+				writeSubCall(toke)
+			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER)
+				debugger
+				seg, ind = getSegmentIndex(toke)
+				@writer.writePush(seg, ind)
+			elsif checkSameType(toke, JackTokenizer.TYPE_INT)
+				@writer.writePush("constant", toke)
+			end
+		end
 	end
 	
+	def writeSubCall(subArr)
+		if subArr.length == 2
+			@writer.writeCall(nil, subArr[0], subArr[1])
+		elsif subArr.length == 3
+			@writer.writeCall(subArr[0], subArr[1], subArr[2])
+		end
+	end
+	
+	def symbolToVM(sym)
+		case sym
+			when "-"
+			return "sub"
+			when "%"
+			return "neg"
+			when "+"
+			return "add"
+			when "*"
+			return "call Math.multiply 2"
+			when "/"
+			return "call Math.divide 2"
+			when "&"
+			return "and"
+			when "|"
+			return "or"
+			when "<"
+			return "lt"
+			when ">"
+			return "gt"
+			when "="
+			return "eq"
+			when "~"
+			return "not"
+		end
+	end
 	def toRPN(arr)
 		kwayway = []
 		stack = []
@@ -244,7 +275,7 @@ class CompilationEngine2 < Verbose
 			que += toRPN(p)
 		end
 		
-		que.push sub
+		que.push sub.split(".") + [params.length]
 		
 		return que	
 	end
@@ -395,9 +426,7 @@ class CompilationEngine2 < Verbose
 		r << compileIdentifier(@tokenizer.getCurrItem)
 		
 		destName = @tokenizer.getCurrItem
-		
 		segment, index = getSegmentIndex(destName)
-		
 		arrayThing = false
 		
 		@tokenizer.advance
@@ -499,29 +528,29 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileDo()
-		r = getNewNode("doStatement")
-		r << compileKeyword("do")
+		compileKeyword("do")
 		@tokenizer.advance
-		compileSubroutineCall()
+		compileExpression()
 		@tokenizer.advance
-		r << compileSymbol(";")
-		
-		return r
+		compileSymbol(";")
+		@writer.writePop("temp", 0)
 	end
 	
 	def compileReturn()
-		r = getNewNode("returnStatement")
-		r << compileKeyword("return")
+		compileKeyword("return")
 		
 		@tokenizer.advance
 		if checkSameValue(@tokenizer.getCurrItem, ";")#no return value
-			r << compileSymbol(";")
+			compileSymbol(";")
+			@writer.writePush("constant", 0)
+			
 		else
-			r << compileExpression()
+			compileExpression()
 			@tokenizer.advance
-			r << compileSymbol(";")
+			compileSymbol(";")
 		end
-		return r
+		@writer.writeReturn
+		
 	end
 	
 	#why doesnt this have a surrounding tag? grrr
@@ -751,11 +780,7 @@ class CompilationEngine2 < Verbose
 		return Tree::TreeNode.new(name + getNextName, ParseNode.new(name, parseVal))
 	end
 	
-	def getTranslatedOperator()
-		toke = @tokenizer.getCurrItem
-		#OPS = ["+", "-", "*", "/", "&", "|", "<", ">", "="]
-		
-	end
+	
 	
 	def getSegmentIndex(k)
 		if @staticTable.has_key?(k)
@@ -767,6 +792,8 @@ class CompilationEngine2 < Verbose
 		elsif @varTable.has_key?(k)
 			return ["local", @varTable.getIndex(k)]
 		end
+		raise "Identifier $#{k} not found"
+		exit
 	end
 	
 	def printAllTables()
