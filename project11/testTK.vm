@@ -1,0 +1,18 @@
+function test.main 2
+push constant 1
+pop local 0
+push local 0
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 1
+pop local 1
+goto IF_END0
+label IF_FALSE0
+push constant 2
+pop local 1
+label IF_END0
+push constant 0
+return

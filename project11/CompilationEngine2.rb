@@ -194,8 +194,14 @@ class CompilationEngine2 < Verbose
 				@writer.writeArithmetic(symbolToVM(toke))
 			elsif toke.class == Array
 				writeSubCall(toke)
+			elsif toke == "true"
+				@writer.writePush("constant", 1)
+				@writer.writeArithmetic("neg")
+				
+			elsif toke == "false" || toke == "null"
+				@writer.writePush("constant", 0)
+				
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER)
-				debugger
 				seg, ind = getSegmentIndex(toke)
 				@writer.writePush(seg, ind)
 			elsif checkSameType(toke, JackTokenizer.TYPE_INT)
@@ -254,6 +260,8 @@ class CompilationEngine2 < Verbose
 				
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER) \
 				|| checkSameType(toke, JackTokenizer.TYPE_INT)
+				kwayway.push toke
+			elsif contains(KEYWORD_CONSTANTS, toke)
 				kwayway.push toke
 			end
 			
@@ -418,12 +426,11 @@ class CompilationEngine2 < Verbose
 		return ret
 	end
 	def compileLet()
-		r = getNewNode("letStatement")
-		r << compileKeyword("let")
+		compileKeyword("let")
 		
 		#var name
 		@tokenizer.advance
-		r << compileIdentifier(@tokenizer.getCurrItem)
+		compileIdentifier(@tokenizer.getCurrItem)
 		
 		destName = @tokenizer.getCurrItem
 		segment, index = getSegmentIndex(destName)
@@ -433,7 +440,7 @@ class CompilationEngine2 < Verbose
 		#check if this is an array thing
 		if checkSameValue(@tokenizer.getCurrItem, "[")#array thinger
 			arrayThing = true
-			r << compileSymbol("[")
+			compileSymbol("[")
 			
 			@writer.writePush(segment, index)#push array addr
 			
@@ -443,11 +450,11 @@ class CompilationEngine2 < Verbose
 			@writer.writeArithmetic("add")#add array addr and result of [expression]
 			
 			@tokenizer.advance
-			r << compileSymbol("]")
+			compileSymbol("]")
 			@tokenizer.advance
 		end
 		
-		r << compileSymbol("=")
+		compileSymbol("=")
 		
 		@tokenizer.advance
 		
@@ -463,68 +470,72 @@ class CompilationEngine2 < Verbose
 		end
 		
 		@tokenizer.advance
-		r << compileSymbol(";")
+		compileSymbol(";")
 		
-		return r
 	end
 	
 	def compileIf()
-		r = getNewNode("ifStatement")
-		r << compileKeyword("if")
+		compileKeyword("if")
 		
 		@tokenizer.advance
-		r << compileSymbol("(")
+		compileSymbol("(")
 		
 		@tokenizer.advance
-		r << compileExpression()
+		compileExpression()
 		
 		@tokenizer.advance
-		r << compileSymbol(")")
+		compileSymbol(")")
+		
+		lab = getNextName
+		
+		@writer.writeIf("IF_TRUE"+lab)
+		@writer.writeGoto("IF_FALSE"+lab)
+		@writer.writeLabel("IF_TRUE"+lab)
 		
 		@tokenizer.advance
-		r << compileSymbol("{")
+		compileSymbol("{")
 		
 		@tokenizer.advance
-		r << compileStatements()
+		compileStatements()
 		
 		@tokenizer.advance
-		r << compileSymbol("}")
+		compileSymbol("}")
+		@writer.writeGoto("IF_END"+lab)
+		@writer.writeLabel("IF_FALSE"+lab)
 		
 		#check if this if has an else
 		@tokenizer.advance
 		if checkSameValue(@tokenizer.getCurrItem, "else")
-			r << compileKeyword("else")
+			compileKeyword("else")
 			@tokenizer.advance
-			r << compileSymbol("{")
+			compileSymbol("{")
 			@tokenizer.advance
-			r << compileStatements()
+			compileStatements()
 			@tokenizer.advance
-			r << compileSymbol("}")
+			compileSymbol("}")
 			
 		else
 			@tokenizer.retract
 		end
 		
-		return r
+		@writer.writeLabel("IF_END"+lab)
+		
 	end
 	
 	def compileWhile()
-		r = getNewNode("whileStatement")
-		r << compileKeyword("while")
+		compileKeyword("while")
 		@tokenizer.advance
-		r << compileSymbol("(")
+		compileSymbol("(")
 		@tokenizer.advance
-		r << compileExpression()
+		compileExpression()
 		@tokenizer.advance
-		r << compileSymbol(")")
+		compileSymbol(")")
 		@tokenizer.advance
-		r << compileSymbol("{")
+		compileSymbol("{")
 		@tokenizer.advance
-		r << compileStatements()
+		compileStatements()
 		@tokenizer.advance
-		r << compileSymbol("}")
-		
-		return r
+		compileSymbol("}")		
 	end
 	
 	def compileDo()

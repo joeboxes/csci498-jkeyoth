@@ -3,11 +3,8 @@
 class test {
 	
 	function void main() {
-		do test.g();
-		return;
-	}
-	
-	function void g() {
+		var boolean a;
+		let a = true;
 		return;
 	}
 }

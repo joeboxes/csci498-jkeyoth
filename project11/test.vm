@@ -1,8 +1,6 @@
-function test.main 0
-call test.g 0
-pop temp 0
-push constant 0
-return
-function test.g 0
+function test.main 1
+push constant 1
+neg
+pop local 0
 push constant 0
 return
