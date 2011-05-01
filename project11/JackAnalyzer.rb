@@ -35,6 +35,7 @@ class JackAnalyzer < Verbose
 		@tokenizer.closeFile()
 		#printTokens(inFile)# only for checking
 		# compile tokenizer array
+		@engine = CompilationEngine2.new()
 		@engine.setTokenizer(@tokenizer)
 		@engine.setFileName(inFile)
 		puts "Compiling #{inFile}"

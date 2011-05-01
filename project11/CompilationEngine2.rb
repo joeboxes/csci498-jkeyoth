@@ -86,6 +86,8 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		@rootNode << compileSymbol("}")
 		
+		debugger
+		
 		return @rootNode
 	end
 	
@@ -99,6 +101,10 @@ class CompilationEngine2 < Verbose
 		
 		compileKeyword(@tokenizer.getCurrItem)
 		subType = @tokenizer.getCurrItem
+		
+		if subType == "method"
+			@argumentTable.addEntry("garblegarblegarblegarble", "DONTFUCKINGUSEME")
+		end
 		
 		@tokenizer.advance
 		#get return type
@@ -191,9 +197,9 @@ class CompilationEngine2 < Verbose
 		rpn = toRPN(arr)
 		
 		
-		
 		for toke in rpn
 			if contains(OPS, toke) || toke == "%" || toke == "~"
+				s = symbolToVM(toke)
 				@writer.writeArithmetic(symbolToVM(toke))
 			elsif toke.class == Array
 				writeSubCall(toke)
@@ -214,8 +220,10 @@ class CompilationEngine2 < Verbose
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER)
 				seg, ind = getSegmentIndex(toke)
 				@writer.writePush(seg, ind)
+				
 			elsif checkSameType(toke, JackTokenizer.TYPE_INT)
 				@writer.writePush("constant", toke)
+				
 			elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
 				writeStringConst(toke)
 			end
@@ -234,13 +242,10 @@ class CompilationEngine2 < Verbose
 	
 	def writeSubCall(subArr)
 		if subArr.length == 2
-			@writer.writePush("pointer", 0)
 			@writer.writeCall(@className, subArr[0], subArr[1]+1)
 		elsif subArr.length == 3
-			seg, ind = getSegmentIndex(subArr[0])
 			type = getVarType(subArr[0])
-			if seg != nil
-				@writer.writePush(seg, ind)
+			if type != nil
 				@writer.writeCall(type, subArr[1], subArr[2] + 1)
 			else
 				@writer.writeCall(subArr[0], subArr[1], subArr[2])
@@ -278,24 +283,31 @@ class CompilationEngine2 < Verbose
 		kwayway = []
 		stack = []
 		for toke in arr
-			if toke.class == Array
-				if toke[0] == "%SUB%"
-					kwayway += callToRPN(toke[1..-1])
-				elsif toke[0] == "%ARR%"
-					kwayway += arrToRPN(toke[1..-1])
-				else
-					kwayway += toRPN(toke)
+			
+			if contains(OPS, toke) || toke == "%" || toke == "~"
+				stack.push toke
+			else
+				if toke.class == Array
+					if toke[0] == "%SUB%"
+						kwayway += callToRPN(toke[1..-1])
+					elsif toke[0] == "%ARR%"
+						kwayway += arrToRPN(toke[1..-1])
+					else
+						kwayway += toRPN(toke)
+					end
+					
+				elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER) \
+					|| checkSameType(toke, JackTokenizer.TYPE_INT) \
+					|| checkSameType(toke, JackTokenizer.TYPE_STRING)
+					kwayway.push toke
+				elsif contains(KEYWORD_CONSTANTS, toke)
+					kwayway.push toke
 				end
 				
-			elsif contains(OPS, toke) || toke == "%" || toke == "~"
-				stack.push toke
+				if stack.length > 0
+					kwayway.push stack.pop
+				end
 				
-			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER) \
-				|| checkSameType(toke, JackTokenizer.TYPE_INT) \
-				|| checkSameType(toke, JackTokenizer.TYPE_STRING)
-				kwayway.push toke
-			elsif contains(KEYWORD_CONSTANTS, toke)
-				kwayway.push toke
 			end
 			
 		end
@@ -321,11 +333,22 @@ class CompilationEngine2 < Verbose
 		sub = callArr[0]
 		params = callArr[2..-2]
 		que = []
+		
+		spl = sub.split(".")
+		if spl.length == 1
+			que.push "this"
+		else
+			if getSegmentIndex(spl[0]) != nil
+				que.push spl[0]
+			end
+			
+		end
+		
 		for p in params
 			que += toRPN(p)
 		end
 		
-		que.push sub.split(".") + [params.length]
+		que.push(spl + [params.length])
 		
 		return que	
 	end
@@ -674,21 +697,19 @@ class CompilationEngine2 < Verbose
 	end
 	
 	def compileParamList()
-		r = getNewNode("parameterList")
-		
 		#do multiple parameters
 		while (contains(VAR_TYPES, @tokenizer.getCurrItem) or checkSameType(@tokenizer.getCurrItem, JackTokenizer.TYPE_IDENTIFIER)) 
 			#do type
 			if contains(VAR_TYPES, @tokenizer.getCurrItem)
-				r << compileKeyword(@tokenizer.getCurrItem)
+				compileKeyword(@tokenizer.getCurrItem)
 			else
-				r << compileIdentifier(@tokenizer.getCurrItem)
+				compileIdentifier(@tokenizer.getCurrItem)
 			end
 			type = @tokenizer.getCurrItem
 			
 			#do name of parameter
 			@tokenizer.advance
-			r << compileIdentifier(@tokenizer.getCurrItem)
+			compileIdentifier(@tokenizer.getCurrItem)
 			
 			@argumentTable.addEntry(@tokenizer.getCurrItem, type)
 			
@@ -696,12 +717,12 @@ class CompilationEngine2 < Verbose
 			if checkSameValue(@tokenizer.getCurrItem, ")")
 				break
 			end
-			r << compileSymbol(",")
+			compileSymbol(",")
 			
 			@tokenizer.advance
 		end
 		@tokenizer.retract
-		return r
+		
 	end
 	def compileClassVar()
 		r = getNewNode("classVarDec")

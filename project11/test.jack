@@ -3,7 +3,17 @@
 class test {
 	
 	function void main() {
-		do Output.printString("The average is: ");
+		var int lengthx, bouncingDirection, factor;
+		
+		let lengthx = 1;
+		let bouncingDirection = 1;
+		
+		if ((~(lengthx < 0)) & (bouncingDirection = 1) | (lengthx < 0) & (bouncingDirection = (-1))) {
+	        let factor = 20; 
+	    }
+	    else {
+	        let factor = 5;
+	    }
 		return;
 	}
 }
