@@ -3,8 +3,7 @@
 class test {
 	
 	function void main() {
-		var boolean a;
-		let a = true;
+		do Output.printString("The average is: ");
 		return;
 	}
 }

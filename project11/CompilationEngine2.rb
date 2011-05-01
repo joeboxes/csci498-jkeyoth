@@ -187,7 +187,10 @@ class CompilationEngine2 < Verbose
 	def compileExpression()
 		arr = genExpTreeArr
 		
+		
 		rpn = toRPN(arr)
+		
+		
 		
 		for toke in rpn
 			if contains(OPS, toke) || toke == "%" || toke == "~"
@@ -200,16 +203,32 @@ class CompilationEngine2 < Verbose
 				
 			elsif toke == "false" || toke == "null"
 				@writer.writePush("constant", 0)
-			
+				
 			elsif toke == "this"
 				@writer.writePush("pointer", 0)
-			
+				
+			elsif toke == "$"
+				@writer.writePop("pointer", 1)
+				@writer.writePush("that", 0)
+				
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER)
 				seg, ind = getSegmentIndex(toke)
 				@writer.writePush(seg, ind)
 			elsif checkSameType(toke, JackTokenizer.TYPE_INT)
 				@writer.writePush("constant", toke)
+			elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
+				writeStringConst(toke)
 			end
+		end
+	end
+	
+	def writeStringConst(toke)
+		len = toke.length
+		@writer.writePush("constant", len)
+		@writer.writeCall("String", "new", 1)
+		(0..len-1).each do |i|
+			@writer.writePush("constant", toke[i])
+			@writer.writeCall("String", "appendChar", 2)
 		end
 	end
 	
@@ -262,6 +281,8 @@ class CompilationEngine2 < Verbose
 			if toke.class == Array
 				if toke[0] == "%SUB%"
 					kwayway += callToRPN(toke[1..-1])
+				elsif toke[0] == "%ARR%"
+					kwayway += arrToRPN(toke[1..-1])
 				else
 					kwayway += toRPN(toke)
 				end
@@ -270,7 +291,8 @@ class CompilationEngine2 < Verbose
 				stack.push toke
 				
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER) \
-				|| checkSameType(toke, JackTokenizer.TYPE_INT)
+				|| checkSameType(toke, JackTokenizer.TYPE_INT) \
+				|| checkSameType(toke, JackTokenizer.TYPE_STRING)
 				kwayway.push toke
 			elsif contains(KEYWORD_CONSTANTS, toke)
 				kwayway.push toke
@@ -284,6 +306,15 @@ class CompilationEngine2 < Verbose
 		
 		return kwayway
 		
+	end
+	
+	def arrToRPN(arr)
+		arrName = arr[0]
+		intern = toRPN(arr[1])
+		intern.push arrName
+		intern.push "+"
+		intern.push "$"
+		return intern
 	end
 	
 	def callToRPN(callArr)
@@ -335,11 +366,11 @@ class CompilationEngine2 < Verbose
 			
 			
 		elsif contains(KEYWORD_CONSTANTS, toke)
-			#r << compileKeyword(toke)
+			compileKeyword(toke)
 			return [toke]
 			
 		elsif contains(UNIARY_OPS, toke)
-			#r << compileSymbol(toke)
+			compileSymbol(toke)
 			@tokenizer.advance
 			other = compileTerm
 			
@@ -360,18 +391,18 @@ class CompilationEngine2 < Verbose
 			return a
 			
 		elsif isArrayThinger?#varName[expression]
-			#r << compileIdentifier()
-			a = [toke]
+			compileIdentifier()
+			a = ["%ARR%", toke]
 			@tokenizer.advance
-			#r << compileSymbol("[")
+			compileSymbol("[")
 			@tokenizer.advance
-			a += genExpTreeArr()
+			a += [[genExpTreeArr()]]
 			@tokenizer.advance
-			#r << compileSymbol("]")
-			return a
+			compileSymbol("]")
+			return [a]
 			
 		else#is a varName
-			#r << compileIdentifier()
+			compileIdentifier()
 			return [toke]
 		end
 		
@@ -432,10 +463,10 @@ class CompilationEngine2 < Verbose
 			arrayThing = true
 			compileSymbol("[")
 			
-			@writer.writePush(segment, index)#push array addr
-			
 			@tokenizer.advance
 			compileExpression()
+			
+			@writer.writePush(segment, index)#push array addr
 			
 			@writer.writeArithmetic("add")#add array addr and result of [expression]
 			
