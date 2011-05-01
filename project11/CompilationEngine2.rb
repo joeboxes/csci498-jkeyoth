@@ -143,7 +143,7 @@ class CompilationEngine2 < Verbose
 		@writer.writeFunction(@className, subName, @varTable.getLength)
 		
 		if subType == "constructor"
-			@writer.writePush("constant", @curFunctNumVars)
+			@writer.writePush("constant", @fieldTable.getLength)
 			@writer.writeCall("Memory", "alloc", 1)
 			@writer.writePop("pointer", 0)
 		elsif subType == "method"
@@ -200,7 +200,10 @@ class CompilationEngine2 < Verbose
 				
 			elsif toke == "false" || toke == "null"
 				@writer.writePush("constant", 0)
-				
+			
+			elsif toke == "this"
+				@writer.writePush("pointer", 0)
+			
 			elsif checkSameType(toke, JackTokenizer.TYPE_IDENTIFIER)
 				seg, ind = getSegmentIndex(toke)
 				@writer.writePush(seg, ind)
@@ -212,9 +215,17 @@ class CompilationEngine2 < Verbose
 	
 	def writeSubCall(subArr)
 		if subArr.length == 2
-			@writer.writeCall(nil, subArr[0], subArr[1])
+			@writer.writePush("pointer", 0)
+			@writer.writeCall(@className, subArr[0], subArr[1]+1)
 		elsif subArr.length == 3
-			@writer.writeCall(subArr[0], subArr[1], subArr[2])
+			seg, ind = getSegmentIndex(subArr[0])
+			type = getVarType(subArr[0])
+			if seg != nil
+				@writer.writePush(seg, ind)
+				@writer.writeCall(type, subArr[1], subArr[2] + 1)
+			else
+				@writer.writeCall(subArr[0], subArr[1], subArr[2])
+			end
 		end
 	end
 	
@@ -321,31 +332,11 @@ class CompilationEngine2 < Verbose
 		elsif checkSameType(toke, JackTokenizer.TYPE_STRING)
 			#r << compileConstant("stringConstant", toke)
 			return [toke[1..-2]]
-			#con = toke[1..-2]
-			#len = con.length
-			#@writer.writePush("constant", len)
-			#@writer.writeCall("String", "new", 1)
-			#(0..len-1).each do |i|
-			#	@writer.writePush("constant", con[i])
-			#	@writer.writeCall("String", "new", 2)
-			#end
 			
 			
 		elsif contains(KEYWORD_CONSTANTS, toke)
 			#r << compileKeyword(toke)
 			return [toke]
-			#case toke
-			#	when "true"
-			#		@writer.writePush("constant", 1)
-			#		@writer.writeArithmetic("neg")
-			#	when "false"
-			#		@writer.writePush("constant", 0)
-			#	when "null"
-			#		@writer.writePush("constant", 0)
-			#	else
-			#		raise "Keyword constant #{toke} not recognized (should be true, false, null)"
-			#		exit
-			#end
 			
 		elsif contains(UNIARY_OPS, toke)
 			#r << compileSymbol(toke)
@@ -361,12 +352,11 @@ class CompilationEngine2 < Verbose
 			return [["%SUB%"] + compileSubroutineCall()]
 			
 		elsif checkSameValue(toke, "(")#in parenths
-			#TODO: make this work for reals
-			#r << compileSymbol("(")
+			compileSymbol("(")
 			@tokenizer.advance
 			a = [genExpTreeArr()]
 			@tokenizer.advance
-			#r << compileSymbol(")")
+			compileSymbol(")")
 			return a
 			
 		elsif isArrayThinger?#varName[expression]
@@ -815,8 +805,18 @@ class CompilationEngine2 < Verbose
 		elsif @varTable.has_key?(k)
 			return ["local", @varTable.getIndex(k)]
 		end
-		raise "Identifier $#{k} not found"
-		exit
+	end
+	
+	def getVarType(k)
+		if @staticTable.has_key?(k)
+			return @staticTable.getType(k)
+		elsif @fieldTable.has_key?(k)
+			return @fieldTable.getType(k)
+		elsif @argumentTable.has_key?(k)
+			return @argumentTable.getType(k)
+		elsif @varTable.has_key?(k)
+			return @varTable.getType(k)
+		end
 	end
 	
 	def printAllTables()
