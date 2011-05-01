@@ -86,7 +86,6 @@ class CompilationEngine2 < Verbose
 		@tokenizer.advance
 		@rootNode << compileSymbol("}")
 		
-		debugger
 		
 		return @rootNode
 	end
