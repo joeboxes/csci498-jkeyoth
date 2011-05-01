@@ -524,18 +524,30 @@ class CompilationEngine2 < Verbose
 	
 	def compileWhile()
 		compileKeyword("while")
+		
+		lab = getNextName
+		@writer.writeLabel("WHILE"+lab)
+		
 		@tokenizer.advance
 		compileSymbol("(")
 		@tokenizer.advance
 		compileExpression()
 		@tokenizer.advance
 		compileSymbol(")")
+		
+		@writer.writeArithmetic("not")
+		@writer.writeIf("WHILE_END"+lab)
+		
 		@tokenizer.advance
 		compileSymbol("{")
 		@tokenizer.advance
 		compileStatements()
 		@tokenizer.advance
-		compileSymbol("}")		
+		compileSymbol("}")
+		
+		@writer.writeGoto("WHILE"+lab)
+		@writer.writeLabel("WHILE_END"+lab)
+		
 	end
 	
 	def compileDo()
