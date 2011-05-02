@@ -10,15 +10,28 @@ class Memory {
 
     /** Initializes memory parameters. */
     function void init() {
+    		let heapBase = 9000;// initial location = heap start - memory test screws with 8000s
+		let heapEnd = 16383;// 16384=screenstart
+		let freeList = heapBase;
+		let freeList[0] = heapEnd-heapBase;// initial length = heap length = keyboard start-heap start
+		let freeList[1] = 0;// next location = null
+		return;
     }
 
     /** Returns the value of the main memory at this address. */
     function int peek(int address) {
+    		var int a;
+		let a = 0;
+		return a[address];
     }
 
     /** Sets the value of the main memory at this address
      *  to the given value. */
     function void poke(int address, int value) {
+    		var int a;
+		let a = 0;
+		let a[address] = value;
+		return;
     }
 
     /** finds and allocates from the heap a memory block of the 
