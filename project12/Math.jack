@@ -34,32 +34,36 @@ class Math{
 	}
 	/** Returns the product of x and y. */
 	function int multiply(int x, int y){
-		var int m, n, res;
+		var int ya, m, n, res;
+		let ya = Math.abs(y);
 		let m = 1;
-		let n = x;
+		let n = Math.abs(x);
 		let res = 0;
 		while(m>0){
-			if( ~((m&y)=0) ){
+			if( ~((m&ya)=0) ){
 				let res = res + n;
 			}
 			let n = n + n;
 			let m = m + m;
+		}
+		if( ((x<0)&(y>0)) | ((x>0)&(y<0)) ){
+			let res = -res;
 		}
 		return res;
 	}
 	/** Returns the integer part of x/y. */
 	function int divide(int x, int y){
 		var int res;
+		if(y=0){// division by zero
+			do Sys.error(3);
+		}
 		let res = Math.div(Math.abs(x),Math.abs(y));
-		if( (x<0) & (y>0) ){
+		if( ((x<0)&(y>0)) | ((x>0)&(y<0)) ){
 				let res = -res;
-		}else{
-			if( (x>0) & (y<0) ){
-				let res = -res;
-			}
 		}
 		return res;
 	}
+	/** Recursive Division Function */
 	function int div(int x,int y){
 		var int q, m, n;
 		if(x<y){
@@ -84,12 +88,15 @@ class Math{
     /** Returns the integer part of the square root of x. */
 	function int sqrt(int x){
 		var int y, j, n;
+		if(x<0){// sqrt of negative
+			do Sys.error(4);
+		}
 		let y = 0;
-		let j = 16384;//32768/2
+		let j = 256;//16384;//32768/2
 		while(j>0){
 			let n = y+j;
 			let n = Math.multiply(n,n);
-			if( ~(n>x) ){
+			if( (~(n>x)) & (n>0) ){
 				let y = y + j;
 			}
 			let j = Math.shiftRight(j);
