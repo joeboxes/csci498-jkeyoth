@@ -33,15 +33,16 @@ class JackAnalyzer < Verbose
 		# parse input to array
 		@tokenizer.openFile(inFile)
 		@tokenizer.closeFile()
-		printTokens(inFile)# only for checking
+		#printTokens(inFile)# only for checking
 		# compile tokenizer array
+		@engine = CompilationEngine2.new()
 		@engine.setTokenizer(@tokenizer)
 		@engine.setFileName(inFile)
 		puts "Compiling #{inFile}"
 		ret = @engine.compileClass()
 		if ret!=nil
 			puts "successful compilation"
-			printTreeAsXML(ret, inFile)
+			#printTreeAsXML(ret, inFile)
 		else
 			puts "error occurred compiling file"
 		end
