@@ -2,16 +2,12 @@
 Array.jack
 */
 class Array{
-	field int length;
 	/** Constructs a new Array of the given size. */
-	/*function Array new(int size) {
-		return res;
-	}*/
-	constructor Array new(int size){
-		var int res;
-		let res = Memory.alloc(length);
-		let length = size;
-		return this;
+	function Array new(int size) {
+		if(size<0){// size must be positive
+			do Sys.error(2);
+		}
+		return Memory.alloc(size);
 	}
 	/** De-allocates the array and frees its space. */
 	method void dispose(){

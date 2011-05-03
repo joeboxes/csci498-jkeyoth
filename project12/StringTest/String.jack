@@ -1,5 +1,8 @@
 /*
-String.jack
+String.jack        
+
+19   String.setInt         Insufficient string capacity
+20   Output.moveCursor     Illegal cursor location
 */
 class String{
 	field int len;
@@ -8,6 +11,9 @@ class String{
 	/** Constructs a new empty String with a maximum length of
 	*  maxLength. */
 	constructor String new(int maxLength){
+		if(maxLength<0){// Maximum length must be non-negative
+			do Sys.error(14);
+		}
 		let len = maxLength;
 		let cur = 0;
 		if(len=0){
@@ -44,6 +50,9 @@ class String{
 	}
 	/** Returns the character at location j. */
 	method char charAt(int j){
+		if((j<0)|(~(j<len))){// string index out of bounds
+			do Sys.error(15);
+		}
 		if(len=0){
 			return 0;
 		}
@@ -57,6 +66,9 @@ class String{
 	}
 	/** Sets the j'th character of this string to be c. */
 	method void setCharAt(int j, char c){
+		if((j<0)|(~(j<len))){// string index out of bounds
+			do Sys.error(16);
+		}
 		if(len<1){
 			return;
 		}
@@ -72,6 +84,9 @@ class String{
 	/** Appends the character c to the end of this String.
 	*  Returns this string as the return value. */
 	method String appendChar(char c) {
+		if( ~(cur<len) ){// String is full
+			do Sys.error(17);
+		}
 		if(~(cur<len)){
 			return this;
 		}
@@ -81,14 +96,14 @@ class String{
 	}
 	/** Erases the last character from this String. */
 	method void eraseLastChar() {
-		if(len=0){
+		if(cur=0){// String is empty
+			do Sys.error(18);
+		}
+		if(cur=0){
 			return;
 		}
 		let s[cur] = 0;
 		let cur = cur - 1;
-		if(cur<0){
-			let cur = 0;
-		}
 		return;
 	}
 	/** Returns the integer value of this String until the first non
@@ -124,8 +139,11 @@ class String{
 		var String str;
 		let str = String.int2String(number);
 		let index = 0;
-		let l = str.length();//Math.min(maxLength(),str.length());
-		let cur = Math.min(maxLength(),str.length());
+		let l = str.length();
+		if( l>len ){// insufficient string capacity
+			do Sys.error(19);
+		}
+		let cur = Math.min(maxLength(),l);
 		while(index<l){
 			do setCharAt(index,str.charAt(index));//do appendChar(str.charAt(index));
 			let index = index + 1;
@@ -145,7 +163,8 @@ class String{
 	function char doubleQuote() {
 		return 34;
 	}
-	function String int2String(int i){// if negative, just need to len+1, and add "-" char
+	/** Creates a string of necessary length, and string value of i */
+	function String int2String(int i){
 		var int numLen, lastDigit, num, num2, index, offset;
 		var String str;
 		let offset = 0;

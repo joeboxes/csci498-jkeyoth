@@ -23,9 +23,6 @@ class Sys{
 	/** Waits approximately duration milliseconds before it returns. */
 	function void wait(int duration){// BUSY WAIT
 		var int i, j, minOut, minInt;
-		if(duration<0){// duration must be positive
-			do Sys.error(1);
-		}
 		let minOut = 10*duration;
 		let minInt = 25;
 		let i = 0;

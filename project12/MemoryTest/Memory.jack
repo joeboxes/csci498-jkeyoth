@@ -2,26 +2,90 @@
 Memory.jack
 */ 
 class Memory{
+	static int freeList;// list of addresses: 0=length 1=pointer to next
+	static int heapBase;// 8000-normal, 9000-test
+	static int heapEnd;
 	/** Initializes memory parameters. */
 	function void init(){
+		let heapBase = 9000;// initial location = heap start - memory test screws with 8000s
+		let heapEnd = 16383;// 16384=screenstart
+		let freeList = heapBase;
+		let freeList[0] = heapEnd-heapBase;// initial length = heap length = keyboard start-heap start
+		let freeList[1] = 0;// next location = null
 		return;
 	}
 	/** Returns the value of the main memory at this address. */
 	function int peek(int address){
-		
+		var int a;
+		let a = 0;
+		return a[address];
 	}
 	/** Sets the value of the main memory at this address
 	*  to the given value. */
 	function void poke(int address, int value){
+		var int a;
+		let a = 0;
+		let a[address] = value;
 		return;
 	}
 	/** finds and allocates from the heap a memory block of the 
 	*  specified size and returns a reference to its base address. */
-	function int alloc(int size) {
-		
+	function int alloc(int size){//does not attempt defragmentation
+		var int obj, next, prev, length, remainder, done;
+		if(size<0){// allocation size must be positive
+			do Sys.error(5);
+		}
+		let next = freeList;// start at beginning of list
+		let prev = freeList;
+		let done = 0;
+		while( ~done ){// find first available location
+			let length = next[0];
+			if(length>size){// long enough space
+				let done = ~done;
+			}else{// not long enough, goto next in line
+				let prev = next;
+				let next = next[1];
+				if(next=0){// reached end, and no available locations - cannot allocate memory
+					do Sys.error(6);
+				}
+			}
+		}
+		if( length<(size+3) ){// just use entire space - length<=size+2
+			let prev[1] = next[1];// remove section from list
+			let obj = next + 1;// length stays same
+		}else{// use bottom-most section of space
+			let obj = next+length-size;// location of new object
+			let obj[-1] = size+1;
+			let next[0] = next[0] - size - 1;// update link length
+		}
+		return obj;
 	}
 	/** De-allocates the given object and frees its space. */
 	function void deAlloc(int object){
+		var int prev, next;
+		let object = object-1;// set as top of allocation
+		let next = freeList;// start at beginning of list
+		while( next<object ){// go thru list and add at prev < obj < next
+			let prev = next;
+			let next = next[1];
+			if(next=0){// reached end
+				let next = heapEnd;// end loop - add at next->obj
+			}
+		}
+		let next = prev+prev[0];
+		// ATTEMPT DEFRAGMENTATION
+		if( next=object ){// continuous segment, add back
+			let prev[0] = prev[0] + object[0];// add lengths
+			// ADD BACK NEXT POSSIBLE CONTINUOUS SECTIONS
+			while( prev[1]=(prev+prev[0]) ){// prev->next is continuous
+				let next = prev[1];
+				let prev[0] = prev[0] + next[0];// add lengths
+				let prev[1] = next[1];// switch pointer
+			}
+		}else{// non-continuous - add segment to free list
+			let object[1] = prev[1];
+			let prev[1] = object;
+		}
 		return;
 	}
 }

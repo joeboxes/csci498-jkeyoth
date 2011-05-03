@@ -14,9 +14,9 @@ class Screen{
 	/** Erases the whole screen. */
 	function void clearScreen(){
 		if(color=0){
-			do Screen.colorScreen(false);
-		}else{
 			do Screen.colorScreen(true);
+		}else{
+			do Screen.colorScreen(false);
 		}
 		return;
 	}

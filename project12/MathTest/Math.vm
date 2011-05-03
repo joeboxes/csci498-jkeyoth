@@ -56,21 +56,25 @@ goto WHILE_EXP0
 label WHILE_END0
 push local 2
 return
-function Math.multiply 3
-push constant 1
+function Math.multiply 4
+push argument 1
+call Math.abs 1
 pop local 0
-push argument 0
+push constant 1
 pop local 1
-push constant 0
+push argument 0
+call Math.abs 1
 pop local 2
+push constant 0
+pop local 3
 label WHILE_EXP0
-push local 0
+push local 1
 push constant 0
 gt
 not
 if-goto WHILE_END0
+push local 1
 push local 0
-push argument 1
 and
 push constant 0
 eq
@@ -78,24 +82,56 @@ not
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push local 3
 push local 2
-push local 1
+add
+pop local 3
+label IF_FALSE0
+push local 2
+push local 2
 add
 pop local 2
-label IF_FALSE0
 push local 1
 push local 1
 add
 pop local 1
-push local 0
-push local 0
-add
-pop local 0
 goto WHILE_EXP0
 label WHILE_END0
-push local 2
+push argument 0
+push constant 0
+lt
+push argument 1
+push constant 0
+gt
+and
+push argument 0
+push constant 0
+gt
+push argument 1
+push constant 0
+lt
+and
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 3
+neg
+pop local 3
+label IF_FALSE1
+push local 3
 return
 function Math.divide 1
+push argument 1
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 3
+call Sys.error 1
+pop temp 0
+label IF_FALSE0
 push argument 0
 call Math.abs 1
 push argument 1
@@ -109,14 +145,6 @@ push argument 1
 push constant 0
 gt
 and
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push local 0
-neg
-pop local 0
-goto IF_END0
-label IF_FALSE0
 push argument 0
 push constant 0
 gt
@@ -124,6 +152,7 @@ push argument 1
 push constant 0
 lt
 and
+or
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
@@ -131,7 +160,6 @@ push local 0
 neg
 pop local 0
 label IF_FALSE1
-label IF_END0
 push local 0
 return
 function Math.div 3
@@ -193,9 +221,19 @@ push local 0
 sub
 return
 function Math.sqrt 3
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 4
+call Sys.error 1
+pop temp 0
+label IF_FALSE0
 push constant 0
 pop local 0
-push constant 16384
+push constant 256
 pop local 1
 label WHILE_EXP0
 push local 1
@@ -215,14 +253,18 @@ push local 2
 push argument 0
 gt
 not
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+push local 2
+push constant 0
+gt
+and
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push local 0
 push local 1
 add
 pop local 0
-label IF_FALSE0
+label IF_FALSE1
 push local 1
 call Math.shiftRight 1
 pop local 1
